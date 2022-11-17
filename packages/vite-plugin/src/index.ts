@@ -1,9 +1,9 @@
 import type { PluginOption } from 'vite';
 
-export default function vitePluginTemplate(): PluginOption {
+export default function vitePlugin(): PluginOption {
   return {
     // 插件名称
-    name: 'vite-plugin-template',
+    name: 'vite-plugin',
 
     // pre 会较于 post 先执行
     enforce: 'pre', // post
@@ -12,7 +12,9 @@ export default function vitePluginTemplate(): PluginOption {
     apply: 'build', // apply 亦可以是一个函数
 
     // 1. vite 独有的钩子：可以在 vite 被解析之前修改 vite 的相关配置。钩子接收原始用户配置 config 和一个描述配置环境的变量env
-    config(config, { command }) {},
+    config(config, { command }) {
+      console.log('我是vite初始化插件哦');
+    },
 
     // 2. vite 独有的钩子：在解析 vite 配置后调用。使用这个钩子读取和存储最终解析的配置。当插件需要根据运行的命令做一些不同的事情时，它很有用。
     configResolved(resolvedConfig) {},

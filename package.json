@@ -4,7 +4,7 @@
   "description": "Library",
   "scripts": {
     "dev": "pnpm run build --watch --ignore-watch examples",
-    "build": "turbo run build",
+    "build": "turbo run build --filter=vite-plugin",
     "example:react": "cd examples/vite-react && pnpm run build",
     "example:vue2": "cd examples/vite-vue2 && pnpm run build",
     "example:vue3": "cd examples/vite-vue3 && pnpm run build"

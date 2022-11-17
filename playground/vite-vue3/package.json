@@ -1,5 +1,5 @@
 {
-    "name": "vite-vue3-ts-pinia",
+    "name": "vite-vue3",
     "private": true,
     "version": "0.0.1",
     "scripts": {
@@ -18,8 +18,7 @@
         "@types/node": "^17.0.23",
         "@vitejs/plugin-vue": "^2.2.0",
         "typescript": "^4.5.4",
-        "vite": "link:../../node_modules/vite",
-        "vite-plugin-template": "link:../../",
-        "vue-tsc": "^0.29.8"
+        "vue-tsc": "^0.29.8",
+        "vite-plugin": "workspace:*"
     }
 }
