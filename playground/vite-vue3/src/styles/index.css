@@ -1,7 +1,0 @@
-:root {
-    --main-bg-color: black;
-}
-
-.root {
-    color: var(--main-bg-color);
-}
