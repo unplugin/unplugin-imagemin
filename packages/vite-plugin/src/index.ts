@@ -1,6 +1,11 @@
 import type { PluginOption } from 'vite';
-
-export default function vitePlugin(): PluginOption {
+// 其中 Vite 会调用一系列与 Rollup 兼容的钩子，这个钩子主要分为三个阶段:
+// 服务器启动阶段: options和buildStart钩子会在服务启动时被调用。
+// 请求响应阶段: 当浏览器发起请求时，Vite 内部依次调用resolveId、load和transform钩子。
+// 服务器关闭阶段: Vite 会依次执行buildEnd和closeBundle钩子。
+// 除了以上钩子，其他 Rollup 插件钩子(如moduleParsed、renderChunk)均不会在 Vite 开发阶段调用。而生产环境下，由于 Vite 直接使用 Rollup，Vite 插件中所有 Rollup 的插件钩子都会生效。
+export default function vitePlugin(options?): PluginOption {
+  console.log(options);
   return {
     // 插件名称
     name: 'vite-plugin',
@@ -38,7 +43,9 @@ export default function vitePlugin(): PluginOption {
     resolveId(source, importer, options) {},
 
     // 构建阶段的通用钩子：在每个传入模块请求时被调用：可以自定义加载器，可用来返回自定义的内容
-    load(id) {},
+    load(id) {
+      console.log(id);
+    },
 
     // 构建阶段的通用钩子：在每个传入模块请求时被调用：在每个传入模块请求时被调用，主要是用来转换单个模块
     transform(code, id) {},
