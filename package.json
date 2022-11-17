@@ -1,0 +1,27 @@
+{
+  "name": "vite-plugin",
+  "version": "0.0.1",
+  "description": "Library",
+  "scripts": {
+    "dev": "pnpm run build --watch --ignore-watch examples",
+    "build": "turbo run build",
+    "example:react": "cd examples/vite-react && pnpm run build",
+    "example:vue2": "cd examples/vite-vue2 && pnpm run build",
+    "example:vue3": "cd examples/vite-vue3 && pnpm run build"
+  },
+  "keywords": [
+    "vite",
+    "plugin"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.35",
+    "bumpp": "^7.1.1",
+    "eslint": "^8.16.0",
+    "eslint-config-relaxed-ts": "^2.0.1",
+    "prettier": "^2.6.2",
+    "turbo": "^1.6.3",
+    "typescript": "^4.7.2",
+    "vite": "*"
+  }
+}
