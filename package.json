@@ -1,25 +1,102 @@
 {
-  "name": "vite-plugin",
+  "name": "unplugin-imagemin",
   "version": "0.0.1",
   "description": "Library",
+  "type": "module",
   "scripts": {
-    "dev": "pnpm run build --watch --ignore-watch examples",
-    "build": "turbo run build --filter=vite-plugin",
-    "play": "turbo run dev"
+    "build": "tsup",
+    "dev": "tsup --watch src",
+    "build:fix": "esno scripts/postbuild.ts",
+    "lint": "eslint .",
+    "play": "npm -C playground run dev",
+    "prepublishOnly": "npm run build",
+    "release": "bumpp && npm publish",
+    "start": "esno src/index.ts",
+    "test": "vitest"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "require": "./dist/vite.cjs",
+      "import": "./dist/vite.js"
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "require": "./dist/webpack.cjs",
+      "import": "./dist/webpack.js"
+    },
+    "./rollup": {
+      "types": "./dist/rollup.d.ts",
+      "require": "./dist/rollup.cjs",
+      "import": "./dist/rollup.js"
+    },
+    "./esbuild": {
+      "types": "./dist/esbuild.d.ts",
+      "require": "./dist/esbuild.cjs",
+      "import": "./dist/esbuild.js"
+    },
+    "./nuxt": {
+      "types": "./dist/nuxt.d.ts",
+      "require": "./dist/nuxt.cjs",
+      "import": "./dist/nuxt.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "require": "./dist/types.cjs",
+      "import": "./dist/types.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./*"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "keywords": [
+    "unplugin",
     "vite",
-    "plugin"
+    "webpack",
+    "rollup",
+    "esbuild",
+    "imagemin"
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^17.0.35",
-    "bumpp": "^7.1.1",
-    "eslint": "^8.16.0",
+    "@types/node": "^18.11.9",
+    "bumpp": "^8.2.1",
+    "chalk": "^5.1.2",
+    "eslint": "^8.27.0",
     "eslint-config-relaxed-ts": "^2.0.1",
-    "prettier": "^2.6.2",
+    "esno": "^0.16.3",
+    "fast-glob": "^3.2.12",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^3.3.0",
+    "slash": "^5.0.0",
+    "tsup": "^6.5.0",
     "turbo": "^1.6.3",
-    "typescript": "^4.7.2",
-    "vite": "*"
+    "typescript": "^4.9.3",
+    "vite": "^3.2.4",
+    "vitest": "^0.25.2",
+    "webpack": "^5.75.0"
+  },
+  "dependencies": {
+    "imagemin": "^8.0.1",
+    "unplugin": "^1.0.0"
   }
 }
