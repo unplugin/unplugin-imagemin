@@ -5,7 +5,7 @@ import type { PluginOption } from 'vite';
 // 服务器关闭阶段: Vite 会依次执行buildEnd和closeBundle钩子。
 // 除了以上钩子，其他 Rollup 插件钩子(如moduleParsed、renderChunk)均不会在 Vite 开发阶段调用。而生产环境下，由于 Vite 直接使用 Rollup，Vite 插件中所有 Rollup 的插件钩子都会生效。
 export default function vitePlugin(options?): PluginOption {
-  console.log(options);
+  console.log(options, '获取到的options');
   return {
     // 插件名称
     name: 'vite-plugin',

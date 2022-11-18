@@ -5,7 +5,7 @@
   "main": "dist/index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsup src/index.ts --dts --format cjs,esm"
+    "build": "tsup src/index.ts --dts --format cjs,esm --watch"
   },
   "devDependencies": {
     "tsup": "^6.0.1"
