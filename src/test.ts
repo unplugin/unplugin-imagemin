@@ -73,57 +73,35 @@ export default createUnplugin<any | undefined>((options) => {
         const encodeTo = options.encodeTo?.find((value) =>
           value.from.test(ext),
         ).to;
-        const optionsArr = Object.values(defaultSquooshOptions);
         // console.log(ext, "图片后缀");
         // console.log(newSize, "图片大小");
         // console.log(defaultSquooshOptions, '参数类型');
-        // TODO * update faaas
-        const value = optionsArr.find((item: any, index: number) => {
-          return item.extension.test('webp');
-        });
-        const key = Object.keys(defaultSquooshOptions).find(
-          // (item) => item.includes(ext.slice(1)),
-          (item) => item.includes('webp'),
-        );
-        let newcode = {};
-        newcode[key] = value;
-        // console.log(Object.values(defaultSquooshOptions));
-        await image.encode(newcode);
-        // console.log(Object.values(image.encodedWith));
-        const encodedWith = await (Object.values(
-          image.encodedWith,
-        )[0] as Promise<any>);
-        newSize = encodedWith.size;
-        if (newSize < oldSize) {
-          fs.mkdirSync(path.dirname(fileRootPath), { recursive: true });
-          fs.writeFileSync(fileRootPath, encodedWith.binary);
+        for (let i = 0; i < Object.values(defaultSquooshOptions).length; i++) {
+          const codec: any = Object.values(defaultSquooshOptions)[i];
+          console.log(codec.extension?.test(ext));
+          const encoderType = Object.keys(defaultSquooshOptions)[i];
+          // if (typeof encodeTo !== 'undefined') {
+          //   if (encodeTo != encoderType) continue;
+          // } else if (!codec.extension?.test(ext)) continue;
+
+          let newCodec = {};
+
+          newCodec[Object.keys(defaultSquooshOptions)[i]] = codec;
+          // console.log(newCodec);
+
+          await image.encode(newCodec);
+          // console.log(Object.values(image.encodedWith));
+          const encodedWith = await (Object.values(
+            image.encodedWith,
+          )[0] as Promise<any>);
+          newSize = encodedWith.size;
+          if (newSize < oldSize) {
+            fs.mkdirSync(path.dirname(fileRootPath), { recursive: true });
+            fs.writeFileSync(fileRootPath, encodedWith.binary);
+          }
+
+          break;
         }
-        // for (let i = 0; i < Object.values(defaultSquooshOptions).length; i++) {
-        //   const codec = Object.values(defaultSquooshOptions)[i];
-        //   // console.log(codec);
-        //   const encoderType = Object.keys(defaultSquooshOptions)[i];
-        //   // if (typeof encodeTo !== 'undefined') {
-        //   //   if (encodeTo != encoderType) continue;
-        //   // } else if (!codec.extension?.test(ext)) continue;
-
-        //   let newCodec = {};
-
-        //   newCodec[Object.keys(defaultSquooshOptions)[5]] = codec;
-        //   console.log(newCodec);
-
-        //   await image.encode(newCodec);
-        //   // console.log(Object.values(image.encodedWith));
-        //   const encodedWith = await (Object.values(
-        //     image.encodedWith,
-        //   )[0] as Promise<any>);
-        //   newSize = encodedWith.size;
-        //   if (newSize < oldSize) {
-        //     fs.mkdirSync(path.dirname(fileRootPath), { recursive: true });
-        //     fs.writeFileSync(fileRootPath, encodedWith.binary);
-        //   }
-
-        //   break;
-        // }
         // await image.encode(defaultSquooshOptions);
         // // console.log(Object.values(image.encodedWith));
 

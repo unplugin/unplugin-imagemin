@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      encodeTo: [{ from: /.(png)$/, to: 'webp' }],
+      // encodeTo: [{ from: /.(png)$/, to: 'webp' }],
     }),
   ],
 });
