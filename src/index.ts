@@ -6,7 +6,7 @@ import { createUnplugin } from 'unplugin'
 import path from "node:path"
 import { ImagePool } from '@squoosh/lib';
 const imagePool = new ImagePool();
-const imagePath = 'path/to/image.png';
+const imagePath = './pink.jpeg';
 const image = imagePool.ingestImage(imagePath);
 // @ts-ignore
 const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
@@ -45,6 +45,8 @@ export default createUnplugin<any | undefined>(options => {
       const handles = files.map((filePath: string) => {
         return bundler[filePath].source
       })
+      console.log(image, '测试图片信息');
+
       console.log(handles);
 
     },
