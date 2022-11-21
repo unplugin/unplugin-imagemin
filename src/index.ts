@@ -6,15 +6,15 @@ import { createUnplugin } from 'unplugin'
 import path from "node:path"
 import { ImagePool } from '@squoosh/lib';
 const imagePool = new ImagePool();
-const imagePath = './pink.jpeg';
-const image = imagePool.ingestImage(imagePath);
 // @ts-ignore
-const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
+// const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
+const extRE = /\.(png|jpeg|jpg)$/i
 export default createUnplugin<any | undefined>(options => {
   let outputPath: string
+  let files: any = []
   // let publicDir: string
   // let config: any
-  console.log(options);
+  // console.log(options);
   return {
     name: 'unplugin-imagemin',
     apply: "build",
@@ -27,12 +27,14 @@ export default createUnplugin<any | undefined>(options => {
       return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`)
     },
     configResolved(resolvedConfig) {
-      console.log(resolvedConfig.publicDir);
-      console.log(resolvedConfig.build.outDir);
-      outputPath = resolvedConfig.build.outDir;
+      // console.log(resolvedConfig.publicDir);
+      // console.log(resolvedConfig.build.outDir);
+      outputPath = path.resolve(resolvedConfig.root, resolvedConfig.build.outDir)
     },
     async generateBundle(_, bundler) {
-      const files: string[] = []
+      // const files: string[] = []
+      console.log(outputPath, 'out put path 路径');
+
       Object.keys(bundler).forEach((key) => {
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key)
       })
@@ -42,14 +44,25 @@ export default createUnplugin<any | undefined>(options => {
       }
 
       // 结构构造
-      const handles = files.map((filePath: string) => {
-        return bundler[filePath].source
-      })
-      console.log(image, '测试图片信息');
-
-      console.log(handles);
-
+      // const handles = files.map((filePath: string) => {
+      //   return bundler[filePath].source
+      // })
+      // const pool = handles.map((filePath: string) => (
+      //   imagePool.ingestImage(filePath)
+      // ))
+      // console.log(pool);
+      // const images = files.map((filePath: string) => {
+      //   return imagePool.ingestImage(path.resolve(outputPath, filePath))
+      // })
+      // console.log(images);
+      // console.log(handles);
     },
+    async closeBundle() {
+      const images = files.map((filePath: string) => {
+        return imagePool.ingestImage(path.resolve(outputPath, filePath))
+      })
+      console.log(images);
+    }
   }
 })
 function filterFile(
