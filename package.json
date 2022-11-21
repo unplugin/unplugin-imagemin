@@ -76,10 +76,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/imagemin": "^8.0.0",
-    "@types/imagemin-jpegtran": "^5.0.1",
-    "@types/imagemin-svgo": "^10.0.2",
-    "@types/imagemin-webp": "^7.0.0",
     "@types/node": "^18.11.9",
     "bumpp": "^8.2.1",
     "chalk": "^5.1.2",
@@ -101,6 +97,7 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
+    "debug": "^4.3.4",
     "imagemin": "^8.0.1",
     "unplugin": "^1.0.0"
   }

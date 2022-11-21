@@ -13,10 +13,9 @@
     "noEmitOnError": true,
     "noImplicitAny": false
   },
-  "include": [
-    "packages/vite-plugin/src/*",
-    "*.d.ts"
-  ],
+  // "include": [
+  //   "*.d.ts"
+  // ],
   "exclude": [
     "node_modules",
     "playground",
