@@ -5,6 +5,8 @@ import imagemin from 'unplugin-imagemin/vite';
 export default defineConfig({
   plugins: [
     vue(),
-    imagemin(),
+    imagemin({
+      encodeTo: [{ from: /.(png)$/, to: 'webp' }],
+    }),
   ],
 });
