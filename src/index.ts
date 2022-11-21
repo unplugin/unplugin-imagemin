@@ -4,6 +4,10 @@ import { createUnplugin } from 'unplugin'
 // import type { Options } from './types'
 // Options
 import path from "node:path"
+import { ImagePool } from '@squoosh/lib';
+const imagePool = new ImagePool();
+const imagePath = 'path/to/image.png';
+const image = imagePool.ingestImage(imagePath);
 // @ts-ignore
 const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
 export default createUnplugin<any | undefined>(options => {
