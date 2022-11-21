@@ -4,8 +4,11 @@ import { createUnplugin } from 'unplugin'
 // import type { Options } from './types'
 // Options
 import path from "node:path"
+import os from "node:os"
+import fs from "node:fs"
 import { ImagePool } from '@squoosh/lib';
-const imagePool = new ImagePool();
+import { defaultOptions } from './core/types';
+// const imagePool = new ImagePool();
 // @ts-ignore
 // const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
 const extRE = /\.(png|jpeg|jpg)$/i
@@ -58,10 +61,30 @@ export default createUnplugin<any | undefined>(options => {
       // console.log(handles);
     },
     async closeBundle() {
-      const images = files.map((filePath: string) => {
-        return imagePool.ingestImage(path.resolve(outputPath, filePath))
+      const defaultSquooshOptions = {}
+      Object.keys(defaultOptions).forEach(key => defaultSquooshOptions[key] = { ...defaultOptions[key] })
+      const imagePool = new ImagePool(os.cpus().length)
+      const images = files.map(async (filePath: string) => {
+        const fileRootPath = path.resolve(outputPath, filePath)
+        // const start = Date.now()
+        const image = imagePool.ingestImage(path.resolve(outputPath, filePath))
+        const oldSize = fs.lstatSync(fileRootPath).size
+        let newSize = oldSize
+        const ext = path.extname(path.resolve(outputPath, filePath)) ?? ''
+        // console.log(ext, "图片后缀");
+        // console.log(newSize, "图片大小");
+        // console.log(defaultSquooshOptions, '参数类型');
+        await image.encode(defaultSquooshOptions)
+        const encodedWith = await (Object.values(image.encodedWith)[0] as Promise<any>)
+        console.log(encodedWith);
+        newSize = encodedWith.size
+        if (newSize < oldSize) {
+          fs.mkdirSync(path.dirname(fileRootPath), { recursive: true })
+          fs.writeFileSync(fileRootPath, encodedWith.binary)
+        }
+        return null
       })
-      console.log(images);
+      // console.log(images);
     }
   }
 })
