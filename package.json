@@ -98,8 +98,6 @@
   },
   "dependencies": {
     "@squoosh/lib": "^0.4.0",
-    "debug": "^4.3.4",
-    "imagemin": "^8.0.1",
     "unplugin": "^1.0.0"
   }
 }
