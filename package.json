@@ -78,17 +78,13 @@
   "devDependencies": {
     "@types/node": "^18.11.9",
     "bumpp": "^8.2.1",
-    "chalk": "^5.1.2",
     "eslint": "^8.28.0",
     "eslint-config-relaxed-ts": "^2.0.1",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
-    "fs-extra": "^10.1.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "rollup": "^3.3.0",
-    "slash": "^5.0.0",
     "tsup": "^6.5.0",
     "turbo": "^1.6.3",
     "typescript": "^4.9.3",
@@ -98,6 +94,7 @@
   },
   "dependencies": {
     "@squoosh/lib": "^0.4.0",
+    "kolorist": "^1.6.0",
     "unplugin": "^1.0.0"
   }
 }
