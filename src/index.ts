@@ -4,7 +4,7 @@ import { createUnplugin } from 'unplugin'
 // import type { Options } from './types'
 // Options
 import path from "node:path"
-import * as init from '../rust-imagemin/pkg'
+// @ts-ignore
 const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
 export default createUnplugin<any | undefined>(options => {
   let outputPath: string
@@ -41,7 +41,6 @@ export default createUnplugin<any | undefined>(options => {
       const handles = files.map((filePath: string) => {
         return bundler[filePath].source
       })
-
       console.log(handles);
 
     },
