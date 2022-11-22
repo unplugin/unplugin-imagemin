@@ -6,8 +6,12 @@ import os from 'node:os';
 import * as fs from 'node:fs';
 import { ImagePool } from '@squoosh/lib';
 import { defaultOptions } from './core/types';
-import ora from 'ora';
+import * as color from './core/log'
+import { partial } from 'filesize'
 
+
+import ora from 'ora';
+const size = partial({base: 2, standard: "jedec"});
 // const spinner = ora('Loading unicorns').start();
 
 // setTimeout(() => {
@@ -83,7 +87,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     //     newSize = encodedWith.size;
     //     if (newSize < oldSize) {
     //       fs.writeFileSync(`${fileRootPath}`, encodedWith.binary);
-    //       console.log(kolorist.blue(filePath), kolorist.green(newSize), kolorist.magenta(`${Date.now() - start}ms`))
+    //       console.log(kolorist.blue(filePath), kolorist.green(size(newSize).toString()), kolorist.magenta(`${Date.now() - start}ms`))
     //     }
     //     return null;
     //   });

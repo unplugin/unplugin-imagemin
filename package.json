@@ -82,6 +82,7 @@
     "eslint-config-relaxed-ts": "^2.0.1",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
+    "filesize": "^10.0.5",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "tsup": "^6.5.0",
