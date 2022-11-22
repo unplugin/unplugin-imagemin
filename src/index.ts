@@ -91,6 +91,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       });
       await Promise.all(images);
       console.log(kolorist.yellow('✨ ✨ Successfully'));
+      // TODO 类型编译 默认初始类型编译 用户传入 option 编译类型发生变化 png -> webp 测试模块
       const a = await fs.readdirSync(`${outputDir}/assets`);
       const b = a.find((item) => {
         return item.endsWith('.js');
