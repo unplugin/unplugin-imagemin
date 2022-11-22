@@ -1,5 +1,12 @@
 📦📦          unplugin Picture compression
 
+## Install
+
+```ts
+pnpm install unplugin-imagemin -D
+```
+
+
 ```ts
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
