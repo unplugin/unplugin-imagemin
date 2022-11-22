@@ -15,12 +15,12 @@ export default createUnplugin<any | undefined>((options) => {
     apply: 'build',
     enforce: 'post',
     transformInclude(id) {
-      console.log(id);
+      // console.log(id);
 
-      return id.endsWith('main.ts');
+      return id.endsWith('App.vue');
     },
     async transform(html) {
-      console.log(html);
+      // console.log(html);
     },
     // transform(code) {
     //   return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`);
@@ -74,42 +74,41 @@ export default createUnplugin<any | undefined>((options) => {
         const oldSize = fs.lstatSync(fileRootPath).size;
         let newSize = oldSize;
         const ext = path.extname(path.resolve(outputPath, filePath)) ?? '';
-        const encodeTo = options.encodeTo?.find((value) =>
-          value.from.test(ext),
-        ).to;
-        const optionsArr = Object.values(defaultSquooshOptions);
+        // const encodeTo = options.encodeTo?.find((value) =>
+        //   value.from.test(ext),
+        // ).to;
+        // const optionsArr = Object.values(defaultSquooshOptions);
         // console.log(ext, "图片后缀");
         // console.log(newSize, "图片大小");
         // console.log(defaultSquooshOptions, '参数类型');
         // TODO * update faaas
-        const value = optionsArr.find((item: any, index: number) => {
-          return item.extension.test('webp');
-        });
-        const key = Object.keys(defaultSquooshOptions).find(
-          // (item) => item.includes(ext.slice(1)),
-          (item) => item.includes('webp'),
-        );
-        let newcode = {};
-        newcode[key] = value;
+        // const value = optionsArr.find((item: any, index: number) => {
+        //   return item.extension.test('webp');
+        // });
+        // const key = Object.keys(defaultSquooshOptions).find(
+        //   // (item) => item.includes(ext.slice(1)),
+        //   (item) => item.includes('webp'),
+        // );
+        // let newcode = {};
+        // newcode[key] = value;
         // console.log(Object.values(defaultSquooshOptions));
         // console.log(defaultSquooshOptions);
+        const type = getUserCompressType()
+        // console.log({ [type]: defaultSquooshOptions[type] });
 
-        await image.encode({ webp: defaultSquooshOptions.webp });
+        await image.encode({ [type]: defaultSquooshOptions[type] });
         // console.log(Object.values(image.encodedWith));
         // const encodedWith = await (Object.values(
         //   image.encodedWith,
         // )[0] as Promise<any>);
         // console.log(image.encodedWith);
-        const encodedWith = await image.encodedWith.webp
+        const encodedWith = await image.encodedWith[type]
         // console.log(encodedWith);
         // console.log(path.dirname(fileRootPath));
 
         newSize = encodedWith.size;
-        console.log(newSize);
-        console.log(oldSize);
-
         if (newSize < oldSize) {
-          fs.writeFileSync(`${fileRootPath}.${encodedWith.extension}`, encodedWith.binary);
+          fs.writeFileSync(`${fileRootPath}`, encodedWith.binary);
         }
         // for (let i = 0; i < Object.values(defaultSquooshOptions).length; i++) {
         //   const codec = Object.values(defaultSquooshOptions)[i];
@@ -152,7 +151,7 @@ export default createUnplugin<any | undefined>((options) => {
         console.log(`${Date.now() - start}ms`, '结束时间');
         return null;
       });
-      console.log(images);
+      // console.log(images);
       await Promise.all(images)
       imagePool.close()
     },
@@ -179,3 +178,7 @@ export const isFunction = (arg: unknown): arg is (...args: any[]) => any =>
 
 export const isRegExp = (arg: unknown): arg is RegExp =>
   Object.prototype.toString.call(arg) === '[object RegExp]';
+
+function getUserCompressType(type: string = 'webp') {
+  return type
+}
