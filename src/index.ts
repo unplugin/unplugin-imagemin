@@ -33,6 +33,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'post',
+
+    // TODO transform 修改图片上下文 如果切换文件类型 需要修改 打包之后的 file ext
     transformInclude(id) {
       return filter(id)
     },
