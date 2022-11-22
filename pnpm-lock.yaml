@@ -9,7 +9,7 @@ importers:
       '@types/node': ^18.11.9
       bumpp: ^8.2.1
       eslint: ^8.28.0
-      eslint-config-relaxed-ts: ^2.0.1
+      eslint-config-relaxed-ts: ^2.0.2
       esno: ^0.16.3
       fast-glob: ^3.2.12
       filesize: ^10.0.5
@@ -34,7 +34,7 @@ importers:
       '@types/node': 18.11.9
       bumpp: 8.2.1
       eslint: 8.28.0
-      eslint-config-relaxed-ts: 2.0.1_hsf322ms6xhhd4b5ne6lb74y4a
+      eslint-config-relaxed-ts: 2.0.2_hsf322ms6xhhd4b5ne6lb74y4a
       esno: 0.16.3
       fast-glob: 3.2.12
       filesize: 10.0.5
@@ -1559,14 +1559,15 @@ packages:
       eslint: 8.28.0
     dev: true
 
-  /eslint-config-relaxed-base/2.0.1_ivdjtymx6ubvknadox4oh4qsue:
-    resolution: {integrity: sha512-Y96LFGm8j8Ba2YHslV+WtTPlZav6SbIuIGfKthu6ucqVnqaFK4vuThLjudkGWg5GaENoi2sFC6tu/fTDBpP1cw==}
+  /eslint-config-relaxed-base/2.0.2_ivdjtymx6ubvknadox4oh4qsue:
+    resolution: {integrity: sha512-CXzeqvNRGQbK9oc/B4pJ5RC99Y8H047b0wn5gsRPpPD/tIguEBNMI9NQAFDqCXqU+3Utvxf3wWGsi0YB5AFQNQ==}
     peerDependencies:
       eslint: '>=7.4.0'
     dependencies:
       '@html-eslint/parser': 0.13.2
       eslint: 8.28.0
       eslint-config-prettier: 8.5.0_eslint@8.28.0
+      eslint-define-config: 1.12.0
       eslint-import-resolver-alias: 1.1.2_fkfqfehjtk7sk2efaqbgxsuasa
       eslint-plugin-html: 7.1.0
       eslint-plugin-import: 2.26.0_ivdjtymx6ubvknadox4oh4qsue
@@ -1586,20 +1587,25 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-config-relaxed-ts/2.0.1_hsf322ms6xhhd4b5ne6lb74y4a:
-    resolution: {integrity: sha512-MMGpwh3NMSoecjSX4ni6Ic198KqEjRJmluC5GQGHrqjY5BPwdQQgVM743ezjsc3Cd3xu8bxT8CH18j+3AbcaLw==}
+  /eslint-config-relaxed-ts/2.0.2_hsf322ms6xhhd4b5ne6lb74y4a:
+    resolution: {integrity: sha512-5mZ+e9Za5oUylUJV4Jrf5TEqUKe/dJA0n/OpanpZkc9znjjI9vpYL/UeLH57r9Gm37M/9nN5XgRbg6yfehff3g==}
     peerDependencies:
       eslint: '>=7.4.0'
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.43.0_nqj4bdx4ekws7aecttskpih4py
       '@typescript-eslint/parser': 5.43.0_hsf322ms6xhhd4b5ne6lb74y4a
       eslint: 8.28.0
-      eslint-config-relaxed-base: 2.0.1_ivdjtymx6ubvknadox4oh4qsue
+      eslint-config-relaxed-base: 2.0.2_ivdjtymx6ubvknadox4oh4qsue
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
       - typescript
+    dev: true
+
+  /eslint-define-config/1.12.0:
+    resolution: {integrity: sha512-Kt9TcMbgsY9VRt7jIuw76KE/2RuD31eWB4Ubv6btXgU8NTSsbT6gZ8qzeiU+rAih/8sOl8Kt89spAZBMElu6qQ==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0, npm: '>=6.14.13', pnpm: '>= 7.0.0'}
     dev: true
 
   /eslint-import-resolver-alias/1.1.2_fkfqfehjtk7sk2efaqbgxsuasa:

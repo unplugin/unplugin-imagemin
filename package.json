@@ -79,7 +79,7 @@
     "@types/node": "^18.11.9",
     "bumpp": "^8.2.1",
     "eslint": "^8.28.0",
-    "eslint-config-relaxed-ts": "^2.0.1",
+    "eslint-config-relaxed-ts": "^2.0.2",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
     "filesize": "^10.0.5",
@@ -93,11 +93,11 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
+    "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.4.0",
     "kolorist": "^1.6.0",
-    "unplugin": "^1.0.0",
-    "@rollup/pluginutils": "^5.0.2",
-    "ora": "6.1.2"
+    "ora": "6.1.2",
+    "unplugin": "^1.0.0"
   },
   "engines": {
     "node": "^14.18.0 || >=16.12.0"
