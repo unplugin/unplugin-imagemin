@@ -94,7 +94,9 @@
   "dependencies": {
     "@squoosh/lib": "^0.4.0",
     "kolorist": "^1.6.0",
-    "unplugin": "^1.0.0"
+    "unplugin": "^1.0.0",
+    "@rollup/pluginutils": "^5.0.2",
+    "ora": "6.1.2"
   },
   "engines": {
     "node": "^14.18.0 || >=16.12.0"
