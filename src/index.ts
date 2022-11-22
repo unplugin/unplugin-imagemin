@@ -32,8 +32,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     transformInclude(id) {
       return filter(id)
     },
-    async transform(html) {
-      console.log(html);
+    async transform(code, id) {
+      console.log(code, id);
+      // console.log(this.getAssetFileName('wallhaven-gpjm3d.png'));
+      // console.log(this.getChunkFileName('wallhaven-gpjm3d.png'));
+      
+      code.replace('png', 'webp')
     },
     // transform(code) {
     //   return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`);
