@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "Library",
   "type": "module",
   "scripts": {
