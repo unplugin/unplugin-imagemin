@@ -11,7 +11,7 @@ import { partial } from 'filesize'
 
 
 import ora from 'ora';
-const size = partial({base: 2, standard: "jedec"});
+const size = partial({ base: 2, standard: "jedec" });
 // const spinner = ora('Loading unicorns').start();
 
 // setTimeout(() => {
@@ -39,11 +39,13 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       return filter(id)
     },
     async transform(code, id) {
-      console.log(code, id);
+      console.log('\n');
+
+      console.log(id, '文件id');
       // console.log(this.getAssetFileName('wallhaven-gpjm3d.png'));
       // console.log(this.getChunkFileName('wallhaven-gpjm3d.png'));
-      
-      code.replace('png', 'webp')
+      // console.log(typeof code);
+      // console.log(code);
     },
     // transform(code) {
     //   return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`);
