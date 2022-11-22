@@ -83,20 +83,23 @@
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
     "filesize": "^10.0.5",
-    "nodemon": "^2.0.20",
-    "ora": "^6.1.2",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "tsup": "^6.5.0",
     "turbo": "^1.6.3",
     "typescript": "^4.9.3",
-    "vite": "^3.2.4",
+    "vite": "4.0.0-alpha.0",
     "vitest": "^0.25.2",
     "webpack": "^5.75.0"
   },
   "dependencies": {
     "@squoosh/lib": "^0.4.0",
     "kolorist": "^1.6.0",
-    "unplugin": "^1.0.0"
+    "unplugin": "^1.0.0",
+    "@rollup/pluginutils": "^5.0.2",
+    "ora": "6.1.2"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.12.0"
   }
 }
