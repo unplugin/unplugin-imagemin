@@ -89,13 +89,18 @@
     "tsup": "^6.5.0",
     "turbo": "^1.6.3",
     "typescript": "^4.9.3",
-    "vite": "^3.2.4",
+    "vite": "4.0.0-alpha.0",
     "vitest": "^0.25.2",
     "webpack": "^5.75.0"
   },
   "dependencies": {
     "@squoosh/lib": "^0.4.0",
+    "chalk": "^5.1.2",
     "kolorist": "^1.6.0",
+    "progress": "^2.0.3",
     "unplugin": "^1.0.0"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.12.0"
   }
 }
