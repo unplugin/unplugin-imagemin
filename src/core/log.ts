@@ -1,8 +1,7 @@
-import * as color from 'kolorist'
-
+import * as kolorist from 'kolorist'
 type colorTuple = string | number
 function colorResult<colorTuple>(args, color): void {
-  console.log(color[color](args))
+  console.log(kolorist[color](args))
 }
 export const red = (args: colorTuple) => colorResult(args, 'red')
 export const green = (res: colorTuple) => colorResult(res, 'green')
