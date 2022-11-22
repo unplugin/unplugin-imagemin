@@ -34,9 +34,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     enforce: 'post',
 
     // TODO transform 修改图片上下文 如果切换文件类型 需要修改 打包之后的 file ext
-    // transformInclude(id) {
-    //   // return filter(id);
-    // },
+    // TODO context
+    transformInclude(id) {
+      // return filter(id);
+    },
     // async transform(code, id) {
     // },
     configResolved(resolvedConfig) {
