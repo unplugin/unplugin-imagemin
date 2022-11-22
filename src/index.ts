@@ -15,12 +15,16 @@ export default createUnplugin<any | undefined>((options) => {
     apply: 'build',
     enforce: 'post',
     transformInclude(id) {
+      console.log(id);
+
       return id.endsWith('main.ts');
     },
-
-    transform(code) {
-      return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`);
+    async transform(html) {
+      console.log(html);
     },
+    // transform(code) {
+    //   return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`);
+    // },
     configResolved(resolvedConfig) {
       // console.log(resolvedConfig.publicDir);
       // console.log(resolvedConfig.build.outDir);
@@ -88,15 +92,24 @@ export default createUnplugin<any | undefined>((options) => {
         let newcode = {};
         newcode[key] = value;
         // console.log(Object.values(defaultSquooshOptions));
-        await image.encode(newcode);
+        // console.log(defaultSquooshOptions);
+
+        await image.encode({ webp: defaultSquooshOptions.webp });
         // console.log(Object.values(image.encodedWith));
-        const encodedWith = await (Object.values(
-          image.encodedWith,
-        )[0] as Promise<any>);
+        // const encodedWith = await (Object.values(
+        //   image.encodedWith,
+        // )[0] as Promise<any>);
+        // console.log(image.encodedWith);
+        const encodedWith = await image.encodedWith.webp
+        // console.log(encodedWith);
+        // console.log(path.dirname(fileRootPath));
+
         newSize = encodedWith.size;
+        console.log(newSize);
+        console.log(oldSize);
+
         if (newSize < oldSize) {
-          fs.mkdirSync(path.dirname(fileRootPath), { recursive: true });
-          fs.writeFileSync(fileRootPath, encodedWith.binary);
+          fs.writeFileSync(`${fileRootPath}.${encodedWith.extension}`, encodedWith.binary);
         }
         // for (let i = 0; i < Object.values(defaultSquooshOptions).length; i++) {
         //   const codec = Object.values(defaultSquooshOptions)[i];
@@ -137,10 +150,11 @@ export default createUnplugin<any | undefined>((options) => {
         //   fs.writeFileSync(fileRootPath, encodedWith.binary);
         // }
         console.log(`${Date.now() - start}ms`, '结束时间');
-
         return null;
       });
-      // console.log(images);
+      console.log(images);
+      await Promise.all(images)
+      imagePool.close()
     },
   };
 });
