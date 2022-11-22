@@ -6,6 +6,9 @@ import * as fs from 'node:fs';
 import { ImagePool } from '@squoosh/lib';
 import { defaultOptions } from './core/types';
 import * as color from './core/log'
+import { partial } from 'filesize'
+
+const size = partial({base: 2, standard: "jedec"});
 // @ts-ignore
 // const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
 const extRE = /\.(png|jpeg|jpg)$/i;
@@ -76,10 +79,10 @@ export default createUnplugin<any | undefined>((options) => {
         const start = Date.now();
         // console.log(start);
 
-        const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
+        const image = imagePool.ingestImage(fileRootPath);
         const oldSize = fs.lstatSync(fileRootPath).size;
         let newSize = oldSize;
-        const ext = path.extname(path.resolve(outputPath, filePath)) ?? '';
+        const ext = path.extname(fileRootPath) ?? '';
         // const encodeTo = options.encodeTo?.find((value) =>
         //   value.from.test(ext),
         // ).to;
@@ -116,7 +119,7 @@ export default createUnplugin<any | undefined>((options) => {
         if (newSize < oldSize) {
           fs.writeFileSync(`${fileRootPath}`, encodedWith.binary);
           // color.blue([filePath, newSize, `${Date.now() - start}ms`])
-          console.log(kolorist.blue(filePath), kolorist.green(newSize), kolorist.magenta(`${Date.now() - start}ms`))
+          console.log(kolorist.blue(filePath), kolorist.green(size(newSize).toString()), kolorist.magenta(`${Date.now() - start}ms`))
         }
         // for (let i = 0; i < Object.values(defaultSquooshOptions).length; i++) {
         //   const codec = Object.values(defaultSquooshOptions)[i];
