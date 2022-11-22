@@ -26,3 +26,9 @@ export default defineConfig({
 });
 
 ```
+
+## TODO 
+- transform with unplugin context
+- use cache in node_modules
+- refactor user options 
+- Various types of pictures （Svg is not supported）
