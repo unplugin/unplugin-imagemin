@@ -84,6 +84,9 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           await fs.unlinkSync(fileRootPath)
           console.log(
             kolorist.blue(filePath),
+            'oldSize:',
+            kolorist.yellow(size(oldSize).toString()),
+            'newSize:',
             kolorist.green(size(newSize).toString()),
             kolorist.magenta(`${Date.now() - start}ms`),
           );
