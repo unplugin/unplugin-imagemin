@@ -1,7 +1,7 @@
 📦📦          unplugin Picture compression
 
 
-### Continuous iterative development in testing
+### ✨✨ Continuous iterative development in testing
 
 
 ## Install
