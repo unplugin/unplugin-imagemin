@@ -9,9 +9,9 @@ import HelloWorld from './components/HelloWorld.vue';
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
     </a>
-    <!-- <img src="./assets/image/wallhaven-p92y93.png" alt="" /> -->
+    <img src="./assets/image/wallhaven-p92y93.png" alt="" />
     <img src="./assets/image/wallhaven-gpjm3d.png" alt="" />
-    <!-- <img src="./assets/image/wallhaven-2ykjxm.png" alt="" /> -->
+    <img src="./assets/image/wallhaven-2ykjxm.png" alt="" />
     <a href="https://vuejs.org/" target="_blank">
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>

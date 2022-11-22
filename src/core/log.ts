@@ -1,7 +1,7 @@
 import * as kolorist from 'kolorist'
-type colorTuple = string | number
-function colorResult<colorTuple>(args, color): void {
-  console.log(kolorist[color](args))
+type colorTuple = string | number | any
+function colorResult(args, color): void {
+  console.log(kolorist[color](...args))
 }
 export const red = (args: colorTuple) => colorResult(args, 'red')
 export const green = (res: colorTuple) => colorResult(res, 'green')

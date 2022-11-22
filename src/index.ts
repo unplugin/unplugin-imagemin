@@ -1,9 +1,11 @@
 import { createUnplugin } from 'unplugin';
+import * as kolorist from 'kolorist'
 import path from 'node:path';
 import os from 'node:os';
-import fs from 'node:fs';
+import * as fs from 'node:fs';
 import { ImagePool } from '@squoosh/lib';
 import { defaultOptions } from './core/types';
+import * as color from './core/log'
 // @ts-ignore
 // const extRE = /\.(png|jpeg|gif|jpg|bmp|svg)$/i
 const extRE = /\.(png|jpeg|jpg)$/i;
@@ -60,6 +62,10 @@ export default createUnplugin<any | undefined>((options) => {
       // console.log(handles);
     },
     async closeBundle() {
+      const res = kolorist.blue('📦 📦 [unplugin-imagemin]')
+      const info = kolorist.gray('Process start ...')
+      console.log(res, info);
+      // color.blue('📦 📦 [unplugin-imagemin] Process start ...')
       const defaultSquooshOptions = {};
       Object.keys(defaultOptions).forEach(
         (key) => (defaultSquooshOptions[key] = { ...defaultOptions[key] }),
@@ -109,6 +115,8 @@ export default createUnplugin<any | undefined>((options) => {
         newSize = encodedWith.size;
         if (newSize < oldSize) {
           fs.writeFileSync(`${fileRootPath}`, encodedWith.binary);
+          // color.blue([filePath, newSize, `${Date.now() - start}ms`])
+          console.log(kolorist.blue(filePath), kolorist.green(newSize), kolorist.magenta(`${Date.now() - start}ms`))
         }
         // for (let i = 0; i < Object.values(defaultSquooshOptions).length; i++) {
         //   const codec = Object.values(defaultSquooshOptions)[i];
@@ -148,11 +156,13 @@ export default createUnplugin<any | undefined>((options) => {
         //   fs.mkdirSync(path.dirname(fileRootPath), { recursive: true });
         //   fs.writeFileSync(fileRootPath, encodedWith.binary);
         // }
-        console.log(`${Date.now() - start}ms`, '结束时间');
+        // console.log(`${ Date.now() - start }ms`, '结束时间');
         return null;
       });
       // console.log(images);
       await Promise.all(images)
+      console.log(kolorist.yellow('✨ ✨ Successfully'));
+      
       imagePool.close()
     },
   };
