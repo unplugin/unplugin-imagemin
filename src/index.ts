@@ -61,10 +61,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       if (!files.length) {
         return;
       }
-      const spinner = await loadWithRocketGradient('copy template')
-      const res = kolorist.blue('📦 📦 [unplugin-imagemin]');
+      // const spinner = await loadWithRocketGradient('copy template')
+      const res = (emoji) => kolorist.blue(`${emoji} ${emoji} [unplugin-imagemin]`)
       const info = kolorist.gray('Process start ...');
-      console.log(res, info);
+      console.log(res('📦'), info);
+      // start spinner
+      const spinner = await loadWithRocketGradient('')
       const defaultSquooshOptions = {};
       Object.keys(defaultOptions).forEach(
         (key) => (defaultSquooshOptions[key] = { ...defaultOptions[key] }),
@@ -82,13 +84,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const encodedWith = await image.encodedWith[type];
         newSize = encodedWith.size;
         if (newSize < oldSize) {
-          await fs.writeFileSync(`${fileRootPath.replace('png', 'webp')}`, encodedWith.binary);
-          await fs.unlinkSync(fileRootPath)
+          fs.writeFileSync(`${fileRootPath.replace('png', 'webp')}`, encodedWith.binary);
+          fs.unlinkSync(fileRootPath)
           console.log(
             kolorist.blue(filePath),
-            'oldSize:',
             kolorist.yellow(size(oldSize).toString()),
-            'newSize:',
+            '/',
             kolorist.green(size(newSize).toString()),
             kolorist.magenta(`${Date.now() - start}ms`),
           );
@@ -96,7 +97,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         return null;
       });
       await Promise.all(images);
-      console.log(kolorist.yellow('✨ ✨ Successfully'));
+      console.log(res('✨'), kolorist.yellow('Successfully'));
+      // console.log(kolorist.yellow('✨ ✨ Successfully'));
       // TODO 类型编译 默认初始类型编译 用户传入 option 编译类型发生变化 png -> webp 测试模块
       const a = await fs.readdirSync(`${outputDir}/assets`);
       const b = a.find((item) => {
@@ -105,7 +107,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       const c = await fs.readFileSync(`${outputDir}/assets/${b}`);
       const r = c.toString().replace(/png/g, 'webp');
       await fs.writeFileSync(`${outputDir}/assets/${b}`, r)
-      spinner.text = 'Template copied!'
+      spinner.text = kolorist.yellow('File conversion completed!')
       spinner.succeed()
       imagePool.close();
     },
