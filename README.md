@@ -9,7 +9,8 @@
 - refactor user options 
 - Various types of pictures （Svg is not supported）
 - pref If there is this type or picture, then continue to go down.
-
+- transform get global ctx || context
+- resolve generateBundle callback replace code
 
 ## Install
 
