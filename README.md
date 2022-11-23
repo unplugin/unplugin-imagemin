@@ -24,13 +24,15 @@ pnpm install unplugin-imagemin -D
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    imagemin(),
+    imagemin({
+      conversion: [{ from: /(png)/g, to: 'mozjpeg' }, { from: /(jpg|jpeg)/g, to: 'webp' }]
+    }),
   ],
 });
+
 
 ```
 
