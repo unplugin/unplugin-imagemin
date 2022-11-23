@@ -69,9 +69,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
         const oldSize = fs.lstatSync(fileRootPath).size;
         let newSize = oldSize;
-        const type = getUserCompressType(options.conversion[index].to);
-        const current: any = encodeMap.get(type)
         const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
+        // const type = getUserCompressType(options.conversion[index].to);
+        const { to: type } = options.conversion.find(item => `${item.from}`.includes(ext))
+        const current: any = encodeMap.get(type)
         await image.encode({ [type]: defaultSquooshOptions[type] });
         const encodedWith = await image.encodedWith[type];
         newSize = encodedWith.size;
@@ -91,12 +92,11 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       let r: any = null
       const c = await fs.readFileSync(`${outputDir}/assets/${b}`);
       files.forEach(async (file, index) => {
-        const type = getUserCompressType(options.conversion[index].to);
-        const from = getUserCompressType(options.conversion[index].from);
+        const type = getUserCompressType(options.conversion[index]?.to);
+        const from = getUserCompressType(options.conversion[index]?.from);
         const current: any = encodeMap.get(type)
         if (!!r) {
           r = r.toString().replace(from, current)
-
         } else {
           r = c.toString().replace(from, current)
         }
