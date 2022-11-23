@@ -7,7 +7,8 @@
 ###### Features
 
 
-- 🦾 High efficiency based on squoosh and rust / wasm
+- 🦾 High Performance based on squoosh and rust / wasm
+- ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
 - 🌈 You can convert different picture types at build time
 - 😃 Caching mechanism
