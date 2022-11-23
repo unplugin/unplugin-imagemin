@@ -37,5 +37,5 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
 }
 
 export function pluginTitle(emoji) {
-  return kolorist.blue(`${emoji} ${emoji} [unplugin-imagemin]`)
+  return kolorist.blue(`[unplugin-imagemin] ${emoji} ${emoji}`)
 }

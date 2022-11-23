@@ -54,7 +54,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       }
     },
     async closeBundle() {
-      const info = kolorist.gray('Process start ...');
+      const info = kolorist.gray('Process start');
       console.log(pluginTitle('📦'), info);
       // start spinner
       const spinner = await loadWithRocketGradient('')
@@ -76,9 +76,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const encodedWith = await image.encodedWith[type];
         newSize = encodedWith.size;
         if (newSize < oldSize) {
-          fs.writeFileSync(`${fileRootPath.replace(ext, current)}`, encodedWith.binary);
+          const filepath = `${fileRootPath.replace(ext, current)}`
+          fs.writeFileSync(filepath, encodedWith.binary);
           fs.unlinkSync(fileRootPath)
-          compressSuccess(filePath, newSize, oldSize, start)
+          compressSuccess(`${filepath.replace(process.cwd(), '')}`, newSize, oldSize, start)
         }
       });
       await Promise.all(images);
