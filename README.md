@@ -6,10 +6,11 @@
 
 ###### Features
 
-- 🪐 Folder names as namespaces.
-- 🦾 Full TypeScript support.
-- 🌈 [Built-in resolvers](#importing-from-ui-libraries) for popular UI libraries.
-- 😃 Works perfectly with [unplugin-icons](https://github.com/antfu/unplugin-icons).
+
+- 🦾 High efficiency based on squoosh and rust / wasm
+- 🪐 Compress the code at build time
+- 🌈 You can convert different picture types at build time
+- 😃 Caching mechanism
 
 ## TODO 
 - transform with unplugin context
