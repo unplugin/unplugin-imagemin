@@ -1,4 +1,6 @@
 import * as kolorist from 'kolorist'
+import { size } from './utils'
+
 type colorTuple = string | number | any
 function colorResult(args, color): void {
   console.log(kolorist[color](...args))
@@ -22,4 +24,18 @@ export const bgCyan = (res: string | number) => colorResult(res, 'bgCyan')
 export const complete = (name, dest, type, description) => {
   green(`\n ${description}`)
   cyan(`\n To get started with into "${name}.${type}"`)
+}
+
+export function compressSuccess(filePath, newSize, oldSize, start) {
+  console.log(
+    kolorist.blue(filePath),
+    kolorist.yellow(size(oldSize).toString()),
+    '/',
+    kolorist.green(size(newSize).toString()),
+    kolorist.magenta(`${Date.now() - start}ms`),
+  );
+}
+
+export function pluginTitle(emoji) {
+  return kolorist.blue(`${emoji} ${emoji} [unplugin-imagemin]`)
 }

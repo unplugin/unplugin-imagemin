@@ -1,13 +1,19 @@
 import { createUnplugin } from 'unplugin';
 import * as kolorist from 'kolorist';
-import path from 'node:path';
 import { createFilter } from '@rollup/pluginutils';
+import { ImagePool } from '@squoosh/lib';
+
+import path from 'node:path';
 import os from 'node:os';
 import * as fs from 'node:fs';
-import { ImagePool } from '@squoosh/lib';
+
 import { defaultOptions } from './core/types';
-import { size } from './core/utils'
+import { pluginTitle, compressSuccess } from './core/log'
 import { loadWithRocketGradient } from './core/gradient';
+import { filterFile, getUserCompressType } from './core/utils'
+
+import { encodeMap } from './core/encodeMap'
+
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   let outputPath: string;
@@ -18,8 +24,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
-  const ctx = new Context(options)
-  let res = []
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
@@ -27,12 +31,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
 
     // TODO transform 修改图片上下文 如果切换文件类型 需要修改 打包之后的 file ext
     // TODO context
-    transformInclude(id) {
-      return filter(id);
-      // return id.endsWith('.vue')
-    },
-    async transform(code, id) {
-    },
+    // transformInclude(id) {
+    //   return filter(id);
+    //   return id.endsWith('.vue')
+    // },
+    // async transform(code, id) {
+    // },
     configResolved(resolvedConfig) {
       outputDir = resolvedConfig.build.outDir;
       publicDir = resolvedConfig.publicDir;
@@ -50,19 +54,16 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       }
     },
     async closeBundle() {
-      if (!files.length) {
-        return;
-      }
-      // const spinner = await loadWithRocketGradient('copy template')
-      const res = (emoji) => kolorist.blue(`${emoji} ${emoji} [unplugin-imagemin]`)
       const info = kolorist.gray('Process start ...');
-      console.log(res('📦'), info);
+      console.log(pluginTitle('📦'), info);
       // start spinner
       const spinner = await loadWithRocketGradient('')
       const defaultSquooshOptions = {};
       Object.keys(defaultOptions).forEach(
         (key) => (defaultSquooshOptions[key] = { ...defaultOptions[key] }),
       );
+      const type = getUserCompressType(options.conversion[0].to);
+      const current = encodeMap.get(type)
       const imagePool = new ImagePool(os.cpus().length);
       const images = files.map(async (filePath: string) => {
         const fileRootPath = path.resolve(outputPath, filePath);
@@ -70,34 +71,24 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
         const oldSize = fs.lstatSync(fileRootPath).size;
         let newSize = oldSize;
-        const ext = path.extname(path.resolve(outputPath, filePath)) ?? '';
-        const type = getUserCompressType();
+        const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
         await image.encode({ [type]: defaultSquooshOptions[type] });
         const encodedWith = await image.encodedWith[type];
         newSize = encodedWith.size;
         if (newSize < oldSize) {
-          fs.writeFileSync(`${fileRootPath.replace('png', 'webp')}`, encodedWith.binary);
+          fs.writeFileSync(`${fileRootPath.replace(ext, current)}`, encodedWith.binary);
           fs.unlinkSync(fileRootPath)
-          console.log(
-            kolorist.blue(filePath),
-            kolorist.yellow(size(oldSize).toString()),
-            '/',
-            kolorist.green(size(newSize).toString()),
-            kolorist.magenta(`${Date.now() - start}ms`),
-          );
+          compressSuccess(filePath, newSize, oldSize, start)
         }
-        return null;
       });
       await Promise.all(images);
-      console.log(res('✨'), kolorist.yellow('Successfully'));
-      // console.log(kolorist.yellow('✨ ✨ Successfully'));
-      // TODO 类型编译 默认初始类型编译 用户传入 option 编译类型发生变化 png -> webp 测试模块
+      console.log(pluginTitle('✨'), kolorist.yellow('Successfully'));
       const a = await fs.readdirSync(`${outputDir}/assets`);
       const b = a.find((item) => {
         return item.endsWith('.js');
       });
       const c = await fs.readFileSync(`${outputDir}/assets/${b}`);
-      const r = c.toString().replace(/png/g, 'webp');
+      const r = c.toString().replace(/png/g, current);
       await fs.writeFileSync(`${outputDir}/assets/${b}`, r)
       spinner.text = kolorist.yellow('File conversion completed!')
       spinner.succeed()
@@ -105,28 +96,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     },
   };
 });
-function filterFile(
-  file: string,
-  filter: RegExp | ((file: string) => boolean),
-) {
-  if (filter) {
-    const isRe = isRegExp(filter);
-    const isFn = isFunction(filter);
-    if (isRe) {
-      return (filter as RegExp).test(file);
-    }
-    if (isFn) {
-      return (filter as (file: any) => any)(file);
-    }
-  }
-  return false;
-}
-export const isFunction = (arg: unknown): arg is (...args: any[]) => any =>
-  typeof arg === 'function';
 
-export const isRegExp = (arg: unknown): arg is RegExp =>
-  Object.prototype.toString.call(arg) === '[object RegExp]';
 
-function getUserCompressType(type: string = 'webp') {
-  return type;
-}
+
