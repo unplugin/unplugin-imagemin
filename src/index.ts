@@ -8,7 +8,7 @@ import { ImagePool } from '@squoosh/lib';
 import { defaultOptions } from './core/types';
 import * as color from './core/log';
 import { partial } from 'filesize';
-
+import Context from './core/context';
 import ora from 'ora';
 import { loadWithRocketGradient } from './core/gradient';
 const size = partial({ base: 2, standard: 'jedec' });
@@ -29,6 +29,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
+  const ctx = new Context(options)
+  let res = []
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
@@ -37,10 +39,11 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     // TODO transform 修改图片上下文 如果切换文件类型 需要修改 打包之后的 file ext
     // TODO context
     transformInclude(id) {
-      // return filter(id);
+      return filter(id);
+      // return id.endsWith('.vue')
     },
-    // async transform(code, id) {
-    // },
+    async transform(code, id) {
+    },
     configResolved(resolvedConfig) {
       outputDir = resolvedConfig.build.outDir;
       publicDir = resolvedConfig.publicDir;
