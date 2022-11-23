@@ -2,6 +2,8 @@ export const encodeMap = new Map(
   [
     ['mozjpeg', 'jpeg'],
     ['browserjpeg', 'jpeg'],
+    ['mozjpeg', 'jpg'],
+    ['browserjpeg', 'jpg'],
     ['jxl', 'jxl'],
     ['avif', 'avif'],
     ['oxipng', 'png'],

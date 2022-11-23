@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      conversion: [{ from: /(png)$/, to: 'mozjpeg' }, { from: /(jpg|jpeg)$/, to: 'webp' }]
+      conversion: [{ from: /(png)/g, to: 'webp' }, { from: /(jpg|jpeg)/g, to: 'webp' }]
     }),
   ],
 });

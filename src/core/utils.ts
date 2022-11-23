@@ -61,5 +61,5 @@ export const isRegExp = (arg: unknown): arg is RegExp =>
   Object.prototype.toString.call(arg) === '[object RegExp]';
 
 export function getUserCompressType(type: string = 'webp') {
-  return `${type}`;
+  return type;
 }
