@@ -8,6 +8,7 @@
 - use cache in node_modules
 - refactor user options 
 - Various types of pictures （Svg is not supported）
+- pref If there is this type or picture, then continue to go down.
 
 
 ## Install
