@@ -8,6 +8,7 @@ importers:
       '@squoosh/lib': ^0.4.0
       '@types/node': ^18.11.9
       bumpp: ^8.2.1
+      chalk: ^5.1.2
       eslint: ^8.28.0
       eslint-config-relaxed-ts: ^2.0.2
       esno: ^0.16.3
@@ -27,6 +28,7 @@ importers:
     dependencies:
       '@rollup/pluginutils': 5.0.2
       '@squoosh/lib': 0.4.0
+      chalk: 5.1.2
       kolorist: 1.6.0
       ora: 6.1.2
       unplugin: 1.0.0

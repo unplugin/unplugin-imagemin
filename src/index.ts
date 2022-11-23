@@ -10,6 +10,7 @@ import * as color from './core/log';
 import { partial } from 'filesize';
 
 import ora from 'ora';
+import { loadWithRocketGradient } from './core/gradient';
 const size = partial({ base: 2, standard: 'jedec' });
 // const spinner = ora('Loading unicorns').start();
 
@@ -60,6 +61,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       if (!files.length) {
         return;
       }
+      const spinner = await loadWithRocketGradient('copy template')
       const res = kolorist.blue('📦 📦 [unplugin-imagemin]');
       const info = kolorist.gray('Process start ...');
       console.log(res, info);
@@ -103,6 +105,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       const c = await fs.readFileSync(`${outputDir}/assets/${b}`);
       const r = c.toString().replace(/png/g, 'webp');
       await fs.writeFileSync(`${outputDir}/assets/${b}`, r)
+      spinner.text = 'Template copied!'
+      spinner.succeed()
       imagePool.close();
     },
   };
