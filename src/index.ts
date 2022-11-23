@@ -6,19 +6,8 @@ import os from 'node:os';
 import * as fs from 'node:fs';
 import { ImagePool } from '@squoosh/lib';
 import { defaultOptions } from './core/types';
-import * as color from './core/log';
-import { partial } from 'filesize';
-import Context from './core/context';
-import ora from 'ora';
+import { size } from './core/utils'
 import { loadWithRocketGradient } from './core/gradient';
-const size = partial({ base: 2, standard: 'jedec' });
-// const spinner = ora('Loading unicorns').start();
-
-// setTimeout(() => {
-//   spinner.color = 'yellow';
-//   spinner.text = 'Loading rainbows';
-// }, 1000);
-// @ts-ignore
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   let outputPath: string;

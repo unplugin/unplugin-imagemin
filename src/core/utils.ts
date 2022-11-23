@@ -1,3 +1,7 @@
+import { partial } from 'filesize';
+
+export const size = partial({ base: 2, standard: 'jedec' });
+
 export function camelCase(str: string): string {
   return str.replace(/[-_](\w)/g, (_, c) => (c ? c.toUpperCase() : ''))
 }
@@ -31,3 +35,4 @@ export function parseId(id: string) {
 export function isEmpty(value: any): boolean {
   return (!value || value === null || value === undefined || (Array.isArray(value) && Object.keys(value).length <= 0))
 }
+
