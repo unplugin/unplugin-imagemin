@@ -4,6 +4,13 @@
 
 ### ✨✨ Continuous iterative development in testing
 
+###### Features
+
+- 🪐 Folder names as namespaces.
+- 🦾 Full TypeScript support.
+- 🌈 [Built-in resolvers](#importing-from-ui-libraries) for popular UI libraries.
+- 😃 Works perfectly with [unplugin-icons](https://github.com/antfu/unplugin-icons).
+
 ## TODO 
 - transform with unplugin context
 - use cache in node_modules
@@ -13,14 +20,13 @@
 - transform get global ctx || context
 - resolve generateBundle callback replace code
 
-## Install
+## Installation
 
-```ts
-pnpm install unplugin-imagemin -D
+```bash
+npm i unplugin-imagemin -D
 ```
-
-
-## Useage
+<details>
+<summary>Vite</summary><br>
 
 ```ts
 import { defineConfig } from 'vite';
@@ -37,5 +43,22 @@ export default defineConfig({
 
 
 ```
+<br></details>
+
+
+<details>
+<summary>Webpack</summary><br>
+
+```ts
+// webpack.config.js
+
+```
+
+<br></details>
+
+
+## Usage
+
+
 
 
