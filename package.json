@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Library",
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "dev": "tsup --watch src",
     "build:fix": "esno scripts/postbuild.ts",
     "lint": "eslint .",
+    "format": "prettier --write .",
     "play": "npm -C playground run dev",
     "prepublishOnly": "npm run build",
     "release": "bumpp && npm publish",

@@ -1,10 +1,10 @@
 export default interface Options {
-  mozjpeg?: any
-  webp?: any
-  avif?: any
-  jxl?: any
-  wp2?: any
-  oxipng?: any
+  mozjpeg?: any;
+  webp?: any;
+  avif?: any;
+  jxl?: any;
+  wp2?: any;
+  oxipng?: any;
 }
 
 export const defaultOptions: Options = {
@@ -16,7 +16,7 @@ export const defaultOptions: Options = {
     progressive: true,
     optimize_coding: true,
     smoothing: 0,
-    color_space: 3 /*YCbCr*/,
+    color_space: 3 /* YCbCr */,
     quant_table: 3,
     trellis_multipass: false,
     trellis_opt_zero: false,
@@ -96,5 +96,5 @@ export const defaultOptions: Options = {
   oxipng: {
     extension: /.png$/,
     level: 2,
-  }
-}
+  },
+};

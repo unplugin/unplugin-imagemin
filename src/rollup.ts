@@ -1,3 +1,3 @@
-import unplugin from '.'
+import unplugin from '.';
 
-export default unplugin.rollup
+export default unplugin.rollup;

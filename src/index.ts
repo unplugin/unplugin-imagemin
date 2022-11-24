@@ -7,12 +7,13 @@ import path from 'node:path';
 import os from 'node:os';
 import * as fs from 'node:fs';
 
+import Context from './core/context';
 import { defaultOptions } from './core/types';
-import { pluginTitle, compressSuccess } from './core/log'
+import { pluginTitle, compressSuccess } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
-import { filterFile, getUserCompressType } from './core/utils'
+import { filterFile, getUserCompressType } from './core/utils';
 
-import { encodeMap } from './core/encodeMap'
+import { encodeMap } from './core/encodeMap';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
@@ -24,19 +25,19 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
+  const ctx = new Context(options);
+
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
-    enforce: 'post',
-
-    // TODO transform 修改图片上下文 如果切换文件类型 需要修改 打包之后的 file ext
-    // TODO context
+    enforce: 'pre',
     // transformInclude(id) {
     //   return filter(id);
     //   return id.endsWith('.vue')
     // },
     // async transform(code, id) {
     // },
+    // 构建阶段的通用钩子：在每个传入模块请求时被调用：可以自定义加载器，可用来返回自定义的内容
     configResolved(resolvedConfig) {
       outputDir = resolvedConfig.build.outDir;
       publicDir = resolvedConfig.publicDir;
@@ -45,23 +46,29 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         resolvedConfig.build.outDir,
       );
     },
+    buildEnd() {
+      // 合并option
+      // console.log('打包结束');
+      ctx.handleMergeOption(defaultOptions);
+    },
     async generateBundle(_, bundler) {
       Object.keys(bundler).forEach((key) => {
+        // eslint-disable-next-line no-unused-expressions
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
       });
     },
     async closeBundle() {
-      if (!files.length) {
-        return;
-      }
-
+      ctx.handleTransform(bundler);
+      return true;
+    },
+    async closeBundle() {
       const info = kolorist.gray('Process start');
       console.log(pluginTitle('📦'), info);
       // start spinner
-      const spinner = await loadWithRocketGradient('')
+      const spinner = await loadWithRocketGradient('');
       const defaultSquooshOptions = {};
       Object.keys(defaultOptions).forEach(
-        (key) => (defaultSquooshOptions[key] = { ...defaultOptions[key] }),
+        (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
       );
       const imagePool = new ImagePool(os.cpus().length);
       const images = files.map(async (filePath: string, index: number) => {
@@ -70,45 +77,48 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
         const oldSize = fs.lstatSync(fileRootPath).size;
         let newSize = oldSize;
-        const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
+        const ext =
+          path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
         // const type = getUserCompressType(options.conversion[index].to);
-        const { to: type } = options.conversion.find(item => `${item.from}`.includes(ext))
-        const current: any = encodeMap.get(type)
+        const { to: type } = options.conversion.find((item) =>
+          `${item.from}`.includes(ext),
+        );
+        const current: any = encodeMap.get(type);
         await image.encode({ [type]: defaultSquooshOptions[type] });
         const encodedWith = await image.encodedWith[type];
         newSize = encodedWith.size;
         if (newSize < oldSize) {
-          const filepath = `${fileRootPath.replace(ext, current)}`
+          const filepath = `${fileRootPath.replace(ext, current)}`;
           fs.writeFileSync(filepath, encodedWith.binary);
-          fs.unlinkSync(fileRootPath)
-          compressSuccess(`${filepath.replace(process.cwd(), '')}`, newSize, oldSize, start)
+          fs.unlinkSync(fileRootPath);
+          compressSuccess(
+            `${filepath.replace(process.cwd(), '')}`,
+            newSize,
+            oldSize,
+            start,
+          );
         }
       });
       await Promise.all(images);
       console.log(pluginTitle('✨'), kolorist.yellow('Successfully'));
       const a = await fs.readdirSync(`${outputDir}/assets`);
-      const b = a.find((item) => {
-        return item.endsWith('.js');
-      });
-      let r: any = null
+      const b = a.find((item) => item.endsWith('.js'));
+      let r: any = null;
       const c = await fs.readFileSync(`${outputDir}/assets/${b}`);
       files.forEach(async (file, index) => {
         const type = getUserCompressType(options.conversion[index]?.to);
         const from = getUserCompressType(options.conversion[index]?.from);
-        const current: any = encodeMap.get(type)
+        const current: any = encodeMap.get(type);
         if (!!r) {
-          r = r.toString().replace(from, current)
+          r = r.toString().replace(from, current);
         } else {
-          r = c.toString().replace(from, current)
+          r = c.toString().replace(from, current);
         }
-      })
-      await fs.writeFileSync(`${outputDir}/assets/${b}`, r)
-      spinner.text = kolorist.yellow('File conversion completed!')
-      spinner.succeed()
+      });
+      await fs.writeFileSync(`${outputDir}/assets/${b}`, r);
+      spinner.text = kolorist.yellow('File conversion completed!');
+      spinner.succeed();
       imagePool.close();
     },
   };
 });
-
-
-
