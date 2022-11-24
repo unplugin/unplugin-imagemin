@@ -1,10 +1,10 @@
 export default interface Options {
-  mozjpeg?: any
-  webp?: any
-  avif?: any
-  jxl?: any
-  wp2?: any
-  oxipng?: any
+  mozjpeg?: any;
+  webp?: any;
+  avif?: any;
+  jxl?: any;
+  wp2?: any;
+  oxipng?: any;
 }
 
 export const defaultOptions: Options = {
@@ -96,5 +96,5 @@ export const defaultOptions: Options = {
   oxipng: {
     extension: /.png$/,
     level: 2,
-  }
-}
+  },
+};

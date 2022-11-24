@@ -6,17 +6,17 @@
 
 ###### Features
 
-
 - 🦾 High Performance based on squoosh and rust / wasm
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
 - 🌈 You can convert different picture types at build time
 - 😃 Caching mechanism
 
-## TODO 
+## TODO
+
 - transform with unplugin context
 - use cache in node_modules
-- refactor user options 
+- refactor user options
 - Various types of pictures （Svg is not supported）
 - pref If there is this type or picture, then continue to go down.
 - transform get global ctx || context
@@ -27,6 +27,7 @@
 ```bash
 npm i unplugin-imagemin -D
 ```
+
 <details>
 <summary>Vite</summary><br>
 
@@ -38,29 +39,24 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      conversion: [{ from: /(png)/g, to: 'mozjpeg' }, { from: /(jpg|jpeg)/g, to: 'webp' }]
+      conversion: [
+        { from: /(png)/g, to: 'mozjpeg' },
+        { from: /(jpg|jpeg)/g, to: 'webp' },
+      ],
     }),
   ],
 });
-
-
 ```
-<br></details>
 
+<br></details>
 
 <details>
 <summary>Webpack</summary><br>
 
 ```ts
 // webpack.config.js
-
 ```
 
 <br></details>
 
-
 ## Usage
-
-
-
-

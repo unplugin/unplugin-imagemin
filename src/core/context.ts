@@ -6,7 +6,6 @@
 
 // }
 
-
 // export type ResolvedOptions = Omit<
 //   Required<Options>,
 //   'resolvers' | 'extensions' | 'dirs'
@@ -41,6 +40,3 @@
 //   resolved.extensions = toArray(resolved.extensions)
 //   return resolved
 // }
-
-
-

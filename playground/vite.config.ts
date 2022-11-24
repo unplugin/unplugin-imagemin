@@ -10,7 +10,10 @@ export default defineConfig({
       //   { from: /(png)/g, to: 'mozjpeg' },
       //   { from: /(jpg|jpeg)/g, to: 'webp' },
       // ],
-      // conversion: [{ from: 'png', to: 'mozjpeg' }, { from: /(jpg|jpeg)/g, to: 'webp' }]
+      conversion: [
+        { from: 'png', to: 'mozjpeg' },
+        { from: /(jpg|jpeg)/, to: 'webp' },
+      ],
     }),
   ],
 });

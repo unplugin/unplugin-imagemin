@@ -16,9 +16,5 @@
   // "include": [
   //   "*.d.ts"
   // ],
-  "exclude": [
-    "node_modules",
-    "playground",
-    "dist"
-  ]
+  "exclude": ["node_modules", "playground", "dist"]
 }
