@@ -14,7 +14,6 @@ importers:
       esno: ^0.16.3
       fast-glob: ^3.2.12
       filesize: ^10.0.5
-      kolorist: ^1.6.0
       ora: 6.1.2
       prettier: ^2.7.1
       rimraf: ^3.0.2
@@ -29,7 +28,6 @@ importers:
       '@rollup/pluginutils': 5.0.2
       '@squoosh/lib': 0.4.0
       chalk: 5.1.2
-      kolorist: 1.6.0
       ora: 6.1.2
       unplugin: 1.0.0
     devDependencies:
@@ -2663,10 +2661,6 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
     dev: true
-
-  /kolorist/1.6.0:
-    resolution: {integrity: sha512-dLkz37Ab97HWMx9KTes3Tbi3D1ln9fCAy2zr2YVExJasDRPGRaKcoE4fycWNtnCAJfjFqe0cnY+f8KT2JePEXQ==}
-    dev: false
 
   /levn/0.3.0:
     resolution: {integrity: sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==}

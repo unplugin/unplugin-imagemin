@@ -20,10 +20,10 @@ export default defineConfig({
       //     quality: 0,
       //   },
       // },
-      // conversion: [
-      //   { from: 'png', to: 'mozjpeg' },
-      //   { from: 'jpeg', to: 'webp' },
-      // ],
+      conversion: [
+        { from: 'png', to: 'mozjpeg' },
+        { from: 'jpeg', to: 'webp' },
+      ],
       // cache: false,
     }),
   ],

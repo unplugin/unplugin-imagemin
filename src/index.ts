@@ -25,7 +25,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
-  const isTurn = isTurnImageType(options);
+  const isTurn = isTurnImageType(options.conversion);
   console.log(isTurn);
 
   const ctx = new Context(options);
@@ -89,18 +89,18 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const res = options.conversion.find((item) =>
           `${item.from}`.includes(ext),
         );
-        const type = res?.to ?? ext;
-        const noConversionType = encodeMapBack.get(type);
-        // console.log(noConversionType);
-
+        const type = isTurn ? res?.to : encodeMapBack.get(ext);
         const current: any = encodeMap.get(type);
         await image.encode({
-          [noConversionType!]: defaultSquooshOptions[noConversionType!],
+          [type!]: defaultSquooshOptions[type!],
         });
-        const encodedWith = await image.encodedWith[noConversionType];
+        const encodedWith = await image.encodedWith[type];
         newSize = encodedWith.size;
         if (newSize < oldSize) {
-          const filepath = `${fileRootPath.replace(ext, res ? current : ext)}`;
+          const filepath = `${fileRootPath.replace(
+            ext,
+            isTurn ? current : ext,
+          )}`;
           fs.writeFileSync(filepath, encodedWith.binary);
           if (!options.conversion) {
             fs.unlinkSync(fileRootPath);
