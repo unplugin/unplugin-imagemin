@@ -22,6 +22,7 @@
 - transform get global ctx || context
 - resolve generateBundle callback replace code
 - Attribute compress test error
+- Css module conversion
 ## Installation
 
 ```bash
