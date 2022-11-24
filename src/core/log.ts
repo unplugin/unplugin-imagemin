@@ -1,9 +1,8 @@
-import * as kolorist from 'kolorist';
 import { size } from './utils';
-
+import chalk from 'chalk';
 type colorTuple = string | number | any;
 function colorResult(args, color): void {
-  console.log(kolorist[color](...args));
+  console.log(chalk[color](...args));
 }
 export const red = (args: colorTuple) => colorResult(args, 'red');
 export const green = (res: colorTuple) => colorResult(res, 'green');
@@ -27,16 +26,17 @@ export const complete = (name, dest, type, description) => {
   cyan(`\n To get started with into "${name}.${type}"`);
 };
 
+// eslint-disable-next-line max-params
 export function compressSuccess(filePath, newSize, oldSize, start) {
   console.log(
-    kolorist.blue(filePath),
-    kolorist.yellow(size(oldSize).toString()),
+    chalk.blue(filePath),
+    chalk.yellow(size(oldSize).toString()),
     '➡️',
-    kolorist.green(size(newSize).toString()),
-    kolorist.magenta(`${Date.now() - start}ms`),
+    chalk.green(size(newSize).toString()),
+    chalk.magenta(`${Date.now() - start}ms`),
   );
 }
 
 export function pluginTitle(emoji) {
-  return kolorist.blue(`[unplugin-imagemin] ${emoji} ${emoji}`);
+  return chalk.blue(`[unplugin-imagemin] ${emoji} ${emoji}`);
 }

@@ -1,7 +1,7 @@
 import { createUnplugin } from 'unplugin';
-import * as kolorist from 'kolorist';
 import { createFilter } from '@rollup/pluginutils';
 import { ImagePool } from '@squoosh/lib';
+import chalk from 'chalk';
 
 import path from 'node:path';
 import os from 'node:os';
@@ -20,7 +20,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
   let outputPath: string;
   let outputDir: string;
   let publicDir: string;
-  let files: any = [];
+  const files: any = [];
   const filter = createFilter(
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
@@ -63,7 +63,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       return true;
     },
     async closeBundle() {
-      const info = kolorist.gray('Process start');
+      const info = chalk.gray('Process start');
       console.log(pluginTitle('📦'), info);
       // start spinner
       const spinner = await loadWithRocketGradient('');
@@ -101,7 +101,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         }
       });
       await Promise.all(images);
-      console.log(pluginTitle('✨'), kolorist.yellow('Successfully'));
+      console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
       const a = await fs.readdirSync(`${outputDir}/assets`);
       const b = a.find((item) => item.endsWith('.js'));
       let r: any = null;
@@ -110,14 +110,14 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const type = getUserCompressType(options.conversion[index]?.to);
         const from = getUserCompressType(options.conversion[index]?.from);
         const current: any = encodeMap.get(type);
-        if (!!r) {
+        if (r) {
           r = r.toString().replace(from, current);
         } else {
           r = c.toString().replace(from, current);
         }
       });
       await fs.writeFileSync(`${outputDir}/assets/${b}`, r);
-      spinner.text = kolorist.yellow('File conversion completed!');
+      spinner.text = chalk.yellow('File conversion completed!');
       spinner.succeed();
       imagePool.close();
     },
