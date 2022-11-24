@@ -34,27 +34,14 @@ export default class Context {
       item.fileName.match(extRE),
     );
     const imageFileBundle = imageBundle.map((item: any) => item.fileName);
-    // console.log(imageFileBundle);
-    const imageFiles = imageFileBundle.map((item: any) =>
-      item.substring(0, item.lastIndexOf('.') + 1),
-    );
-    function transformFileName (file) {
-      return file.substring(0, file.lastIndexOf('.') + 1),
-    }
 
     chunkBundle.forEach((item: any) => {
       this.options.conversion.forEach(
         // eslint-disable-next-line @typescript-eslint/no-shadow
         (type: { from: string | RegExp; to: string }) => {
-          // imageFiles.forEach((file) => {
-          //   item.code = item.code.replace(
-          //     `${file}${type.from}`,
-          //     `${file}${encodeMap.get(type.to)}`,
-          //   );
-          // });
           imageFileBundle.forEach((file) => {
             if (file.includes(type.from)) {
-              const name = transformFileName(file)
+              const name = transformFileName(file);
               item.code = item.code.replace(
                 `${name}${type.from}`,
                 `${name}${encodeMap.get(type.to)}`,
@@ -110,4 +97,7 @@ export function transformEncodeType(options) {
     newCompressOptions[item] = options[transformOldKeys[index]];
   });
   return newCompressOptions;
+}
+export function transformFileName(file) {
+  return file.substring(0, file.lastIndexOf('.') + 1);
 }

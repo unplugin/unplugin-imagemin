@@ -8,16 +8,16 @@ export default defineConfig({
     imagemin({
       compress: {
         jpg: {
-          quality: 100,
+          quality: 0,
         },
         jpeg: {
-          quality: 100,
+          quality: 0,
         },
         png: {
-          quality: 100,
+          quality: 0,
         },
         webp: {
-          quality: 100,
+          quality: 0,
         },
       },
       conversion: [
