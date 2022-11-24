@@ -59,4 +59,8 @@ export default defineConfig({
 
 <br></details>
 
+# 📦📦 Squoosh
+
+Introduction Squoosh
+
 ## Usage
