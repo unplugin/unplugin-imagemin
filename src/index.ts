@@ -26,8 +26,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
   const isTurn = isTurnImageType(options.conversion);
-  console.log(isTurn);
-
   const ctx = new Context(options);
   if (!options.conversion) {
     options.conversion = [];
