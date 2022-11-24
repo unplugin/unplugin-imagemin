@@ -16,7 +16,7 @@ export const defaultOptions: Options = {
     progressive: true,
     optimize_coding: true,
     smoothing: 0,
-    color_space: 3 /*YCbCr*/,
+    color_space: 3 /* YCbCr */,
     quant_table: 3,
     trellis_multipass: false,
     trellis_opt_zero: false,

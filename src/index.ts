@@ -7,6 +7,7 @@ import path from 'node:path';
 import os from 'node:os';
 import * as fs from 'node:fs';
 
+import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { pluginTitle, compressSuccess } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
@@ -24,13 +25,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
+  const ctx = new Context(options);
+
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'post',
-
-    // TODO transform 修改图片上下文 如果切换文件类型 需要修改 打包之后的 file ext
-    // TODO context
     // transformInclude(id) {
     //   return filter(id);
     //   return id.endsWith('.vue')
@@ -45,6 +45,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         resolvedConfig.build.outDir,
       );
     },
+    buildEnd() {
+      // 合并option
+      // console.log('打包结束');
+      ctx.handlerMergeOption(defaultOptions);
+      console.log(ctx.mergeOption);
+    },
     async generateBundle(_, bundler) {
       // console.log(Object.keys(bundler));
       // console.log(
@@ -53,20 +59,20 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       //     .code.replace('png', 'webp'),
       // );
       // const preloadMarker = `__VITE_PRELOAD__`;
-      for (const file in bundler) {
-        const chunk = bundler[file];
-        if (chunk.type === 'chunk') {
-          chunk.code = chunk.code.replace(/png/g, 'webp');
-          console.log(chunk.code);
-        }
-      }
+      // for (const file in bundler) {
+      //   const chunk = bundler[file];
+      //   if (chunk.type === 'chunk') {
+      //     chunk.code = chunk.code.replace(/png/g, 'webp');
+      //     // console.log(chunk.code);
+      //   }
+      // }
 
       // bundler.code.replace('png', 'webp')
       Object.keys(bundler).forEach((key) => {
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
       });
       if (!files.length) {
-        return;
+        /* empty */
       }
     },
     // async closeBundle() {
@@ -110,9 +116,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     //   await Promise.all(images);
     //   console.log(pluginTitle('✨'), kolorist.yellow('Successfully'));
     //   const a = await fs.readdirSync(`${outputDir}/assets`);
-    //   const b = a.find((item) => {
-    //     return item.endsWith('.js');
-    //   });
+    //   const b = a.find((item) => item.endsWith('.js'));
     //   let r: any = null;
     //   const c = await fs.readFileSync(`${outputDir}/assets/${b}`);
     //   files.forEach(async (file, index) => {

@@ -6,14 +6,25 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      // conversion: [
-      //   { from: /(png)/g, to: 'mozjpeg' },
-      //   { from: /(jpg|jpeg)/g, to: 'webp' },
-      // ],
+      compress: {
+        jpg: {
+          quality: 100,
+        },
+        jpeg: {
+          quality: 100,
+        },
+        png: {
+          quality: 100,
+        },
+        webp: {
+          quality: 100,
+        },
+      },
       conversion: [
         { from: 'png', to: 'mozjpeg' },
         { from: /(jpg|jpeg)/, to: 'webp' },
       ],
+      cache: false,
     }),
   ],
 });
