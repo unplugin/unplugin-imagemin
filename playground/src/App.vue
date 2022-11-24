@@ -2,15 +2,22 @@
 
 <template>
   <div>
-    <img src="./assets/image/wallhaven-p92y93.png" alt="" />
+    <!-- <img src="./assets/image/wallhaven-p92y93.png" alt="" /> -->
     <img src="./assets/image/wallhaven-gpjm3d.png" alt="" />
-    <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" />
-    <img src="./assets/image/wallhaven-2ykjxm.png" alt="" />
-    <img src="./assets/image/wallhaven-kx9rx7.png" alt="" />
+    <!-- <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" /> -->
+    <!-- <img src="./assets/image/wallhaven-2ykjxm.png" alt="" /> -->
+    <!-- <img src="./assets/image/wallhaven-kx9rx7.png" alt="" /> -->
   </div>
 </template>
 
 <style scoped>
+div {
+  display: flex;
+  flex-wrap: wrap;
+}
+img {
+  width: 500px;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

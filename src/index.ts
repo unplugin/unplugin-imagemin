@@ -11,9 +11,9 @@ import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { pluginTitle, compressSuccess } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
-import { filterFile, getUserCompressType } from './core/utils';
+import { filterFile, getUserCompressType, isTurnImageType } from './core/utils';
 
-import { encodeMap } from './core/encodeMap';
+import { encodeMap, encodeMapBack } from './core/encodeMap';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
@@ -25,8 +25,13 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
-  const ctx = new Context(options);
+  const isTurn = isTurnImageType(options);
+  console.log(isTurn);
 
+  const ctx = new Context(options);
+  if (!options.conversion) {
+    options.conversion = [];
+  }
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
@@ -81,17 +86,25 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         const ext =
           path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
         // const type = getUserCompressType(options.conversion[index].to);
-        const { to: type } = options.conversion.find((item) =>
+        const res = options.conversion.find((item) =>
           `${item.from}`.includes(ext),
         );
+        const type = res?.to ?? ext;
+        const noConversionType = encodeMapBack.get(type);
+        // console.log(noConversionType);
+
         const current: any = encodeMap.get(type);
-        await image.encode({ [type]: defaultSquooshOptions[type] });
-        const encodedWith = await image.encodedWith[type];
+        await image.encode({
+          [noConversionType!]: defaultSquooshOptions[noConversionType!],
+        });
+        const encodedWith = await image.encodedWith[noConversionType];
         newSize = encodedWith.size;
         if (newSize < oldSize) {
-          const filepath = `${fileRootPath.replace(ext, current)}`;
+          const filepath = `${fileRootPath.replace(ext, res ? current : ext)}`;
           fs.writeFileSync(filepath, encodedWith.binary);
-          fs.unlinkSync(fileRootPath);
+          if (!options.conversion) {
+            fs.unlinkSync(fileRootPath);
+          }
           compressSuccess(
             `${filepath.replace(process.cwd(), '')}`,
             newSize,

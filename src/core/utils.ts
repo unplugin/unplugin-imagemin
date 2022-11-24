@@ -1,6 +1,7 @@
 import { partial } from 'filesize';
 
 export const size = partial({ base: 2, standard: 'jedec' });
+const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export function camelCase(str: string): string {
   return str.replace(/[-_](\w)/g, (_, c) => (c ? c.toUpperCase() : ''));
@@ -66,4 +67,14 @@ export const isRegExp = (arg: unknown): arg is RegExp =>
 
 export function getUserCompressType(type: string = 'webp') {
   return type;
+}
+
+export function isTurnImageType(options) {
+  const hasConversion = options.conversion;
+  // eslint-disable-next-line no-implicit-coercion
+  const hasType = !!options.conversion?.length;
+  const isReallyType = options?.conversion?.every(
+    (item) => item.from.test(extRE) && item.to.test(extRE),
+  );
+  return hasConversion || hasType || isReallyType;
 }

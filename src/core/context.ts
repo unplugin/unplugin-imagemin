@@ -67,7 +67,7 @@ export function resolveOptions(
   defaultOptions: any,
   options: Options,
 ): ResolvedOptions {
-  const transformType = transformEncodeType(options.compress);
+  const transformType = transformEncodeType(options?.compress);
   const keys = Object.keys(transformType);
   const res = keys.map(
     (item) =>
@@ -87,7 +87,7 @@ export function resolveOptions(
   return resolved;
 }
 
-export function transformEncodeType(options) {
+export function transformEncodeType(options = {}) {
   const newCompressOptions: any = {};
   const transformKeys = Object.keys(options).map((item) =>
     encodeMapBack.get(item),
