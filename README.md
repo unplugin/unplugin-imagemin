@@ -14,13 +14,13 @@
 
 ## TODO
 
-- ~~transform with unplugin context
+- transform with unplugin context
 - use cache in node_modules
-- ~~refactor user options
+- refactor user options
 - Various types of pictures （Svg is not supported）
-- ~~pref If there is this type or picture, then continue to go down.
-- ~~transform get global ctx || context
-- ~~resolve generateBundle callback replace code
+- pref If there is this type or picture, then continue to go down.
+- transform get global ctx || context
+- resolve generateBundle callback replace code
 - Attribute compress test error
 - Css module conversion
 ## Installation
