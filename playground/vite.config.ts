@@ -22,7 +22,7 @@ export default defineConfig({
       },
       conversion: [
         { from: 'png', to: 'mozjpeg' },
-        { from: /(jpg|jpeg)/, to: 'webp' },
+        { from: 'jpeg', to: 'webp' },
       ],
       cache: false,
     }),

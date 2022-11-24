@@ -30,13 +30,14 @@ export default createUnplugin<any | undefined>((options = {}): any => {
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
-    enforce: 'post',
+    enforce: 'pre',
     // transformInclude(id) {
     //   return filter(id);
     //   return id.endsWith('.vue')
     // },
     // async transform(code, id) {
     // },
+    // 构建阶段的通用钩子：在每个传入模块请求时被调用：可以自定义加载器，可用来返回自定义的内容
     configResolved(resolvedConfig) {
       outputDir = resolvedConfig.build.outDir;
       publicDir = resolvedConfig.publicDir;
@@ -48,10 +49,14 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     buildEnd() {
       // 合并option
       // console.log('打包结束');
-      ctx.handlerMergeOption(defaultOptions);
-      console.log(ctx.mergeOption);
+      ctx.handleMergeOption(defaultOptions);
     },
     async generateBundle(_, bundler) {
+      Object.keys(bundler).forEach((key) => {
+        // eslint-disable-next-line no-unused-expressions
+        filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
+      });
+      ctx.handleTransform(bundler);
       // console.log(Object.keys(bundler));
       // console.log(
       //   Object.values(bundler)
@@ -68,10 +73,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       // }
 
       // bundler.code.replace('png', 'webp')
-      Object.keys(bundler).forEach((key) => {
-        // eslint-disable-next-line no-unused-expressions
-        filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
-      });
       if (!files.length) {
         return false;
       }

@@ -2,8 +2,10 @@ import fg from 'fast-glob';
 import type fs from 'fs';
 import { resolve, parse } from 'node:path';
 import transformer from './transform';
-import { encodeMapBack } from './encodeMap';
+import { encodeMap, encodeMapBack } from './encodeMap';
 import { type } from 'os';
+const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
+
 export interface Options {
   compress: any;
 }
@@ -19,8 +21,49 @@ export default class Context {
     this.options = rawOptions;
   }
 
-  handlerMergeOption(defaultOptions) {
+  handleMergeOption(defaultOptions) {
     this.mergeOption = resolveOptions(defaultOptions, this.options);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  handleTransform(bundle) {
+    const allBundles = Object.values(bundle);
+    const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
+    const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
+    const imageBundle = assetBundle.filter((item: any) =>
+      item.fileName.match(extRE),
+    );
+    const imageFileBundle = imageBundle.map((item: any) => item.fileName);
+    // console.log(imageFileBundle);
+    const imageFiles = imageFileBundle.map((item: any) =>
+      item.substring(0, item.lastIndexOf('.') + 1),
+    );
+    function transformFileName (file) {
+      return file.substring(0, file.lastIndexOf('.') + 1),
+    }
+
+    chunkBundle.forEach((item: any) => {
+      this.options.conversion.forEach(
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        (type: { from: string | RegExp; to: string }) => {
+          // imageFiles.forEach((file) => {
+          //   item.code = item.code.replace(
+          //     `${file}${type.from}`,
+          //     `${file}${encodeMap.get(type.to)}`,
+          //   );
+          // });
+          imageFileBundle.forEach((file) => {
+            if (file.includes(type.from)) {
+              const name = transformFileName(file)
+              item.code = item.code.replace(
+                `${name}${type.from}`,
+                `${name}${encodeMap.get(type.to)}`,
+              );
+            }
+          });
+        },
+      );
+    });
   }
 }
 export type ResolvedOptions = Omit<
@@ -32,22 +75,6 @@ export type ResolvedOptions = Omit<
   compress: any;
   root?: string;
 };
-// export default class Context {
-//   options: ResolvedOptions
-//   root = process.cwd()
-//   _cache = new Map<string, string>()
-//   constructor(private rawOptions: Options = {}) {
-//     this.options = resolveOptions(rawOptions, this.root)
-//     // this.generateDeclaration = throttle(500, false, this.generateDeclaration.bind(this))
-//   }
-//   transform(code: string, id: string): any {
-//     console.log('\n');
-//     const { path, query } = parseId(id)
-//     console.log(path, '这是path');
-//     console.log(query, '这是query');
-//     return transformer(this)(code, id, path, query)
-//   }
-// }
 
 export function resolveOptions(
   defaultOptions: any,
