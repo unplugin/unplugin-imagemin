@@ -25,6 +25,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
   );
+  // 判断 是否 需要转换类型
+  // TODO try catch 捕获
   const isTurn = isTurnImageType(options.conversion);
   const ctx = new Context(options);
   if (!options.conversion) {
