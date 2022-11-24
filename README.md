@@ -21,7 +21,7 @@
 - pref If there is this type or picture, then continue to go down.
 - transform get global ctx || context
 - resolve generateBundle callback replace code
-
+- Attribute compress test error
 ## Installation
 
 ```bash
