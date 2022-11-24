@@ -4,18 +4,20 @@
   <div>
     <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
-    <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" />
     <RouterView />
   </div>
 </template>
 
-<style scoped>
+<style>
 div {
   display: flex;
   flex-wrap: wrap;
 }
-img {
-  width: 500px;
+
+body {
+  background-image: url('./assets/image/wallhaven-2ykjxm.png');
+  width: 100%;
+  height: 100%;
 }
 .logo {
   height: 6em;
