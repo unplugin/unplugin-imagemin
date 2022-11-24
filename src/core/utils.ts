@@ -16,6 +16,7 @@ export function normalizeResolvers(resolvers: any) {
 }
 
 export function toArray<T>(array?: any): Array<T> {
+  // eslint-disable-next-line no-param-reassign
   array = array ?? [];
   return Array.isArray(array) ? array : [array];
 }
@@ -24,15 +25,12 @@ export function parseId(id: string) {
   const index = id.indexOf('?');
   if (index < 0) {
     return { path: id, query: {} };
-  } else {
-    const query = Object.fromEntries(
-      new URLSearchParams(id.slice(index)) as any,
-    );
-    return {
-      path: id.slice(0, index),
-      query,
-    };
   }
+  const query = Object.fromEntries(new URLSearchParams(id.slice(index)) as any);
+  return {
+    path: id.slice(0, index),
+    query,
+  };
 }
 export function isEmpty(value: any): boolean {
   return (
@@ -42,6 +40,12 @@ export function isEmpty(value: any): boolean {
     (Array.isArray(value) && Object.keys(value).length <= 0)
   );
 }
+
+export const isFunction = (arg: unknown): arg is (...args: any[]) => any =>
+  typeof arg === 'function';
+
+export const isRegExp = (arg: unknown): arg is RegExp =>
+  Object.prototype.toString.call(arg) === '[object RegExp]';
 
 export function filterFile(
   file: string,
@@ -59,13 +63,8 @@ export function filterFile(
   }
   return false;
 }
-export const isFunction = (arg: unknown): arg is (...args: any[]) => any =>
-  typeof arg === 'function';
 
-export const isRegExp = (arg: unknown): arg is RegExp =>
-  Object.prototype.toString.call(arg) === '[object RegExp]';
-
-export function getUserCompressType(type: string = 'webp') {
+export function getUserCompressType(type = 'webp') {
   return type;
 }
 
