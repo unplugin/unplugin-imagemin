@@ -31,7 +31,7 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
   console.log(
     kolorist.blue(filePath),
     kolorist.yellow(size(oldSize).toString()),
-    '->',
+    '➡️',
     kolorist.green(size(newSize).toString()),
     kolorist.magenta(`${Date.now() - start}ms`),
   );
