@@ -56,9 +56,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         // eslint-disable-next-line no-unused-expressions
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
       });
-    },
-    async closeBundle() {
       ctx.handleTransform(bundler);
+      if (!files.length) {
+        return false;
+      }
       return true;
     },
     async closeBundle() {
