@@ -49,11 +49,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       Object.keys(bundler).forEach((key) => {
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
       });
+    },
+    async closeBundle() {
       if (!files.length) {
         return;
       }
-    },
-    async closeBundle() {
+
       const info = kolorist.gray('Process start');
       console.log(pluginTitle('📦'), info);
       // start spinner
