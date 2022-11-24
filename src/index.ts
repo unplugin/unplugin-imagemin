@@ -69,11 +69,13 @@ export default createUnplugin<any | undefined>((options = {}): any => {
 
       // bundler.code.replace('png', 'webp')
       Object.keys(bundler).forEach((key) => {
+        // eslint-disable-next-line no-unused-expressions
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
       });
       if (!files.length) {
-        /* empty */
+        return false;
       }
+      return true;
     },
     // async closeBundle() {
     //   const info = kolorist.gray('Process start');
