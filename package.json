@@ -83,7 +83,6 @@
     "eslint-config-relaxed-ts": "^2.0.2",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
-    "filesize": "^10.0.5",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "tsup": "^6.5.0",
@@ -94,6 +93,7 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
+    "filesize": "^10.0.5",
     "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.4.0",
     "chalk": "^5.1.2",

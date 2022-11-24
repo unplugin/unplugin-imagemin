@@ -100,7 +100,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
             isTurn ? current : ext,
           )}`;
           fs.writeFileSync(filepath, encodedWith.binary);
-          if (!options.conversion) {
+          if (isTurn) {
             fs.unlinkSync(fileRootPath);
           }
           compressSuccess(

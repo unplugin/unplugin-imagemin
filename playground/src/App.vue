@@ -2,11 +2,10 @@
 
 <template>
   <div>
-    <img src="./assets/image/wallhaven-p92y93.png" alt="" />
-    <img src="./assets/image/wallhaven-gpjm3d.png" alt="" />
+    <router-link to="/home">Go to Home</router-link>
+    <router-link to="/about">Go to About</router-link>
     <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" />
-    <img src="./assets/image/wallhaven-2ykjxm.png" alt="" />
-    <img src="./assets/image/wallhaven-kx9rx7.png" alt="" />
+    <RouterView />
   </div>
 </template>
 
