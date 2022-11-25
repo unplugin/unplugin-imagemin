@@ -14,7 +14,7 @@
 
 # Squoosh
 
-Squoosh (https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
+ [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
 
 
 ## Installation
