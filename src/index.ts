@@ -137,7 +137,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         `${outputDir}/assets/${assetsChunkFile}`,
         sourceCode,
       );
-      spinner.text = chalk.yellow('File conversion completed!');
+      spinner.text = chalk.yellow('Image conversion completed!');
       spinner.succeed();
       imagePool.close();
     },
