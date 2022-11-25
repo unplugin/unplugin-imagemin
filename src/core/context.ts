@@ -1,15 +1,9 @@
-import fg from 'fast-glob';
-import type fs from 'fs';
-import { resolve, parse } from 'node:path';
-import transformer from './transform';
 import { encodeMap, encodeMapBack } from './encodeMap';
-import { type } from 'os';
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export interface Options {
   compress: any;
 }
-// import { defaultOptions } from './types';
 export default class Context {
   options: ResolvedOptions;
 
@@ -28,47 +22,31 @@ export default class Context {
   // eslint-disable-next-line class-methods-use-this
   handleTransform(bundle) {
     const allBundles = Object.values(bundle);
-    const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
-    const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
+    const chunkBundle = allBundles.filter(
+      (item: any) => item.type === 'chunk',
+    );
+    const assetBundle = allBundles.filter(
+      (item: any) => item.type === 'asset',
+    );
     const imageBundle = assetBundle.filter((item: any) =>
       item.fileName.match(extRE),
     );
-    const imageFileBundle = imageBundle.map((item: any) => item.fileName);
-    const needTransformAssetsBundle = assetBundle.filter((item: any) =>
-      filterExtension(item.fileName, 'css'),
+    const imageFileBundle = imageBundle.map(
+      (item: any) => item.fileName,
     );
-    needTransformAssetsBundle.forEach((item: any) => {
-      this.options.conversion.forEach(
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        (type: { from: string | RegExp; to: string }) => {
-          imageFileBundle.forEach((file) => {
-            if (file.includes(type.from)) {
-              const name = transformFileName(file);
-              item.source = item.source.replace(
-                `${name}${type.from}`,
-                `${name}${encodeMap.get(type.to)}`,
-              );
-            }
-          });
-        },
-      );
-    });
-    chunkBundle.forEach((item: any) => {
-      this.options.conversion.forEach(
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        (type: { from: string | RegExp; to: string }) => {
-          imageFileBundle.forEach((file) => {
-            if (file.includes(type.from)) {
-              const name = transformFileName(file);
-              item.code = item.code.replace(
-                `${name}${type.from}`,
-                `${name}${encodeMap.get(type.to)}`,
-              );
-            }
-          });
-        },
-      );
-    });
+    const needTransformAssetsBundle = assetBundle.filter(
+      (item: any) => filterExtension(item.fileName, 'css'),
+    );
+
+    // transform css modules
+    transformCode(
+      this.options,
+      needTransformAssetsBundle,
+      imageFileBundle,
+      'source',
+    );
+    // transform js modules
+    transformCode(this.options, chunkBundle, imageFileBundle, 'code');
   }
 }
 export type ResolvedOptions = Omit<
@@ -101,7 +79,11 @@ export function resolveOptions(
     obj[item] = res[index];
   });
   // eslint-disable-next-line prefer-object-spread
-  const resolved = Object.assign({}, defaultOptions, obj) as ResolvedOptions;
+  const resolved = Object.assign(
+    {},
+    defaultOptions,
+    obj,
+  ) as ResolvedOptions;
   return resolved;
 }
 
@@ -110,7 +92,9 @@ export function transformEncodeType(options = {}) {
   const transformKeys = Object.keys(options).map((item) =>
     encodeMapBack.get(item),
   );
-  const transformOldKeys: any = Object.keys(options).map((item) => item);
+  const transformOldKeys: any = Object.keys(options).map(
+    (item) => item,
+  );
   transformKeys.forEach((item: any, index: number) => {
     newCompressOptions[item] = options[transformOldKeys[index]];
   });
@@ -123,4 +107,30 @@ export function transformFileName(file) {
 export function filterExtension(name: string, ext: string): boolean {
   const reg = new RegExp(`.${ext}`);
   return !!name.match(reg);
+}
+
+// transform resolve code
+// eslint-disable-next-line max-params
+export function transformCode(
+  options,
+  currentChunk,
+  changeBundle,
+  sourceCode,
+) {
+  currentChunk.forEach((item: any) => {
+    options.conversion.forEach(
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      (type: { from: string | RegExp; to: string }) => {
+        changeBundle.forEach((file) => {
+          if (file.includes(type.from)) {
+            const name = transformFileName(file);
+            item[sourceCode] = item[sourceCode].replace(
+              `${name}${type.from}`,
+              `${name}${encodeMap.get(type.to)}`,
+            );
+          }
+        });
+      },
+    );
+  });
 }

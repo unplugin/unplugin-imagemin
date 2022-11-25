@@ -11,15 +11,13 @@ import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { pluginTitle, compressSuccess } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
-import { filterFile, getUserCompressType, isTurnImageType } from './core/utils';
+import { filterFile, isTurnImageType } from './core/utils';
 
 import { encodeMap, encodeMapBack } from './core/encodeMap';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   let outputPath: string;
-  let outputDir: string;
-  let publicDir: string;
   const files: any = [];
   const filter = createFilter(
     options.include || [extRE],
@@ -36,24 +34,13 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
-    // transformInclude(id) {
-    //   return filter(id);
-    //   return id.endsWith('.vue')
-    // },
-    // async transform(code, id) {
-    // },
-    // 构建阶段的通用钩子：在每个传入模块请求时被调用：可以自定义加载器，可用来返回自定义的内容
     configResolved(resolvedConfig) {
-      outputDir = resolvedConfig.build.outDir;
-      publicDir = resolvedConfig.publicDir;
       outputPath = path.resolve(
         resolvedConfig.root,
         resolvedConfig.build.outDir,
       );
     },
     buildEnd() {
-      // 合并option
-      // console.log('打包结束');
       ctx.handleMergeOption(defaultOptions);
     },
     async generateBundle(_, bundler) {
@@ -77,7 +64,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
       );
       const imagePool = new ImagePool(os.cpus().length);
-      const images = files.map(async (filePath: string, index: number) => {
+      const images = files.map(async (filePath: string) => {
         const fileRootPath = path.resolve(outputPath, filePath);
         const start = Date.now();
         const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
@@ -85,7 +72,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         let newSize = oldSize;
         const ext =
           path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
-        // const type = getUserCompressType(options.conversion[index].to);
         const res = options.conversion.find((item) =>
           `${item.from}`.includes(ext),
         );
