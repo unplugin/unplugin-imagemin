@@ -13,24 +13,24 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      compress: {
-        jpg: {
-          quality: 0,
-        },
-        jpeg: {
-          quality: 0,
-        },
-        png: {
-          quality: 100,
-        },
-        webp: {
-          quality: 100,
-        },
-      },
-      conversion: [
-        { from: 'png', to: 'mozjpeg' },
-        { from: 'jpeg', to: 'webp' },
-      ],
+      // compress: {
+      //   jpg: {
+      //     quality: 0,
+      //   },
+      //   jpeg: {
+      //     quality: 0,
+      //   },
+      //   png: {
+      //     quality: 100,
+      //   },
+      //   webp: {
+      //     quality: 100,
+      //   },
+      // },
+      // conversion: [
+      //   { from: 'png', to: 'mozjpeg' },
+      //   { from: 'jpeg', to: 'webp' },
+      // ],
       // cache: false,
     }),
   ],
