@@ -6,7 +6,7 @@
 
 ###### Features
 
-- 🦾 High Performance based on squoosh with rust & wasm
+- 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
 - 🌈 You can convert different picture types at build time
@@ -15,7 +15,7 @@
 # Squoosh
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
-
+ **Squoosh** with rust & wasm 
 
 ## Installation
 
