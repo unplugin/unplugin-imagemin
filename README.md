@@ -216,4 +216,4 @@ Png format converts webp format by default, but if you do not specify the conver
 
 # Squoosh
 
-Introduction Squoosh
+Squoosh is an image compression web app that reduces image sizes through numerous formats.
