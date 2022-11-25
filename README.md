@@ -72,7 +72,7 @@ module.exports = {
           quality: 0,
         },
         jpeg: {
-          quality: 0,
+          quality: 100,
         },
         png: {
           quality: 100,

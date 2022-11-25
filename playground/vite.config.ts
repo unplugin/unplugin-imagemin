@@ -14,18 +14,18 @@ export default defineConfig({
     vue(),
     imagemin({
       compress: {
-        jpg: {
-          quality: 0,
-        },
-        jpeg: {
-          quality: 0,
-        },
-        png: {
-          quality: 100,
-        },
-        webp: {
-          quality: 100,
-        },
+        // jpg: {
+        //   quality: 0,
+        // },
+        // jpeg: {
+        //   quality: 0,
+        // },
+        // png: {
+        //   quality: 100,
+        // },
+        // webp: {
+        //   quality: 100,
+        // },
       },
       conversion: [
         { from: 'png', to: 'mozjpeg' },
