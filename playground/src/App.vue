@@ -8,7 +8,8 @@
   </div>
 </template>
 
-<style>
+<!-- <style> -->
+<style lang="less">
 div {
   display: flex;
   flex-wrap: wrap;
