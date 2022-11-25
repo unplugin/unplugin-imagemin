@@ -97,6 +97,9 @@ module.exports = {
     }),
 ```
 
+## DefaultConfiguration
+
+
 #  Squoosh
 
 Introduction Squoosh
