@@ -34,7 +34,26 @@ export default class Context {
       item.fileName.match(extRE),
     );
     const imageFileBundle = imageBundle.map((item: any) => item.fileName);
-
+    const needTransformAssetsBundle = assetBundle.filter((item: any) =>
+      filterExtension(item.fileName, 'css'),
+    );
+    console.log(needTransformAssetsBundle);
+    needTransformAssetsBundle.forEach((item: any) => {
+      this.options.conversion.forEach(
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        (type: { from: string | RegExp; to: string }) => {
+          imageFileBundle.forEach((file) => {
+            if (file.includes(type.from)) {
+              const name = transformFileName(file);
+              item.source = item.source.replace(
+                `${name}${type.from}`,
+                `${name}${encodeMap.get(type.to)}`,
+              );
+            }
+          });
+        },
+      );
+    });
     chunkBundle.forEach((item: any) => {
       this.options.conversion.forEach(
         // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -100,4 +119,9 @@ export function transformEncodeType(options = {}) {
 }
 export function transformFileName(file) {
   return file.substring(0, file.lastIndexOf('.') + 1);
+}
+// 判断后缀名
+export function filterExtension(name: string, ext: string): boolean {
+  const reg = new RegExp(`.${ext}`);
+  return !!name.match(reg);
 }
