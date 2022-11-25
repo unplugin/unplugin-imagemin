@@ -1,3 +1,4 @@
 {
-  "extends": ["relaxed-ts"]
+  "extends": ["relaxed-ts"],
+  "rules": {}
 }
