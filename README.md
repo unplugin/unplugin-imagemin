@@ -47,27 +47,7 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    imagemin({
-      compress: {
-        jpg: {
-          quality: 0,
-        },
-        jpeg: {
-          quality: 0,
-        },
-        png: {
-          quality: 100,
-        },
-        webp: {
-          quality: 100,
-        },
-      },
-      conversion: [
-        { from: 'png', to: 'mozjpeg' },
-        { from: 'jpeg', to: 'webp' },
-      ],
-      // cache: false,
-    }),
+    imagemin(),
   ],
 });
 
@@ -103,10 +83,15 @@ export default defineConfig({
           quality: 100,
         },
       },
+      
+      // The type of picture converted after the build
       conversion: [
         { from: 'png', to: 'mozjpeg' },
         { from: 'jpeg', to: 'webp' },
       ],
+      
+      
+      // Whether image caching is required defaults to true
       cache: false,
     }),
 ```
