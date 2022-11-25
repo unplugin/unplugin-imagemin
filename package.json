@@ -2,7 +2,6 @@
   "name": "unplugin-imagemin",
   "version": "0.0.16",
   "description": "Library",
-  "type": "module",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch src",
@@ -24,7 +23,7 @@
     "./vite": {
       "types": "./dist/vite.d.ts",
       "require": "./dist/vite.cjs",
-      "import": "./dist/vite.js"
+      "import": "./dist/vite.mjs"
     },
     "./webpack": {
       "types": "./dist/webpack.d.ts",
@@ -96,8 +95,8 @@
     "filesize": "^10.0.5",
     "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.4.0",
-    "chalk": "^5.1.2",
-    "ora": "6.1.2",
+    "chalk": "^4.1.2",
+    "ora": "5.1.0",
     "unplugin": "^1.0.0"
   },
   "engines": {
