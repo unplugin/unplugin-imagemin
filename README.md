@@ -6,23 +6,16 @@
 
 ###### Features
 
-- 🦾 High Performance based on squoosh and rust / wasm
+- 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
 - 🌈 You can convert different picture types at build time
 - 😃 Caching mechanism
 
-## TODO
+## Squoosh
 
-- transform with unplugin context
-- use cache in node_modules
-- refactor user options
-- Various types of pictures （Svg is not supported）
-- pref If there is this type or picture, then continue to go down.
-- transform get global ctx || context
-- resolve generateBundle callback replace code
-- Attribute compress test error
-- Css module conversion
+ [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
+ **Squoosh** with rust & wasm 
 
 ## Installation
 
@@ -39,7 +32,9 @@ import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), imagemin()],
+  plugins: [vue(), imagemin(
+  /* options */
+  )],
 });
 ```
 
@@ -98,10 +93,8 @@ module.exports = {
 
 Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | JPEG-XL | AVIF | OxiPNG)
 
-:::warning  
 **OxiPNG**
 Png format converts webp format by default, but if you do not specify the conversion attribute, the suffix will not be modified.
-:::
 
 ### MozJPEG
 
@@ -216,6 +209,15 @@ Png format converts webp format by default, but if you do not specify the conver
     },
 ```
 
-# Squoosh
 
-Introduction Squoosh
+## TODO
+
+- transform with unplugin context
+- use cache in node_modules
+- refactor user options
+- Various types of pictures （Svg is not supported）
+- pref If there is this type or picture, then continue to go down.
+- transform get global ctx || context
+- resolve generateBundle callback replace code
+- Attribute compress test error
+- Css module conversion
