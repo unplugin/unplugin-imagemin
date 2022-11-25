@@ -5,7 +5,6 @@ import ora from 'ora';
 const gradientColors = [
   `#c7ecee`,
   `#c6ebff`,
-  '#B0D7EB',
   `#a6dfff`,
   `#7ac4ff`,
   `#62baff`,
