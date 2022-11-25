@@ -98,10 +98,8 @@ module.exports = {
 
 Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | JPEG-XL | AVIF | OxiPNG)
 
-:::warning  
 **OxiPNG**
 Png format converts webp format by default, but if you do not specify the conversion attribute, the suffix will not be modified.
-:::
 
 ### MozJPEG
 
