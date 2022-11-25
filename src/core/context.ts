@@ -37,7 +37,6 @@ export default class Context {
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
       filterExtension(item.fileName, 'css'),
     );
-    console.log(needTransformAssetsBundle);
     needTransformAssetsBundle.forEach((item: any) => {
       this.options.conversion.forEach(
         // eslint-disable-next-line @typescript-eslint/no-shadow
