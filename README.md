@@ -60,6 +60,12 @@ export default defineConfig({
 
 ```ts
 // webpack.config.js
+module.exports = {
+  /* ... */
+  plugins: [
+    require('imagemin/webpack')({ /* options */ }),
+  ],
+}
 ```
 
 <br></details>
