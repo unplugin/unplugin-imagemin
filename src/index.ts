@@ -115,28 +115,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       });
       await Promise.all(images);
       console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
-      const assetsOutPutPath = await fs.readdirSync(`${outputDir}/assets`);
-      const assetsChunkFile = assetsOutPutPath.find((item) =>
-        item.endsWith('.js'),
-      );
-      let sourceCode: any = null;
-      const currentChunkFile = await fs.readFileSync(
-        `${outputDir}/assets/${assetsChunkFile}`,
-      );
-      files.forEach(async (file, index) => {
-        const type = getUserCompressType(options.conversion[index]?.to);
-        const from = getUserCompressType(options.conversion[index]?.from);
-        const current: any = encodeMap.get(type);
-        if (sourceCode) {
-          sourceCode = sourceCode.toString().replace(from, current);
-        } else {
-          sourceCode = currentChunkFile.toString().replace(from, current);
-        }
-      });
-      await fs.writeFileSync(
-        `${outputDir}/assets/${assetsChunkFile}`,
-        sourceCode,
-      );
       spinner.text = chalk.yellow('Image conversion completed!');
       spinner.succeed();
       imagePool.close();

@@ -15,7 +15,7 @@ div {
 }
 
 body {
-  background-image: url('./assets/image/wallhaven-2ykjxm.png');
+  background-image: url('./assets/image/wallhaven-zyxvqy.jpeg');
   width: 100%;
   height: 100%;
 }
