@@ -6,23 +6,13 @@
 
 ###### Features
 
-- 🦾 High Performance based on squoosh and rust / wasm
+- 🦾 High Performance based on squoosh with rust & wasm
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
 - 🌈 You can convert different picture types at build time
 - 😃 Caching mechanism
 
-## TODO
 
-- transform with unplugin context
-- use cache in node_modules
-- refactor user options
-- Various types of pictures （Svg is not supported）
-- pref If there is this type or picture, then continue to go down.
-- transform get global ctx || context
-- resolve generateBundle callback replace code
-- Attribute compress test error
-- Css module conversion
 
 ## Installation
 
@@ -217,3 +207,17 @@ Png format converts webp format by default, but if you do not specify the conver
 # Squoosh
 
 Squoosh is an image compression web app that reduces image sizes through numerous formats.
+
+
+
+## TODO
+
+- transform with unplugin context
+- use cache in node_modules
+- refactor user options
+- Various types of pictures （Svg is not supported）
+- pref If there is this type or picture, then continue to go down.
+- transform get global ctx || context
+- resolve generateBundle callback replace code
+- Attribute compress test error
+- Css module conversion
