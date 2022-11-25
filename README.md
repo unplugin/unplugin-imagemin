@@ -12,7 +12,7 @@
 - 🌈 You can convert different picture types at build time
 - 😃 Caching mechanism
 
-# Squoosh
+## Squoosh
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
