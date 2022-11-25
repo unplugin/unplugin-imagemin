@@ -84,8 +84,34 @@ export default defineConfig({
 
 <br></details>
 
-# 📦📦 Squoosh
+## Configuration
+
+```ts
+    imagemin({
+      // Default configuration options for compressing different pictures
+      compress: {
+        jpg: {
+          quality: 0,
+        },
+        jpeg: {
+          quality: 0,
+        },
+        png: {
+          quality: 100,
+        },
+        webp: {
+          quality: 100,
+        },
+      },
+      conversion: [
+        { from: 'png', to: 'mozjpeg' },
+        { from: 'jpeg', to: 'webp' },
+      ],
+      cache: false,
+    }),
+```
+
+#  Squoosh
 
 Introduction Squoosh
 
-## Usage
