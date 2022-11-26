@@ -18,13 +18,13 @@ export default defineConfig({
           quality: 0,
         },
         jpeg: {
-          quality: 75,
+          quality: 60,
         },
         png: {
           quality: 100,
         },
         webp: {
-          quality: 100,
+          quality: 60,
         },
       },
       conversion: [
