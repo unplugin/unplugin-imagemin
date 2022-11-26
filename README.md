@@ -9,13 +9,16 @@
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
+- 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
-- 😃 Caching mechanism
 
 ## Squoosh
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
+
+## Build In the case of 60% quality
+<img width="764" alt="image" src="https://user-images.githubusercontent.com/66500121/204076574-979d627b-75ef-4954-aad6-65e35d298e49.png">
 
 ## Installation
 
@@ -212,6 +215,7 @@ Png format converts webp format by default, but if you do not specify the conver
 
 ## TODO
 
+- sass moudle navigator web error (refactor)
 - transform with unplugin context
 - use cache in node_modules
 - refactor user options

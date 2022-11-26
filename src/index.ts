@@ -53,12 +53,14 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
       });
       ctx.handleTransform(bundler);
+
+      return true;
+    },
+    // eslint-disable-next-line consistent-return
+    async closeBundle() {
       if (!files.length) {
         return false;
       }
-      return true;
-    },
-    async closeBundle() {
       const info = chalk.gray('Process start');
       console.log(pluginTitle('📦'), info);
       // start spinner
@@ -118,10 +120,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         }
       });
       await Promise.all(images);
+      imagePool.close();
       console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
       spinner.text = chalk.yellow('Image conversion completed!');
       spinner.succeed();
-      imagePool.close();
     },
   };
 });
