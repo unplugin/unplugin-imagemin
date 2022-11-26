@@ -9,8 +9,8 @@
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
+- 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
-- 😃 Caching mechanism
 
 ## Squoosh
 
