@@ -11,8 +11,8 @@ export default class Context {
 
   root = process.cwd();
 
-  constructor(private rawOptions) {
-    this.options = rawOptions;
+  constructor(config) {
+    this.options = config;
   }
 
   handleMergeOption(defaultOptions) {
@@ -22,20 +22,14 @@ export default class Context {
   // eslint-disable-next-line class-methods-use-this
   handleTransform(bundle) {
     const allBundles = Object.values(bundle);
-    const chunkBundle = allBundles.filter(
-      (item: any) => item.type === 'chunk',
-    );
-    const assetBundle = allBundles.filter(
-      (item: any) => item.type === 'asset',
-    );
+    const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
+    const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
     const imageBundle = assetBundle.filter((item: any) =>
       item.fileName.match(extRE),
     );
-    const imageFileBundle = imageBundle.map(
-      (item: any) => item.fileName,
-    );
-    const needTransformAssetsBundle = assetBundle.filter(
-      (item: any) => filterExtension(item.fileName, 'css'),
+    const imageFileBundle = imageBundle.map((item: any) => item.fileName);
+    const needTransformAssetsBundle = assetBundle.filter((item: any) =>
+      filterExtension(item.fileName, 'css'),
     );
 
     // transform css modules
@@ -57,6 +51,8 @@ export type ResolvedOptions = Omit<
   cache: boolean;
   compress: any;
   root?: string;
+  outputPath?: string;
+  isTurn?: boolean;
 };
 
 export function resolveOptions(
@@ -79,11 +75,7 @@ export function resolveOptions(
     obj[item] = res[index];
   });
   // eslint-disable-next-line prefer-object-spread
-  const resolved = Object.assign(
-    {},
-    defaultOptions,
-    obj,
-  ) as ResolvedOptions;
+  const resolved = Object.assign({}, defaultOptions, obj) as ResolvedOptions;
   return resolved;
 }
 
@@ -92,9 +84,7 @@ export function transformEncodeType(options = {}) {
   const transformKeys = Object.keys(options).map((item) =>
     encodeMapBack.get(item),
   );
-  const transformOldKeys: any = Object.keys(options).map(
-    (item) => item,
-  );
+  const transformOldKeys: any = Object.keys(options).map((item) => item);
   transformKeys.forEach((item: any, index: number) => {
     newCompressOptions[item] = options[transformOldKeys[index]];
   });
@@ -111,12 +101,7 @@ export function filterExtension(name: string, ext: string): boolean {
 
 // transform resolve code
 // eslint-disable-next-line max-params
-export function transformCode(
-  options,
-  currentChunk,
-  changeBundle,
-  sourceCode,
-) {
+export function transformCode(options, currentChunk, changeBundle, sourceCode) {
   currentChunk.forEach((item: any) => {
     options.conversion.forEach(
       // eslint-disable-next-line @typescript-eslint/no-shadow

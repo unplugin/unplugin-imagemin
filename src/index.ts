@@ -14,21 +14,13 @@ import { loadWithRocketGradient } from './core/gradient';
 import { filterFile, isTurnImageType } from './core/utils';
 
 import { encodeMap, encodeMapBack } from './core/encodeMap';
-import Cache from './core/cache'
+import Cache from './core/cache';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
-  let outputPath: string;
   const files: any = [];
   let chunks: any;
   let cache: any;
-  const filter = createFilter(
-    options.include || [extRE],
-    options.exclude || [/[\\/]node_modules[\\/]/],
-  );
-  // 判断 是否 需要转换类型
-  // TODO try catch 捕获
-  const isTurn = isTurnImageType(options.conversion);
   const ctx = new Context(options);
   if (!options.conversion) {
     options.conversion = [];
@@ -37,20 +29,29 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
-    configResolved(resolvedConfig) {
-      outputPath = path.resolve(
-        resolvedConfig.root,
-        resolvedConfig.build.outDir,
-      );
-    },
-    buildEnd() {
-      ctx.handleMergeOption(defaultOptions);
+    configResolved({ base, command, root, build }) {
+      const config = {
+        base,
+        root,
+        build,
+        cacheDir: path.join(root, 'node_modules', '.images'),
+        writeBundle: true,
+        isBuild: command === 'build',
+        outputPath: path.resolve(root, build.outDir),
+        // 判断 是否 需要转换类型
+        isTurn: isTurnImageType(options.conversion),
+        ...defaultOptions,
+      };
+      console.log(config.outputPath);
+
+      ctx.handleMergeOption(config);
     },
     async generateBundle(_, bundler) {
       chunks = bundler;
       Object.keys(bundler).forEach((key) => {
+        const { outputPath } = ctx.mergeOption;
         // eslint-disable-next-line no-unused-expressions
-        filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
+        filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
       });
       ctx.handleTransform(bundler);
 
@@ -58,13 +59,19 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     },
     // eslint-disable-next-line consistent-return
     async closeBundle() {
+      const { isTurn, outputPath } = ctx.mergeOption;
+      console.log(outputPath);
+
       if (!files.length) {
         return false;
       }
       const info = chalk.gray('Process start');
       console.log(pluginTitle('📦'), info);
       // start spinner
-      const spinner = await loadWithRocketGradient('');
+      let spinner;
+      if (!options.cache) {
+        spinner = await loadWithRocketGradient('');
+      }
       const defaultSquooshOptions = {};
       Object.keys(defaultOptions).forEach(
         (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
@@ -73,22 +80,21 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         cache = new Cache({ outputPath });
       }
       const imagePool = new ImagePool(os.cpus().length);
-      const images = files.map(async (filePath: string) => {
-        const fileRootPath = path.resolve(outputPath, filePath);
+      const images = files.map(async (filePath: string): Promise<any> => {
+        const fileRootPath = path.resolve(outputPath!, filePath);
         if (options.cache && cache.get(chunks[filePath])) {
           fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
-          console.log(
-            chalk.blue(filePath),
-            chalk.green('from disk cached'),
-          );
+          console.log(chalk.blue(filePath), chalk.green('from disk cached'));
           return Promise.resolve();
         }
         const start = Date.now();
-        const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
+        const image = imagePool.ingestImage(
+          path.resolve(outputPath!, filePath),
+        );
         const oldSize = fs.lstatSync(fileRootPath).size;
         let newSize = oldSize;
         const ext =
-          path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
+          path.extname(path.resolve(outputPath!, filePath)).slice(1) ?? '';
         const res = options.conversion.find((item) =>
           `${item.from}`.includes(ext),
         );
@@ -122,8 +128,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       await Promise.all(images);
       imagePool.close();
       console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
-      spinner.text = chalk.yellow('Image conversion completed!');
-      spinner.succeed();
+      if (!options.cache) {
+        spinner.text = chalk.yellow('Image conversion completed!');
+        spinner.succeed();
+      }
     },
   };
 });

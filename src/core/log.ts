@@ -33,7 +33,7 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
     chalk.yellow(size(oldSize).toString()),
     '➡️',
     chalk.green(size(newSize).toString()),
-    chalk.magenta(`${Date.now() - start}ms`),
+    chalk.magenta(`+${Date.now() - start}ms`),
   );
 }
 
