@@ -14,11 +14,14 @@ import { loadWithRocketGradient } from './core/gradient';
 import { filterFile, isTurnImageType } from './core/utils';
 
 import { encodeMap, encodeMapBack } from './core/encodeMap';
+import Cache from './core/cache'
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   let outputPath: string;
   const files: any = [];
+  let chunks: any;
+  let cache: any;
   const filter = createFilter(
     options.include || [extRE],
     options.exclude || [/[\\/]node_modules[\\/]/],
@@ -44,6 +47,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       ctx.handleMergeOption(defaultOptions);
     },
     async generateBundle(_, bundler) {
+      chunks = bundler;
       Object.keys(bundler).forEach((key) => {
         // eslint-disable-next-line no-unused-expressions
         filterFile(path.resolve(outputPath, key), extRE) && files.push(key);
@@ -63,9 +67,20 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       Object.keys(defaultOptions).forEach(
         (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
       );
+      if (options.cache) {
+        cache = new Cache({ outputPath });
+      }
       const imagePool = new ImagePool(os.cpus().length);
       const images = files.map(async (filePath: string) => {
         const fileRootPath = path.resolve(outputPath, filePath);
+        if (options.cache && cache.get(chunks[filePath])) {
+          fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
+          console.log(
+            chalk.blue(filePath),
+            chalk.green('from disk cached'),
+          );
+          return Promise.resolve();
+        }
         const start = Date.now();
         const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
         const oldSize = fs.lstatSync(fileRootPath).size;
@@ -88,6 +103,9 @@ export default createUnplugin<any | undefined>((options = {}): any => {
             isTurn ? current : ext,
           )}`;
           fs.writeFileSync(filepath, encodedWith.binary);
+          if (options.cache && !cache.get(chunks[filePath])) {
+            cache.set(chunks[filePath], encodedWith.binary);
+          }
           if (isTurn) {
             fs.unlinkSync(fileRootPath);
           }

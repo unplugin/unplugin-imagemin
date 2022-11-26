@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import crypto from 'crypto'
-import BJSON from 'buffer-json'
 
 import pkg from '../../package.json'
 const env = process.env.NODE_ENV || 'development';
@@ -13,72 +12,66 @@ const manifestKey = path.join(cacheDirectory, 'manifest.json')
 
 export default class Cache {
 	mainfest: any;
+	outputPath: string;
 
-	constructor () {
-		this.mainfest = readManifest()
+	constructor ({ outputPath }) {
+		this.outputPath = outputPath
+		this.mainfest = getCacheManifest()
 	}
 	get (chunk) {
-		if (!this.hasManifest(chunk.name)) {
+		const cacheKey = getCacheKey(chunk)
+		if (!this.hasManifest(cacheKey)) {
 			return null
 		}
 		const originStats = fs.statSync(path.join(root, chunk.name));
-		const cacheStats = this.getManifest(chunk.name);
+		const cacheStats = this.getManifest(cacheKey);
 		if (originStats.ctimeMs === cacheStats.ctimeMs) {
-			return readSync(cacheKey(chunk.name))
+			return fs.readFileSync(cacheKey)
 		}
 		return null
 	}
 	set (chunk, data) {
+		const cacheKey = getCacheKey(chunk)
 		if (!existsSync(cacheDirectory)) {
 			mkdirSync(cacheDirectory);
 		}
-		writeSync(cacheKey(chunk.name), data || chunk.source);
-		this.setManifest(chunk.name, fs.statSync(path.join(root, chunk.name)))
+		fs.writeFileSync(cacheKey, data || fs.readFileSync(path.join(this.outputPath, chunk.fileName)));
+		this.setManifest(cacheKey, fs.statSync(path.join(root, chunk.name)));
 	}
-	getManifest (key) {
+	getManifest (key: string) {
 		return this.mainfest[key]
 	}
-	setManifest (key, value) {
-		this.mainfest[key] = value
-		writeSync(manifestKey, this.mainfest);
+	setManifest (key: string, value: object) {
+		this.mainfest[key] = value;
+		fs.writeFileSync(manifestKey, JSON.stringify(this.mainfest), 'utf-8');
 	}
-	hasManifest (key) {
+	hasManifest (key: string) {
 		return !!this.mainfest[key]
 	}
 }
 
-function readManifest() {
+function getCacheManifest(): object {
 	if (!existsSync(manifestKey)) {
 		return {}
 	}
-	const content = readSync(manifestKey) || {}
+	const content = JSON.parse(fs.readFileSync(manifestKey, 'utf-8')) || {}
 	return content
 }
 
-function cacheKey(key) {
-	const hash = digest(`${cacheIdentifier}\n${key}`);
-	return path.join(cacheDirectory, `${hash}.json`);
+function getCacheKey(chunk): string {
+	const hash = digest(`${cacheIdentifier}\n${chunk.name}`);
+	return path.join(cacheDirectory, `${hash}`);
 }
 
-function writeSync(key, data) {
-  const content = BJSON.stringify(data);
-  fs.writeFileSync(key, content, 'utf-8');
-}
-
-function readSync(key) {
-  const content = fs.readFileSync(key, 'utf-8');
-  return BJSON.parse(content);
-}
-
-function existsSync(path) {
+function existsSync(path: string): boolean {
 	return fs.existsSync(path)
 }
 
-function mkdirSync(path) {
+function mkdirSync(path: string): void {
 	fs.mkdirSync(path, { recursive: true })
 }
 
-function digest(str) {
+function digest(str: string): string {
   return crypto
     .createHash('md5')
     .update(str)
