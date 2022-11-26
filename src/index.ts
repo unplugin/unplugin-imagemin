@@ -1,5 +1,4 @@
 import { createUnplugin } from 'unplugin';
-import { createFilter } from '@rollup/pluginutils';
 import { ImagePool } from '@squoosh/lib';
 import chalk from 'chalk';
 
@@ -7,11 +6,12 @@ import path from 'node:path';
 import os from 'node:os';
 import * as fs from 'node:fs';
 
+import { devalue } from './core/devalue';
 import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { pluginTitle, compressSuccess } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
-import { filterFile, isTurnImageType } from './core/utils';
+import { filterFile, isTurnImageType, parseId } from './core/utils';
 
 import { encodeMap, encodeMapBack } from './core/encodeMap';
 import Cache from './core/cache';
@@ -45,6 +45,16 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       console.log(config.outputPath);
 
       ctx.handleMergeOption(config);
+    },
+    // TODO 在 id 中解构module 返回自定义内容 在这里重构 ！！！
+    async load(id) {
+      const { path, query } = parseId(id);
+      if (id.includes('.png')) {
+        // return `export default woshinidea`;
+      }
+    },
+    async transform(code, id) {
+      // console.log(id);
     },
     async generateBundle(_, bundler) {
       chunks = bundler;
