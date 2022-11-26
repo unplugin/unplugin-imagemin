@@ -102,10 +102,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         }
       });
       await Promise.all(images);
+      imagePool.close();
       console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
       spinner.text = chalk.yellow('Image conversion completed!');
       spinner.succeed();
-      imagePool.close();
     },
   };
 });
