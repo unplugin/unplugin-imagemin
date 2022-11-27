@@ -13,6 +13,7 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
+      mode: 'squoosh',
       compress: {
         jpg: {
           quality: 0,
@@ -31,7 +32,7 @@ export default defineConfig({
         { from: 'png', to: 'mozjpeg' },
         { from: 'jpeg', to: 'webp' },
       ],
-      cache: true,
+      cache: false,
     }),
   ],
 });

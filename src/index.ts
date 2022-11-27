@@ -1,25 +1,17 @@
 import { createUnplugin } from 'unplugin';
-import { ImagePool } from '@squoosh/lib';
 import chalk from 'chalk';
 
 import path from 'node:path';
-import os from 'node:os';
-import * as fs from 'node:fs';
-
+import initSquoosh from './core/squoosh';
 import devalue from './core/devalue';
 import Context from './core/context';
 import { defaultOptions } from './core/types';
-import { pluginTitle, compressSuccess } from './core/log';
+import { pluginTitle } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
-import {
-  filterFile,
-  generateImageID,
-  isTurnImageType,
-  parseId,
-} from './core/utils';
+import { filterFile, isTurnImageType } from './core/utils';
 
-import { encodeMap, encodeMapBack } from './core/encodeMap';
 import Cache from './core/cache';
+import initSharp from './core/sharp';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
@@ -49,31 +41,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         isTurn: isTurnImageType(options.conversion),
         ...defaultOptions,
       };
-      console.log(config.outputPath);
-
       ctx.handleMergeOption(config);
-    },
-    // TODO 在 id 中解构module 返回自定义内容 在这里重构 ！！！
-    async load(id) {
-      const { path: pathname, query } = parseId(id);
-
-      function exportImageSrc(filename: string) {
-        filename = path.resolve(ctx.mergeOption.root, filename);
-        return filename;
-      }
-
-      if (id.includes('.png')) {
-        const res = exportImageSrc(pathname);
-        console.log('\n');
-        console.log(
-          `export default ${devalue(
-            `${ctx.mergeOption.base}assets/wallhaven.${generateImageID(res)}`,
-          )}`,
-        );
-        return `export default ${devalue(
-          `${ctx.mergeOption.base}assets/wallhaven-gpjm3d.${generateImageID(res)}`,
-        )}`;
-      }
     },
     async generateBundle(_, bundler) {
       chunks = bundler;
@@ -83,7 +51,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
       });
       ctx.handleTransform(bundler);
-
+      console.log(files);
       return true;
     },
     // eslint-disable-next-line consistent-return
@@ -106,54 +74,22 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       if (options.cache) {
         cache = new Cache({ outputPath });
       }
-      const imagePool = new ImagePool(os.cpus().length);
-      const images = files.map(async (filePath: string): Promise<any> => {
-        const fileRootPath = path.resolve(outputPath!, filePath);
-        if (options.cache && cache.get(chunks[filePath])) {
-          fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
-          console.log(chalk.blue(filePath), chalk.green('from disk cached'));
-          return Promise.resolve();
-        }
-        const start = Date.now();
-        const image = imagePool.ingestImage(
-          path.resolve(outputPath!, filePath),
+      if (options.mode === 'squoosh') {
+        await initSquoosh(
+          files,
+          outputPath,
+          options,
+          isTurn,
+          defaultSquooshOptions,
         );
-        const oldSize = fs.lstatSync(fileRootPath).size;
-        let newSize = oldSize;
-        const ext =
-          path.extname(path.resolve(outputPath!, filePath)).slice(1) ?? '';
-        const res = options.conversion.find((item) =>
-          `${item.from}`.includes(ext),
+      } else if (options.mode === 'sharp') {
+        // await initSharp();
+      } else {
+        throw new Error(
+          '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
         );
-        const type = isTurn ? res?.to : encodeMapBack.get(ext);
-        const current: any = encodeMap.get(type);
-        await image.encode({
-          [type!]: defaultSquooshOptions[type!],
-        });
-        const encodedWith = await image.encodedWith[type];
-        newSize = encodedWith.size;
-        if (newSize < oldSize) {
-          const filepath = `${fileRootPath.replace(
-            ext,
-            isTurn ? current : ext,
-          )}`;
-          fs.writeFileSync(filepath, encodedWith.binary);
-          if (options.cache && !cache.get(chunks[filePath])) {
-            cache.set(chunks[filePath], encodedWith.binary);
-          }
-          if (isTurn) {
-            fs.unlinkSync(fileRootPath);
-          }
-          compressSuccess(
-            `${filepath.replace(process.cwd(), '')}`,
-            newSize,
-            oldSize,
-            start,
-          );
-        }
-      });
-      await Promise.all(images);
-      imagePool.close();
+      }
+
       console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
       if (!options.cache) {
         spinner.text = chalk.yellow('Image conversion completed!');

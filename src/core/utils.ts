@@ -82,13 +82,18 @@ export function isTurnImageType(options) {
 }
 
 export function generateImageID(url: string) {
-  return (
+  return `${
     createHash('sha256')
       .update(url)
       // .update(JSON.stringify(args))
       .digest('hex')
-      .slice(0, 8) +
+      .slice(0, 8)
     // (args.format && args.format !== 'original' ? `.${args.format}` : '')
-    '.webp'
-  );
+  }.webp`;
+}
+
+// 最后一个符号后的内容
+export function lastSymbol(string: string, symbol: string) {
+  const arr = string.split(symbol);
+  return arr[arr.length - 1];
 }
