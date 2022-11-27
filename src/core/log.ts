@@ -35,3 +35,7 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
 export function pluginTitle(emoji) {
   return chalk.blue(`[unplugin-imagemin] ${emoji} ${emoji}`);
 }
+
+export function logger(...args) {
+  console.log(...args);
+}

@@ -6,7 +6,7 @@ import initSquoosh from './core/squoosh';
 // import devalue from './core/devalue';
 import Context from './core/context';
 import { defaultOptions } from './core/types';
-import { pluginTitle } from './core/log';
+import { logger, pluginTitle } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
 import { filterFile, isTurnImageType } from './core/utils';
 
@@ -31,8 +31,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         base,
         root,
         build,
-        cacheDir: path.join(root, 'node_modules', '.images'),
-        writeBundle: true,
         isBuild: command === 'build',
         outputPath: path.resolve(root, build.outDir),
         // 判断 是否 需要转换类型
@@ -59,7 +57,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       }
       const info = chalk.gray('Process start with');
       const modeLog = chalk.magenta(`Mode ${options.mode}`);
-      console.log(pluginTitle('📦'), info, modeLog);
+      logger(pluginTitle('📦'), info, modeLog);
       // start spinner
       let spinner;
       if (!options.cache) {
@@ -88,7 +86,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         );
       }
 
-      console.log(pluginTitle('✨'), chalk.yellow('Successfully'));
+      logger(pluginTitle('✨'), chalk.yellow('Successfully'));
       if (!options.cache) {
         spinner.text = chalk.yellow('Image conversion completed!');
         spinner.succeed();
