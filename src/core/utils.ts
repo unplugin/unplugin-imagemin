@@ -1,4 +1,5 @@
 import { partial } from 'filesize';
+import { createHash } from 'node:crypto';
 
 export const size = partial({ base: 2, standard: 'jedec' });
 const extRE = /(png|jpeg|jpg|webp|wb2|avif)$/i;
@@ -78,4 +79,16 @@ export function isTurnImageType(options) {
   // console.log(isReallyType);
 
   return Boolean(hasConversion && hasType && isReallyType);
+}
+
+export function generateImageID(url: string) {
+  return (
+    createHash('sha256')
+      .update(url)
+      // .update(JSON.stringify(args))
+      .digest('hex')
+      .slice(0, 8) +
+    // (args.format && args.format !== 'original' ? `.${args.format}` : '')
+    '.webp'
+  );
 }

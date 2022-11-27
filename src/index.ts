@@ -6,12 +6,17 @@ import path from 'node:path';
 import os from 'node:os';
 import * as fs from 'node:fs';
 
-import { devalue } from './core/devalue';
+import devalue from './core/devalue';
 import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { pluginTitle, compressSuccess } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
-import { filterFile, isTurnImageType, parseId } from './core/utils';
+import {
+  filterFile,
+  generateImageID,
+  isTurnImageType,
+  parseId,
+} from './core/utils';
 
 import { encodeMap, encodeMapBack } from './core/encodeMap';
 import Cache from './core/cache';
@@ -21,6 +26,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
   const files: any = [];
   let chunks: any;
   let cache: any;
+  const requestedImagesById: any = {};
+
   const ctx = new Context(options);
   if (!options.conversion) {
     options.conversion = [];
@@ -48,13 +55,25 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     },
     // TODO 在 id 中解构module 返回自定义内容 在这里重构 ！！！
     async load(id) {
-      const { path, query } = parseId(id);
-      if (id.includes('.png')) {
-        // return `export default woshinidea`;
+      const { path: pathname, query } = parseId(id);
+
+      function exportImageSrc(filename: string) {
+        filename = path.resolve(ctx.mergeOption.root, filename);
+        return filename;
       }
-    },
-    async transform(code, id) {
-      // console.log(id);
+
+      if (id.includes('.png')) {
+        const res = exportImageSrc(pathname);
+        console.log('\n');
+        console.log(
+          `export default ${devalue(
+            `${ctx.mergeOption.base}assets/wallhaven.${generateImageID(res)}`,
+          )}`,
+        );
+        return `export default ${devalue(
+          `${ctx.mergeOption.base}assets/wallhaven-gpjm3d.${generateImageID(res)}`,
+        )}`;
+      }
     },
     async generateBundle(_, bundler) {
       chunks = bundler;
@@ -70,8 +89,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     // eslint-disable-next-line consistent-return
     async closeBundle() {
       const { isTurn, outputPath } = ctx.mergeOption;
-      console.log(outputPath);
-
       if (!files.length) {
         return false;
       }

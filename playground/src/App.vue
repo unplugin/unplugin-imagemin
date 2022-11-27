@@ -2,9 +2,10 @@
 
 <template>
   <div>
-    <router-link to="/home">Go to Home</router-link>
+    <!-- <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
-    <RouterView />
+    <RouterView /> -->
+    <img src="./assets/image/wallhaven-kx9rx7.png" alt="" />
   </div>
 </template>
 
@@ -16,7 +17,7 @@ div {
 }
 
 body {
-  background-image: url('./assets/image/wallhaven-zyxvqy.jpeg');
+  // background-image: url('./assets/image/wallhaven-zyxvqy.jpeg');
   width: 100%;
   height: 100%;
 }
