@@ -92,11 +92,12 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
-    "filesize": "^10.0.5",
     "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.4.0",
     "chalk": "^4.1.2",
+    "filesize": "^10.0.5",
     "ora": "5.1.0",
+    "sharp": "0.30.5",
     "unplugin": "^1.0.0"
   },
   "engines": {
