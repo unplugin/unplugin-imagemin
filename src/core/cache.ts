@@ -17,13 +17,13 @@ const cacheIdentifier = `unplugin-imagemin:${pkg.version} ${env}`;
 const manifestKey = path.join(cacheDirectory, 'manifest.json');
 
 export default class Cache {
-  mainfest: any;
+  manifest: any;
 
   outputPath: string;
 
   constructor({ outputPath }) {
     this.outputPath = outputPath;
-    this.mainfest = getCacheManifest();
+    this.manifest = getCacheManifest();
   }
 
   get(chunk) {
@@ -52,16 +52,16 @@ export default class Cache {
   }
 
   getManifest(key: string) {
-    return this.mainfest[key];
+    return this.manifest[key];
   }
 
   setManifest(key: string, value: object) {
-    this.mainfest[key] = value;
-    fs.writeFileSync(manifestKey, JSON.stringify(this.mainfest), 'utf-8');
+    this.manifest[key] = value;
+    fs.writeFileSync(manifestKey, JSON.stringify(this.manifest), 'utf-8');
   }
 
   hasManifest(key: string) {
-    return Boolean(this.mainfest[key]);
+    return Boolean(this.manifest[key]);
   }
 }
 

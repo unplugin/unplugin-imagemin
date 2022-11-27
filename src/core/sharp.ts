@@ -3,8 +3,6 @@ import path from 'node:path';
 import * as fs from 'node:fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess } from './log';
-// `${root}/src/assets/image/wallhaven.png`,
-// `${root}/dist/assets/wallhaven.jpeg`,
 async function initSharp(files, outputPath, options, isTurn) {
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);

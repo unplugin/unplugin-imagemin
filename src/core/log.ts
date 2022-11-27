@@ -21,11 +21,6 @@ export const bgMagenta = (res: string | number) =>
   colorResult(res, 'bgMagenta');
 export const bgCyan = (res: string | number) => colorResult(res, 'bgCyan');
 
-export const complete = (name, dest, type, description) => {
-  green(`\n ${description}`);
-  cyan(`\n To get started with into "${name}.${type}"`);
-};
-
 // eslint-disable-next-line max-params
 export function compressSuccess(filePath, newSize, oldSize, start) {
   console.log(
