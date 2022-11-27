@@ -33,7 +33,7 @@ export default defineConfig({
         { from: 'png', to: 'mozjpeg' },
         { from: 'jpeg', to: 'webp' },
       ],
-      cache: false,
+      cache: true,
     }),
   ],
 });

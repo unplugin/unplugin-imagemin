@@ -1,12 +1,19 @@
 import sharp from 'sharp';
 import path from 'node:path';
 import * as fs from 'node:fs';
+import { promises as proFs } from 'fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
-import { compressSuccess } from './log';
+import { compressSuccess, logger } from './log';
+import chalk from 'chalk';
 async function initSharp(config) {
-  const { files, outputPath, options, isTurn } = config;
+  const { files, outputPath, cache, chunks, options, isTurn } = config;
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);
+    if (options.cache && cache.get(chunks[filePath])) {
+      fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
+      logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
+      return Promise.resolve();
+    }
     const start = Date.now();
     const oldSize = fs.lstatSync(fileRootPath).size;
     let newSize = oldSize;
@@ -19,6 +26,9 @@ async function initSharp(config) {
     const newFile = await image.toFile(filepath);
     newSize = newFile.size;
     if (newSize < oldSize) {
+      if (options.cache && !cache.get(chunks[filePath])) {
+        cache.set(chunks[filePath], await proFs.readFile(filepath));
+      }
       if (isTurn) {
         fs.unlinkSync(fileRootPath);
       }

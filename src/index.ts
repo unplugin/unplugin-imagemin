@@ -75,6 +75,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         outputPath,
         options,
         isTurn,
+        cache,
+        chunks,
       };
       if (options.mode === 'squoosh') {
         await initSquoosh({ ...initOptions, defaultSquooshOptions });
