@@ -51,7 +51,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
       });
       ctx.handleTransform(bundler);
-      console.log(files);
       return true;
     },
     // eslint-disable-next-line consistent-return
@@ -83,10 +82,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           defaultSquooshOptions,
         );
       } else if (options.mode === 'sharp') {
-        const root = process.cwd();
         await initSharp(
-          `${root}/src/assets/image/wallhaven.png`,
-          `${root}/dist/assets/wallhaven.webp`,
+          files,
+          outputPath,
+          options,
+          isTurn,
+          defaultSquooshOptions,
         );
       } else {
         throw new Error(

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- <img src="../assets/image/wallhaven-p92y93.png" alt="" /> -->
-    <!-- <img src="../assets/image/wallhaven-gpjm3d.png" alt="" /> -->
+    <img src="../assets/image/wallhaven.png" alt="" />
+    <img src="../assets/image/wallhaven-gpjm3d.png" alt="" />
   </div>
 </template>
 
@@ -9,6 +9,6 @@
 
 <style scoped>
 img {
-  width: 200px;
+  /* width: 200px; */
 }
 </style>
