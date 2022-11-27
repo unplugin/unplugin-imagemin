@@ -104,7 +104,7 @@ module.exports = {
     }),
 ```
 
-## DefaultConfiguration
+## Squoosh DefaultConfiguration
 
 Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | JPEG-XL | AVIF | OxiPNG)
 
@@ -225,6 +225,8 @@ Png format converts webp format by default, but if you do not specify the conver
 ```
 
 
+## Sharp DefaultConfiguration
+
 ## TODO
 
 - sass moudle navigator web error (refactor)
@@ -237,3 +239,4 @@ Png format converts webp format by default, but if you do not specify the conver
 - resolve generateBundle callback replace code
 - Attribute compress test error
 - Css module conversion
+- refactor generateBundle before write chunk
