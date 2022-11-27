@@ -1,4 +1,6 @@
 {
   "extends": ["relaxed-ts"],
-  "rules": {}
+  "rules": {
+    "max-params": "off"
+  }
 }
