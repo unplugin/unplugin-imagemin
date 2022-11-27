@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 
 async function initSharp(input, output) {
-  sharp(input).webp({quality: 100}).toFile(output);
+  sharp(input).webp({ quality: 100 }).toFile(output);
 }
 export function loadImage(url: string) {
   return sharp(decodeURIComponent(parseURL(url).pathname));
