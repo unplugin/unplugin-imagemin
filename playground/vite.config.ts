@@ -13,8 +13,8 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      mode: 'sharp',
-      // mode: 'squoosh',
+      // mode: 'sharp',
+      mode: 'squoosh',
       compress: {
         jpg: {
           quality: 0,

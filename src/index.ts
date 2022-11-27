@@ -82,13 +82,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           defaultSquooshOptions,
         );
       } else if (options.mode === 'sharp') {
-        await initSharp(
-          files,
-          outputPath,
-          options,
-          isTurn,
-          defaultSquooshOptions,
-        );
+        await initSharp(files, outputPath, options, isTurn);
       } else {
         throw new Error(
           '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
