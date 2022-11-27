@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 import path from 'node:path';
 import initSquoosh from './core/squoosh';
-import devalue from './core/devalue';
+// import devalue from './core/devalue';
 import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { pluginTitle } from './core/log';
@@ -59,8 +59,9 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       if (!files.length) {
         return false;
       }
-      const info = chalk.gray('Process start');
-      console.log(pluginTitle('📦'), info);
+      const info = chalk.gray('Process start with');
+      const modeLog = chalk.magenta(`Mode ${options.mode}`);
+      console.log(pluginTitle('📦'), info, modeLog);
       // start spinner
       let spinner;
       if (!options.cache) {
