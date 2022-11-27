@@ -1,4 +1,5 @@
 import { encodeMap, encodeMapBack } from './encodeMap';
+
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export interface Options {
@@ -19,7 +20,6 @@ export default class Context {
     this.mergeOption = resolveOptions(defaultOptions, this.options);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   handleTransform(bundle) {
     const allBundles = Object.values(bundle);
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
@@ -63,20 +63,16 @@ export function resolveOptions(
   const keys = Object.keys(transformType);
   const res = keys.map(
     (item) =>
-      // eslint-disable-next-line prefer-object-spread
-      Object.assign(
-        {},
-        defaultOptions[item],
-        transformType[item],
-      ) as ResolvedOptions,
+      ({
+        ...defaultOptions[item],
+        ...transformType[item],
+      } as ResolvedOptions),
   );
   const obj = {};
   keys.forEach((item, index) => {
     obj[item] = res[index];
   });
-  // eslint-disable-next-line prefer-object-spread
-  const resolved = Object.assign({}, defaultOptions, obj) as ResolvedOptions;
-  return resolved;
+  return { ...defaultOptions, ...obj } as ResolvedOptions;
 }
 
 export function transformEncodeType(options = {}) {
@@ -96,15 +92,13 @@ export function transformFileName(file) {
 // 判断后缀名
 export function filterExtension(name: string, ext: string): boolean {
   const reg = new RegExp(`.${ext}`);
-  return !!name.match(reg);
+  return Boolean(name.match(reg));
 }
 
 // transform resolve code
-// eslint-disable-next-line max-params
 export function transformCode(options, currentChunk, changeBundle, sourceCode) {
   currentChunk.forEach((item: any) => {
     options.conversion.forEach(
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       (type: { from: string | RegExp; to: string }) => {
         changeBundle.forEach((file) => {
           if (file.includes(type.from)) {
