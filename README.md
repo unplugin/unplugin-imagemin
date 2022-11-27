@@ -12,7 +12,11 @@
 - 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
 
-## Squoosh
+## Squoosh && Sharp
+
+Unplugin-imagemin supports two compression modes 
+
+ [Sharp](https://github.com/lovell/sharp) The typical use case for this high speed Node.js module is to convert large images in common formats to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
