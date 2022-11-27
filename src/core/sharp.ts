@@ -3,7 +3,8 @@ import path from 'node:path';
 import * as fs from 'node:fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess } from './log';
-async function initSharp(files, outputPath, options, isTurn) {
+async function initSharp(config) {
+  const { files, outputPath, options, isTurn } = config;
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);
     const start = Date.now();

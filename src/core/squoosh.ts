@@ -5,13 +5,8 @@ import * as fs from 'node:fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess } from './log';
 
-async function initSquoosh(
-  files,
-  outputPath,
-  options,
-  isTurn,
-  defaultSquooshOptions,
-) {
+async function initSquoosh(config) {
+  const { files, outputPath, options, isTurn, defaultSquooshOptions } = config;
   const imagePool = new ImagePool(os.cpus().length);
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);

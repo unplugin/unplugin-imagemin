@@ -16,10 +16,6 @@ import initSharp from './core/sharp';
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   const files: any = [];
-  let chunks: any;
-  let cache: any;
-  const requestedImagesById: any = {};
-
   const ctx = new Context(options);
   if (!options.conversion) {
     options.conversion = [];
@@ -74,16 +70,16 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       if (options.cache) {
         cache = new Cache({ outputPath });
       }
+      const initOptions = {
+        files,
+        outputPath,
+        options,
+        isTurn,
+      };
       if (options.mode === 'squoosh') {
-        await initSquoosh(
-          files,
-          outputPath,
-          options,
-          isTurn,
-          defaultSquooshOptions,
-        );
+        await initSquoosh({ ...initOptions, defaultSquooshOptions });
       } else if (options.mode === 'sharp') {
-        await initSharp(files, outputPath, options, isTurn);
+        await initSharp(initOptions);
       } else {
         throw new Error(
           '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
