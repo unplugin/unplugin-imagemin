@@ -83,7 +83,11 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           defaultSquooshOptions,
         );
       } else if (options.mode === 'sharp') {
-        // await initSharp();
+        const root = process.cwd();
+        await initSharp(
+          `${root}/src/assets/image/wallhaven.png`,
+          `${root}/dist/assets/wallhaven.webp`,
+        );
       } else {
         throw new Error(
           '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
