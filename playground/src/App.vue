@@ -10,7 +10,7 @@
 </template>
 
 <!-- <style> -->
-<style lang="less">
+<style lang="scss">
 div {
   display: flex;
   flex-wrap: wrap;
