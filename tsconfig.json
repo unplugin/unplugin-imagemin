@@ -11,7 +11,8 @@
     "lib": ["ESNext"],
     "sourceMap": false,
     "noEmitOnError": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "resolveJsonModule": true
   },
   // "include": [
   //   "*.d.ts"
