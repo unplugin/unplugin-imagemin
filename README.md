@@ -242,3 +242,4 @@ Png format converts webp format by default, but if you do not specify the conver
 - refactor generateBundle before write chunk
 - typescript Type hint
 - Optimize the overall logical structure of the code
+- Provides two modes to build and closebundle
