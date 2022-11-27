@@ -16,6 +16,8 @@ import initSharp from './core/sharp';
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   const files: any = [];
+  let chunks: any;
+  let cache: any;
   const ctx = new Context(options);
   if (!options.conversion) {
     options.conversion = [];
