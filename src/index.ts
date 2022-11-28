@@ -23,6 +23,9 @@ export default createUnplugin<any | undefined>((options = {}): any => {
   if (!options.conversion) {
     options.conversion = [];
   }
+  if (!options.mode) {
+    options.mode = 'sharp';
+  }
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
