@@ -3,7 +3,8 @@ import { createFilter } from '@rollup/pluginutils';
 import { lastSymbol, parseId } from './utils';
 import { createHash } from 'crypto';
 import { basename, extname, join, resolve } from 'pathe';
-
+import sharp from 'sharp';
+import { promises as fs, constants } from 'fs';
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export interface Options {
@@ -13,6 +14,8 @@ export default class Context {
   options: ResolvedOptions;
 
   mergeOption: any;
+
+  arr: any = [];
 
   filter: any = createFilter(extRE, [
     /[\\/]node_modules[\\/]/,
@@ -56,17 +59,64 @@ export default class Context {
     const imageModuleFlag = this.filter(id);
     if (imageModuleFlag) {
       const { path } = parseId(id);
+      this.arr.push(path);
       const generateSrc = getBundleImageSrc(path);
       const base = basename(path, extname(path));
       const generatePath = `${this.mergeOption.base}${this.mergeOption.build.assetsDir}/${base}.${generateSrc}`;
-      console.log(generatePath);
       return generatePath;
     }
   }
+
+  // 生成bundle
+  async generateBundle() {
+    const res = this.arr.map(async (item) => {
+      const sharpFile = loadImage(item);
+      const generateSrc = getBundleImageSrc(item);
+      const base = basename(item, extname(item));
+      // eslint-disable-next-line no-return-await
+      // eslint-disable-next-line no-return-await
+      const w = await writeImageFile(
+        sharpFile,
+        this.mergeOption,
+        `${base}.${generateSrc}`,
+      );
+      return w;
+    });
+    return await Promise.all(res);
+  }
+}
+async function writeImageFile(image: any, options, imagename): Promise<any> {
+  const { cacheDir, build } = options;
+  const { assetsDir } = build;
+
+  const cachedFilename = join(cacheDir, imagename);
+  if (!(await exists(cachedFilename))) {
+    await image.toFile(cachedFilename);
+  }
+  return {
+    fileName: join(assetsDir, imagename),
+    name: imagename,
+    source: (await fs.readFile(cachedFilename)) as any,
+    isAsset: true,
+    type: 'asset',
+  };
+}
+export async function exists(path: string) {
+  // eslint-disable-next-line no-return-await
+  return await fs.access(path, constants.F_OK).then(
+    () => true,
+    () => false,
+  );
 }
 function getBundleImageSrc(filename: string) {
   const id = generateImageID(filename);
   return id;
+}
+export function loadImage(url: string) {
+  return sharp(decodeURIComponent(parseURL(url).pathname));
+}
+function parseURL(rawURL: string) {
+  return new URL(rawURL.replace(/#/g, '%23'), 'file://');
 }
 export function generateImageID(filename: string, format: string = 'jpeg') {
   return `${createHash('sha256')

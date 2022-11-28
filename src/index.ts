@@ -36,6 +36,12 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         root,
         build,
         isBuild: command === 'build',
+        cacheDir: path.join(
+          root,
+          'node_modules',
+          '.cache',
+          'unplugin-imagemin',
+        ),
         outputPath: path.resolve(root, build.outDir),
         // 判断 是否 需要转换类型
         isTurn: isTurnImageType(options.conversion),
@@ -49,16 +55,21 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         return `export default ${devalue(res)}`;
       }
     },
-    // async generateBundle(_, bundler) {
-    //   chunks = bundler;
-    //   Object.keys(bundler).forEach((key) => {
-    //     const { outputPath } = ctx.mergeOption;
-    //     // eslint-disable-next-line no-unused-expressions
-    //     filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
-    //   });
-    //   ctx.handleTransform(bundler);
-    //   return true;
-    // },
+    async generateBundle(_, bundler) {
+      // chunks = bundler;
+      // Object.keys(bundler).forEach((key) => {
+      //   const { outputPath } = ctx.mergeOption;
+      //   // eslint-disable-next-line no-unused-expressions
+      //   filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
+      // });
+      // ctx.handleTransform(bundler);
+      // return true;
+      // 生成动态bundle
+      const res = await ctx.generateBundle();
+      res.forEach((asset) => {
+        bundler[asset.fileName] = asset;
+      });
+    },
     // // eslint-disable-next-line consistent-return
     // async closeBundle() {
     //   const { isTurn, outputPath } = ctx.mergeOption;
