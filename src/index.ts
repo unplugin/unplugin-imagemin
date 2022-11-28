@@ -2,6 +2,7 @@ import { createUnplugin } from 'unplugin';
 import chalk from 'chalk';
 
 import path from 'node:path';
+import fs from 'node:fs';
 import initSquoosh from './core/squoosh';
 // import devalue from './core/devalue';
 import Context from './core/context';
@@ -87,9 +88,15 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
         );
       }
-
+      const root = process.cwd();
+      const cacheDirectory = path.join(
+        root,
+        'node_modules',
+        '.cache',
+        'unplugin-imagemin',
+      );
       logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-      if (!options.cache) {
+      if (!cacheDirectory || !options.cache) {
         spinner.text = chalk.yellow('Image conversion completed!');
         spinner.succeed();
       }
