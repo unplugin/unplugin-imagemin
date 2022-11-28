@@ -40,7 +40,6 @@ async function initSquoosh(config) {
     if (newSize < oldSize) {
       const filepath = `${fileRootPath.replace(ext, isTurn ? current : ext)}`;
       fs.writeFileSync(filepath, encodedWith.binary);
-      console.log(encodedWith.binary);
 
       if (options.cache && !cache.get(chunks[filePath])) {
         cache.set(chunks[filePath], encodedWith.binary);
