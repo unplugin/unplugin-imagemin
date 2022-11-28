@@ -21,6 +21,14 @@ Unplugin-imagemin supports two compression modes
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
 
+
+## Be careful
+Squoosh does not support sass and node 18 or above in web.
+Sass is not supported because of a global variable conflict
+It will be solved in the future.
+If there are similar requirements, it is recommended to change mode to sharp.
+
+
 ## Build In the case of 60% quality with **Squoosh**
 ![image](https://user-images.githubusercontent.com/66500121/204133582-6a8d0472-9aea-4b53-b54f-fbde96439d25.png)
 
@@ -112,11 +120,6 @@ Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | J
 Png format converts webp format by default, but if you do not specify the conversion attribute, the suffix will not be modified.
 
 
-### Be careful
-Squoosh does not support sass and node 18 or above in web.
-Sass is not supported because of a global variable conflict
-It will be solved in the future.
-If there are similar requirements, it is recommended to change mode to sharp.
 ### MozJPEG
 
 ```ts
