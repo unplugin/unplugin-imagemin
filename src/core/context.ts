@@ -1,4 +1,7 @@
 import { encodeMap, encodeMapBack } from './encodeMap';
+import { createFilter } from '@rollup/pluginutils';
+import { parseId } from './utils';
+import { createHash } from 'crypto';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
@@ -9,6 +12,11 @@ export default class Context {
   options: ResolvedOptions;
 
   mergeOption: any;
+
+  filter: any = createFilter(extRE, [
+    /[\\/]node_modules[\\/]/,
+    /[\\/]\.git[\\/]/,
+  ]);
 
   root = process.cwd();
 
@@ -42,6 +50,25 @@ export default class Context {
     // transform js modules
     transformCode(this.options, chunkBundle, imageFileBundle, 'code');
   }
+
+  loadBundle(id) {
+    const imageModuleFlag = this.filter(id);
+    if (imageModuleFlag) {
+      const { path } = parseId(id);
+      const generateSrc = getBundleImageSrc(path);
+      console.log(generateSrc);
+    }
+  }
+}
+function getBundleImageSrc(filename: string) {
+  const id = generateImageID(filename);
+  return id;
+}
+export function generateImageID(filename: string, format: string = 'jpeg') {
+  return `${createHash('sha256')
+    .update(filename)
+    .digest('hex')
+    .slice(0, 8)}.${format}`;
 }
 export type ResolvedOptions = Omit<
   Required<Options>,
