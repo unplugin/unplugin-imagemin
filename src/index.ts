@@ -4,7 +4,7 @@ import { createFilter } from '@rollup/pluginutils';
 import path from 'node:path';
 import fs from 'node:fs';
 import initSquoosh from './core/squoosh';
-// import devalue from './core/devalue';
+import devalue from './core/devalue';
 import Context from './core/context';
 import { defaultOptions } from './core/types';
 import { logger, pluginTitle } from './core/log';
@@ -44,8 +44,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       ctx.handleMergeOption(config);
     },
     async load(id) {
-      // TODO something
-      ctx.loadBundle(id);
+      const res = ctx.loadBundle(id);
+      if (res) {
+        return `export default ${devalue(res)}`;
+      }
     },
     // async generateBundle(_, bundler) {
     //   chunks = bundler;

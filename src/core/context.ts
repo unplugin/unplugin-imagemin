@@ -1,7 +1,8 @@
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
-import { parseId } from './utils';
+import { lastSymbol, parseId } from './utils';
 import { createHash } from 'crypto';
+import { basename, extname, join, resolve } from 'pathe';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
@@ -56,7 +57,10 @@ export default class Context {
     if (imageModuleFlag) {
       const { path } = parseId(id);
       const generateSrc = getBundleImageSrc(path);
-      console.log(generateSrc);
+      const base = basename(path, extname(path));
+      const generatePath = `${this.mergeOption.base}${this.mergeOption.build.assetsDir}/${base}.${generateSrc}`;
+      console.log(generatePath);
+      return generatePath;
     }
   }
 }
