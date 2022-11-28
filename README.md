@@ -111,6 +111,12 @@ Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | J
 **OxiPNG**
 Png format converts webp format by default, but if you do not specify the conversion attribute, the suffix will not be modified.
 
+
+### Be careful
+Squoosh does not support sass and node 18 or above in web.
+Sass is not supported because of a global variable conflict
+It will be solved in the future.
+If there are similar requirements, it is recommended to change mode to sharp.
 ### MozJPEG
 
 ```ts
@@ -225,9 +231,9 @@ Png format converts webp format by default, but if you do not specify the conver
 ```
 
 
-## Sharp DefaultConfiguration
+<!-- ## Sharp DefaultConfiguration -->
 
-## TODO
+<!-- ## TODO
 
 - sass moudle navigator web error (refactor)
 - transform with unplugin context
@@ -242,4 +248,4 @@ Png format converts webp format by default, but if you do not specify the conver
 - refactor generateBundle before write chunk
 - typescript Type hint
 - Optimize the overall logical structure of the code
-- Provides two modes to build and closebundle
+- Provides two modes to build and closebundle -->
