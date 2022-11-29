@@ -10,6 +10,12 @@ import { promises as fs, constants } from 'fs';
 import { defaultOptions } from './types';
 import { isTurnImageType } from './utils';
 import devalue from './devalue';
+import chalk from 'chalk';
+import { logger, pluginTitle } from './log';
+import { loadWithRocketGradient } from './gradient';
+import Cache from './cache';
+import initSquoosh from './squoosh';
+import initSharp from './sharp';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
@@ -24,6 +30,10 @@ export default class Context {
   mergeOption: any;
 
   imageModulePath: any = [];
+
+  chunks: any;
+
+  cache: any;
 
   filter: any = createFilter(extRE, [
     /[\\/]node_modules[\\/]/,
@@ -103,6 +113,7 @@ export default class Context {
 
   // 生成bundle
   async generateBundle(bundler) {
+    this.chunks = bundler;
     if (!(await exists(this.config.cacheDir))) {
       await mkdir(this.config.cacheDir, { recursive: true });
     }
@@ -160,6 +171,55 @@ export default class Context {
     result.forEach((asset) => {
       bundler[asset.fileName] = asset;
     });
+  }
+
+  // close bundle
+  async closeBundleHook(files) {
+    if (!this.config.options.beforeBundle) {
+      const { isTurn, outputPath } = this.config;
+      const { mode, cache } = this.config.options;
+      if (!files.length) {
+        return false;
+      }
+      const info = chalk.gray('Process start with');
+      const modeLog = chalk.magenta(`Mode ${mode}`);
+      logger(pluginTitle('📦'), info, modeLog);
+      // start spinner
+      let spinner;
+      if (!cache) {
+        spinner = await loadWithRocketGradient('');
+      }
+      const defaultSquooshOptions = {};
+      Object.keys(defaultOptions).forEach(
+        (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
+      );
+      if (cache) {
+        this.cache = new Cache({ outputPath });
+      }
+      const initOptions = {
+        files,
+        outputPath,
+        options: this.config.options,
+        isTurn,
+        cache,
+        chunks: this.chunks,
+      };
+      if (mode === 'squoosh') {
+        await initSquoosh({ ...initOptions, defaultSquooshOptions });
+      } else if (mode === 'sharp') {
+        await initSharp(initOptions);
+      } else {
+        throw new Error(
+          '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
+        );
+      }
+      logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+      if (!this.config.cacheDir || !cache) {
+        spinner.text = chalk.yellow('Image conversion completed!');
+        spinner.succeed();
+      }
+    }
+    return true;
   }
 }
 async function writeImageFile(image: any, options, imageName): Promise<any> {

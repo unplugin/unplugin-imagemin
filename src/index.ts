@@ -65,7 +65,6 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       }
     },
     async generateBundle(_, bundler) {
-      // chunks = bundler;
       if (options.beforeBundle) {
         // 生成动态bundle
         await ctx.generateBundle(bundler);
@@ -78,59 +77,8 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         ctx.handleTransform(bundler);
       }
     },
-    // // // eslint-disable-next-line consistent-return
-    // async closeBundle() {
-    //   if (!options.beforeBundle) {
-    //     const { isTurn, outputPath } = ctx.mergeOption;
-    //     if (!files.length) {
-    //       return false;
-    //     }
-    //     const info = chalk.gray('Process start with');
-    //     const modeLog = chalk.magenta(`Mode ${options.mode}`);
-    //     logger(pluginTitle('📦'), info, modeLog);
-    //     // start spinner
-    //     let spinner;
-    //     if (!options.cache) {
-    //       spinner = await loadWithRocketGradient('');
-    //     }
-    //     const defaultSquooshOptions = {};
-    //     Object.keys(defaultOptions).forEach(
-    //       (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
-    //     );
-    //     if (options.cache) {
-    //       cache = new Cache({ outputPath });
-    //     }
-    //     const initOptions = {
-    //       files,
-    //       outputPath,
-    //       options,
-    //       isTurn,
-    //       cache,
-    //       chunks,
-    //     };
-    //     if (options.mode === 'squoosh') {
-    //       await initSquoosh({ ...initOptions, defaultSquooshOptions });
-    //     } else if (options.mode === 'sharp') {
-    //       await initSharp(initOptions);
-    //     } else {
-    //       throw new Error(
-    //         '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
-    //       );
-    //     }
-    //     const root = process.cwd();
-    //     const cacheDirectory = path.join(
-    //       root,
-    //       'node_modules',
-    //       '.cache',
-    //       'unplugin-imagemin',
-    //     );
-    //     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-    //     if (!cacheDirectory || !options.cache) {
-    //       spinner.text = chalk.yellow('Image conversion completed!');
-    //       spinner.succeed();
-    //     }
-    //   }
-    //   return true;
-    // },
+    async closeBundle() {
+      ctx.closeBundleHook(files);
+    },
   };
 });
