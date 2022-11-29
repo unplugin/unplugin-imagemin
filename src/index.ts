@@ -54,11 +54,11 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       //   ...defaultOptions,
       // };
       configOption = config;
-      ctx.handleMergeOption({ ...config, options });
+      ctx.handleMergeOptionHook({ ...config, options });
     },
     async load(id) {
       if (options.beforeBundle) {
-        const res = ctx.loadBundle(id);
+        const res = ctx.loadBundleHook(id);
         if (res) {
           return res;
         }
@@ -67,18 +67,13 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     async generateBundle(_, bundler) {
       if (options.beforeBundle) {
         // 生成动态bundle
-        await ctx.generateBundle(bundler);
+        await ctx.generateBundleHook(bundler);
       } else {
-        Object.keys(bundler).forEach((key) => {
-          const { outputPath } = ctx.mergeOption;
-          // eslint-disable-next-line no-unused-expressions
-          filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
-        });
-        ctx.handleTransform(bundler);
+        ctx.TransformChunksHook(bundler);
       }
     },
     async closeBundle() {
-      ctx.closeBundleHook(files);
+      ctx.closeBundleHook();
     },
   };
 });

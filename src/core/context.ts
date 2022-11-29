@@ -1,6 +1,6 @@
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
-import { lastSymbol, parseId } from './utils';
+import { filterFile, lastSymbol, parseId } from './utils';
 import { createHash } from 'crypto';
 import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
@@ -35,12 +35,14 @@ export default class Context {
 
   cache: any;
 
+  files: any;
+
   filter: any = createFilter(extRE, [
     /[\\/]node_modules[\\/]/,
     /[\\/]\.git[\\/]/,
   ]);
 
-  handleMergeOption(useConfig: any) {
+  handleMergeOptionHook(useConfig: any) {
     const {
       base,
       command,
@@ -71,7 +73,12 @@ export default class Context {
     this.config = chooseConfig;
   }
 
-  handleTransform(bundle) {
+  TransformChunksHook(bundle) {
+    Object.keys(bundle).forEach((key) => {
+      const { outputPath } = this.config;
+      // eslint-disable-next-line no-unused-expressions
+      filterFile(resolve(outputPath!, key), extRE) && this.files.push(key);
+    });
     const allBundles = Object.values(bundle);
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
     const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
@@ -95,7 +102,7 @@ export default class Context {
   }
 
   // eslint-disable-next-line consistent-return
-  loadBundle(id) {
+  loadBundleHook(id) {
     // filter image modules
     const imageModuleFlag = this.filter(id);
     if (imageModuleFlag) {
@@ -114,7 +121,7 @@ export default class Context {
   }
 
   // 生成bundle
-  async generateBundle(bundler) {
+  async generateBundleHook(bundler) {
     this.chunks = bundler;
     if (!(await exists(this.config.cacheDir))) {
       await mkdir(this.config.cacheDir, { recursive: true });
@@ -137,7 +144,8 @@ export default class Context {
           [type!]: defaultSquooshOptions[type!],
         };
         await image.encode(currentType);
-        const generateSrc = getBundleImageSrc(item);
+        // const generateSrc = getBundleImageSrc(item, format);
+        const generateSrc = getBundleImageSrc(item, 'webp');
         const base = basename(item, extname(item));
         const { cacheDir, assetsDir } = this.config;
         const imageName = `${base}.${generateSrc}`;
@@ -176,11 +184,11 @@ export default class Context {
   }
 
   // close bundle
-  async closeBundleHook(files) {
+  async closeBundleHook() {
     if (!this.config.options.beforeBundle) {
       const { isTurn, outputPath } = this.config;
       const { mode, cache } = this.config.options;
-      if (!files.length) {
+      if (!this.files.length) {
         return false;
       }
       const info = chalk.gray('Process start with');
@@ -199,7 +207,7 @@ export default class Context {
         this.cache = new Cache({ outputPath });
       }
       const initOptions = {
-        files,
+        files: this.files,
         outputPath,
         options: this.config.options,
         isTurn,
