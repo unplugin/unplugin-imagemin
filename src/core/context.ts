@@ -4,6 +4,7 @@ import { lastSymbol, parseId } from './utils';
 import { createHash } from 'crypto';
 import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
+import { mkdir } from 'node:fs/promises';
 import { promises as fs, constants } from 'fs';
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
@@ -69,6 +70,12 @@ export default class Context {
 
   // 生成bundle
   async generateBundle() {
+    if (!(await exists(this.mergeOption.cacheDir))) {
+      console.log('不存在');
+      const createDir = await mkdir(this.mergeOption.cacheDir, { recursive: true });
+      // mkdirSync(this.mergeOption.cacheDir);
+      console.log(createDir);
+    }
     const res = this.arr.map(async (item) => {
       const sharpFile = loadImage(item);
       const generateSrc = getBundleImageSrc(item);
@@ -80,8 +87,10 @@ export default class Context {
         this.mergeOption,
         `${base}.${generateSrc}`,
       );
+      console.log(w);
       return w;
     });
+    // eslint-disable-next-line no-return-await
     return await Promise.all(res);
   }
 }
@@ -100,6 +109,9 @@ async function writeImageFile(image: any, options, imagename): Promise<any> {
     isAsset: true,
     type: 'asset',
   };
+}
+function mkdirSync(mkdirPath: string): void {
+  fs.mkdir(mkdirPath, { recursive: true });
 }
 export async function exists(path: string) {
   // eslint-disable-next-line no-return-await
