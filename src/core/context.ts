@@ -9,6 +9,7 @@ import { mkdir } from 'node:fs/promises';
 import { promises as fs, constants } from 'fs';
 import { defaultOptions } from './types';
 import { isTurnImageType } from './utils';
+import devalue from './devalue';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
@@ -22,7 +23,7 @@ export default class Context {
 
   mergeOption: any;
 
-  arr: any = [];
+  imageModulePath: any = [];
 
   filter: any = createFilter(extRE, [
     /[\\/]node_modules[\\/]/,
@@ -83,38 +84,41 @@ export default class Context {
     transformCode(this.options, chunkBundle, imageFileBundle, 'code');
   }
 
+  // eslint-disable-next-line consistent-return
   loadBundle(id) {
+    // filter image modules
     const imageModuleFlag = this.filter(id);
     if (imageModuleFlag) {
       const { path } = parseId(id);
-      this.arr.push(path);
+      this.imageModulePath.push(path);
       const generateSrc = getBundleImageSrc(path);
       const base = basename(path, extname(path));
-      const generatePath = `${this.mergeOption.base}${this.mergeOption.build.assetsDir}/${base}.${generateSrc}`;
-      return generatePath;
+      const generatePath = join(
+        `${this.config.base}${this.config.assetsDir}`,
+        `${base}.${generateSrc}`,
+      );
+      return `export default ${devalue(generatePath)}`;
     }
   }
 
   // 生成bundle
-  async generateBundle() {
-    if (!(await exists(this.mergeOption.cacheDir))) {
-      await mkdir(this.mergeOption.cacheDir, { recursive: true });
+  async generateBundle(bundler) {
+    if (!(await exists(this.config.cacheDir))) {
+      await mkdir(this.config.cacheDir, { recursive: true });
     }
     const imagePool = new ImagePool();
-    const res = this.arr.map(async (item) => {
-      if ((this, this.mergeOption.mode === 'squoosh')) {
+    const generateImageBundle = this.imageModulePath.map(async (item) => {
+      if ((this, this.config.options.mode === 'squoosh')) {
         const ext = extname(item).slice(1) ?? '';
-        const userRes = this.mergeOption.conversion.find((i) =>
+        const userRes = this.config.options.conversion.find((i) =>
           `${i.from}`.includes(ext),
         );
-        const type = this.mergeOption.isTurn
-          ? userRes?.to
-          : encodeMapBack.get(ext);
-        const current: any = encodeMap.get(type);
+        const type = this.config.isTurn ? userRes?.to : encodeMapBack.get(ext);
+        // const current: any = encodeMap.get(type);
         const image = imagePool.ingestImage(item);
         const defaultSquooshOptions = {};
         Object.keys(defaultOptions).forEach(
-          (key) => (defaultSquooshOptions[key] = { ...this.mergeOption[key] }),
+          (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
         );
         const currentType = {
           [type!]: defaultSquooshOptions[type!],
@@ -122,54 +126,52 @@ export default class Context {
         await image.encode(currentType);
         const generateSrc = getBundleImageSrc(item);
         const base = basename(item, extname(item));
-        const { cacheDir, build } = this.mergeOption;
-        const { assetsDir } = build;
-        const imagename = `${base}.${generateSrc}`;
-        const cachedFilename = join(cacheDir, imagename);
+        const { cacheDir, assetsDir } = this.config;
+        const imageName = `${base}.${generateSrc}`;
+        const cachedFilename = join(cacheDir, imageName);
         const encodedWith = await image.encodedWith[type];
         // if (!(await exists(cachedFilename))) {
         await fs.writeFile(cachedFilename, encodedWith.binary);
         // }
         const source = {
-          fileName: join(assetsDir, imagename),
-          name: imagename,
+          fileName: join(assetsDir, imageName),
+          name: imageName,
           source: (await fs.readFile(cachedFilename)) as any,
           isAsset: true,
           type: 'asset',
         };
         return source;
       }
-      if (this.mergeOption.mode === 'sharp') {
+      if (this.config.options.mode === 'sharp') {
         const sharpFile = loadImage(item);
         const generateSrc = getBundleImageSrc(item);
         const base = basename(item, extname(item));
-        // eslint-disable-next-line no-return-await
-        // eslint-disable-next-line no-return-await
         const source = await writeImageFile(
           sharpFile,
-          this.mergeOption,
+          this.config,
           `${base}.${generateSrc}`,
         );
         return source;
       }
     });
-    const result = await Promise.all(res);
+    // TODO prepare before bundle generate loading animation
+    const result = await Promise.all(generateImageBundle);
     imagePool.close();
-    // eslint-disable-next-line no-return-await
-    return result;
+    result.forEach((asset) => {
+      bundler[asset.fileName] = asset;
+    });
   }
 }
-async function writeImageFile(image: any, options, imagename): Promise<any> {
-  const { cacheDir, build } = options;
-  const { assetsDir } = build;
+async function writeImageFile(image: any, options, imageName): Promise<any> {
+  const { cacheDir, assetsDir } = options;
 
-  const cachedFilename = join(cacheDir, imagename);
+  const cachedFilename = join(cacheDir, imageName);
   if (!(await exists(cachedFilename))) {
     await image.toFile(cachedFilename);
   }
   return {
-    fileName: join(assetsDir, imagename),
-    name: imagename,
+    fileName: join(assetsDir, imageName),
+    name: imageName,
     source: (await fs.readFile(cachedFilename)) as any,
     isAsset: true,
     type: 'asset',
@@ -226,8 +228,6 @@ export function resolveOptions(
         ...transformType[item],
       } as ResolvedOptions),
   );
-  console.log(res);
-
   const obj = {};
   keys.forEach((item, index) => {
     obj[item] = res[index];

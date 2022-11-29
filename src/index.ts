@@ -60,7 +60,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       if (options.beforeBundle) {
         const res = ctx.loadBundle(id);
         if (res) {
-          return `export default ${devalue(res)}`;
+          return res;
         }
       }
     },
@@ -68,10 +68,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       // chunks = bundler;
       if (options.beforeBundle) {
         // 生成动态bundle
-        const res = await ctx.generateBundle();
-        res.forEach((asset) => {
-          bundler[asset.fileName] = asset;
-        });
+        await ctx.generateBundle(bundler);
       } else {
         Object.keys(bundler).forEach((key) => {
           const { outputPath } = ctx.mergeOption;
@@ -81,59 +78,59 @@ export default createUnplugin<any | undefined>((options = {}): any => {
         ctx.handleTransform(bundler);
       }
     },
-    // // eslint-disable-next-line consistent-return
-    async closeBundle() {
-      if (!options.beforeBundle) {
-        const { isTurn, outputPath } = ctx.mergeOption;
-        if (!files.length) {
-          return false;
-        }
-        const info = chalk.gray('Process start with');
-        const modeLog = chalk.magenta(`Mode ${options.mode}`);
-        logger(pluginTitle('📦'), info, modeLog);
-        // start spinner
-        let spinner;
-        if (!options.cache) {
-          spinner = await loadWithRocketGradient('');
-        }
-        const defaultSquooshOptions = {};
-        Object.keys(defaultOptions).forEach(
-          (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
-        );
-        if (options.cache) {
-          cache = new Cache({ outputPath });
-        }
-        const initOptions = {
-          files,
-          outputPath,
-          options,
-          isTurn,
-          cache,
-          chunks,
-        };
-        if (options.mode === 'squoosh') {
-          await initSquoosh({ ...initOptions, defaultSquooshOptions });
-        } else if (options.mode === 'sharp') {
-          await initSharp(initOptions);
-        } else {
-          throw new Error(
-            '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
-          );
-        }
-        const root = process.cwd();
-        const cacheDirectory = path.join(
-          root,
-          'node_modules',
-          '.cache',
-          'unplugin-imagemin',
-        );
-        logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-        if (!cacheDirectory || !options.cache) {
-          spinner.text = chalk.yellow('Image conversion completed!');
-          spinner.succeed();
-        }
-      }
-      return true;
-    },
+    // // // eslint-disable-next-line consistent-return
+    // async closeBundle() {
+    //   if (!options.beforeBundle) {
+    //     const { isTurn, outputPath } = ctx.mergeOption;
+    //     if (!files.length) {
+    //       return false;
+    //     }
+    //     const info = chalk.gray('Process start with');
+    //     const modeLog = chalk.magenta(`Mode ${options.mode}`);
+    //     logger(pluginTitle('📦'), info, modeLog);
+    //     // start spinner
+    //     let spinner;
+    //     if (!options.cache) {
+    //       spinner = await loadWithRocketGradient('');
+    //     }
+    //     const defaultSquooshOptions = {};
+    //     Object.keys(defaultOptions).forEach(
+    //       (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
+    //     );
+    //     if (options.cache) {
+    //       cache = new Cache({ outputPath });
+    //     }
+    //     const initOptions = {
+    //       files,
+    //       outputPath,
+    //       options,
+    //       isTurn,
+    //       cache,
+    //       chunks,
+    //     };
+    //     if (options.mode === 'squoosh') {
+    //       await initSquoosh({ ...initOptions, defaultSquooshOptions });
+    //     } else if (options.mode === 'sharp') {
+    //       await initSharp(initOptions);
+    //     } else {
+    //       throw new Error(
+    //         '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
+    //       );
+    //     }
+    //     const root = process.cwd();
+    //     const cacheDirectory = path.join(
+    //       root,
+    //       'node_modules',
+    //       '.cache',
+    //       'unplugin-imagemin',
+    //     );
+    //     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+    //     if (!cacheDirectory || !options.cache) {
+    //       spinner.text = chalk.yellow('Image conversion completed!');
+    //       spinner.succeed();
+    //     }
+    //   }
+    //   return true;
+    // },
   };
 });

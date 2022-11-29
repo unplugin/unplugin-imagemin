@@ -1,6 +1,10 @@
 {
-  "extends": ["relaxed-ts"],
+  "extends": [
+    "relaxed-ts"
+  ],
   "rules": {
-    "max-params": "off"
+    "max-params": "off",
+    "consistent-return": "off",
+    "no-warning-comments": "off"
   }
 }
