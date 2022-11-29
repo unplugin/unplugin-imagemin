@@ -71,10 +71,7 @@ export default class Context {
   // 生成bundle
   async generateBundle() {
     if (!(await exists(this.mergeOption.cacheDir))) {
-      console.log('不存在');
-      const createDir = await mkdir(this.mergeOption.cacheDir, { recursive: true });
-      // mkdirSync(this.mergeOption.cacheDir);
-      console.log(createDir);
+      await mkdir(this.mergeOption.cacheDir, { recursive: true });
     }
     const res = this.arr.map(async (item) => {
       const sharpFile = loadImage(item);
