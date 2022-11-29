@@ -1,7 +1,7 @@
 {
   "name": "unplugin-imagemin",
   "version": "0.0.28",
-  "description": "Library",
+  "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch src",
