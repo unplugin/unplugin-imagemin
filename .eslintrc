@@ -5,6 +5,7 @@
   "rules": {
     "max-params": "off",
     "consistent-return": "off",
-    "no-warning-comments": "off"
+    "no-warning-comments": "off",
+    "@typescript-eslint/no-inferrable-types": "off"
   }
 }

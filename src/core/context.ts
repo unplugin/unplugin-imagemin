@@ -101,7 +101,9 @@ export default class Context {
     if (imageModuleFlag) {
       const { path } = parseId(id);
       this.imageModulePath.push(path);
-      const generateSrc = getBundleImageSrc(path);
+      // TODO 不同 conversion 不同format 动态 便利format
+      // const generateSrc = getBundleImageSrc(path, format);
+      const generateSrc = getBundleImageSrc(path, 'webp');
       const base = basename(path, extname(path));
       const generatePath = join(
         `${this.config.base}${this.config.assetsDir}`,
@@ -247,8 +249,8 @@ export async function exists(path: string) {
     () => false,
   );
 }
-function getBundleImageSrc(filename: string) {
-  const id = generateImageID(filename);
+function getBundleImageSrc(filename: string, format: string) {
+  const id = generateImageID(filename, format);
   return id;
 }
 export function loadImage(url: string) {
