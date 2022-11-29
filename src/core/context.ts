@@ -85,13 +85,13 @@ export default class Context {
 
     // transform css modules
     transformCode(
-      this.options,
+      this.config,
       needTransformAssetsBundle,
       imageFileBundle,
       'source',
     );
     // transform js modules
-    transformCode(this.options, chunkBundle, imageFileBundle, 'code');
+    transformCode(this.config, chunkBundle, imageFileBundle, 'code');
   }
 
   // eslint-disable-next-line consistent-return
@@ -237,7 +237,7 @@ async function writeImageFile(image: any, options, imageName): Promise<any> {
     type: 'asset',
   };
 }
-function mkdirSync(mkdirPath: string): void {
+export function mkdirSync(mkdirPath: string): void {
   fs.mkdir(mkdirPath, { recursive: true });
 }
 export async function exists(path: string) {
