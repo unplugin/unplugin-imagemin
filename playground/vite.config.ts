@@ -13,6 +13,8 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
+      // 捆绑前构建 或者 捆绑后构建
+      beforeBundle: false,
       // mode: 'sharp',
       mode: 'squoosh',
       compress: {

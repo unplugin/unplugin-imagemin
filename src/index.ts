@@ -50,76 +50,85 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       ctx.handleMergeOption(config);
     },
     async load(id) {
-      const res = ctx.loadBundle(id);
-      if (res) {
-        return `export default ${devalue(res)}`;
+      if (options.beforeBundle) {
+        const res = ctx.loadBundle(id);
+        if (res) {
+          return `export default ${devalue(res)}`;
+        }
       }
     },
     async generateBundle(_, bundler) {
       // chunks = bundler;
-      // Object.keys(bundler).forEach((key) => {
-      //   const { outputPath } = ctx.mergeOption;
-      //   // eslint-disable-next-line no-unused-expressions
-      //   filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
-      // });
-      // ctx.handleTransform(bundler);
-      // return true;
-      // 生成动态bundle
-      const res = await ctx.generateBundle();
-      res.forEach((asset) => {
-        bundler[asset.fileName] = asset;
-      });
+      if (options.beforeBundle) {
+        // 生成动态bundle
+        const res = await ctx.generateBundle();
+        res.forEach((asset) => {
+          bundler[asset.fileName] = asset;
+        });
+      } else {
+        Object.keys(bundler).forEach((key) => {
+          const { outputPath } = ctx.mergeOption;
+          // eslint-disable-next-line no-unused-expressions
+          filterFile(path.resolve(outputPath!, key), extRE) && files.push(key);
+        });
+        ctx.handleTransform(bundler);
+      }
     },
     // // eslint-disable-next-line consistent-return
-    // async closeBundle() {
-    //   const { isTurn, outputPath } = ctx.mergeOption;
-    //   if (!files.length) {
-    //     return false;
-    //   }
-    //   const info = chalk.gray('Process start with');
-    //   const modeLog = chalk.magenta(`Mode ${options.mode}`);
-    //   logger(pluginTitle('📦'), info, modeLog);
-    //   // start spinner
-    //   let spinner;
-    //   if (!options.cache) {
-    //     spinner = await loadWithRocketGradient('');
-    //   }
-    //   const defaultSquooshOptions = {};
-    //   Object.keys(defaultOptions).forEach(
-    //     (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
-    //   );
-    //   if (options.cache) {
-    //     cache = new Cache({ outputPath });
-    //   }
-    //   const initOptions = {
-    //     files,
-    //     outputPath,
-    //     options,
-    //     isTurn,
-    //     cache,
-    //     chunks,
-    //   };
-    //   if (options.mode === 'squoosh') {
-    //     await initSquoosh({ ...initOptions, defaultSquooshOptions });
-    //   } else if (options.mode === 'sharp') {
-    //     await initSharp(initOptions);
-    //   } else {
-    //     throw new Error(
-    //       '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
-    //     );
-    //   }
-    //   const root = process.cwd();
-    //   const cacheDirectory = path.join(
-    //     root,
-    //     'node_modules',
-    //     '.cache',
-    //     'unplugin-imagemin',
-    //   );
-    //   logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-    //   if (!cacheDirectory || !options.cache) {
-    //     spinner.text = chalk.yellow('Image conversion completed!');
-    //     spinner.succeed();
-    //   }
-    // },
+    async closeBundle() {
+      if (!options.beforeBundle) {
+        console.log('构建后执行');
+        const { isTurn, outputPath } = ctx.mergeOption;
+        console.log(files);
+
+        if (!files.length) {
+          return false;
+        }
+        const info = chalk.gray('Process start with');
+        const modeLog = chalk.magenta(`Mode ${options.mode}`);
+        logger(pluginTitle('📦'), info, modeLog);
+        // start spinner
+        let spinner;
+        if (!options.cache) {
+          spinner = await loadWithRocketGradient('');
+        }
+        const defaultSquooshOptions = {};
+        Object.keys(defaultOptions).forEach(
+          (key) => (defaultSquooshOptions[key] = { ...ctx.mergeOption[key] }),
+        );
+        if (options.cache) {
+          cache = new Cache({ outputPath });
+        }
+        const initOptions = {
+          files,
+          outputPath,
+          options,
+          isTurn,
+          cache,
+          chunks,
+        };
+        if (options.mode === 'squoosh') {
+          await initSquoosh({ ...initOptions, defaultSquooshOptions });
+        } else if (options.mode === 'sharp') {
+          await initSharp(initOptions);
+        } else {
+          throw new Error(
+            '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
+          );
+        }
+        const root = process.cwd();
+        const cacheDirectory = path.join(
+          root,
+          'node_modules',
+          '.cache',
+          'unplugin-imagemin',
+        );
+        logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+        if (!cacheDirectory || !options.cache) {
+          spinner.text = chalk.yellow('Image conversion completed!');
+          spinner.succeed();
+        }
+      }
+    },
   };
 });
