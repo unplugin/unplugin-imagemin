@@ -1,24 +1,28 @@
 import { createUnplugin } from 'unplugin';
 import chalk from 'chalk';
 import { createFilter } from '@rollup/pluginutils';
-import path from 'node:path';
+import path, { extname } from 'node:path';
 import fs from 'node:fs';
+import os from 'node:os';
 import initSquoosh from './core/squoosh';
 import devalue from './core/devalue';
-import Context from './core/context';
+import Context, { exists } from './core/context';
 import { defaultOptions } from './core/types';
 import { logger, pluginTitle } from './core/log';
 import { loadWithRocketGradient } from './core/gradient';
 import { filterFile, isTurnImageType, parseId } from './core/utils';
-
+import { ImagePool } from '@squoosh/lib';
 import Cache from './core/cache';
 import initSharp from './core/sharp';
+import { encodeMapBack } from './core/encodeMap';
+import { mkdir } from 'node:fs/promises';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export default createUnplugin<any | undefined>((options = {}): any => {
   const files: any = [];
   let chunks: any;
   let cache: any;
+  let configOption: any;
   const ctx = new Context(options);
   if (!options.conversion) {
     options.conversion = [];
@@ -30,7 +34,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
-    configResolved({ base, command, root, build }) {
+    async configResolved({ base, command, root, build }) {
       const config = {
         base,
         root,
@@ -42,11 +46,13 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           '.cache',
           'unplugin-imagemin',
         ),
+        ...options,
         outputPath: path.resolve(root, build.outDir),
         // 判断 是否 需要转换类型
         isTurn: isTurnImageType(options.conversion),
         ...defaultOptions,
       };
+      configOption = config;
       ctx.handleMergeOption(config);
     },
     async load(id) {
@@ -61,10 +67,11 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       // chunks = bundler;
       if (options.beforeBundle) {
         // 生成动态bundle
-        const res = await ctx.generateBundle();
-        res.forEach((asset) => {
-          bundler[asset.fileName] = asset;
-        });
+        await ctx.generateBundle();
+        // const res = await ctx.generateBundle();
+        // res.forEach((asset) => {
+        //   bundler[asset.fileName] = asset;
+        // });
       } else {
         Object.keys(bundler).forEach((key) => {
           const { outputPath } = ctx.mergeOption;
@@ -77,10 +84,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     // // eslint-disable-next-line consistent-return
     async closeBundle() {
       if (!options.beforeBundle) {
-        console.log('构建后执行');
         const { isTurn, outputPath } = ctx.mergeOption;
-        console.log(files);
-
         if (!files.length) {
           return false;
         }
@@ -129,6 +133,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
           spinner.succeed();
         }
       }
+      return true;
     },
   };
 });

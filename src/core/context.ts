@@ -4,8 +4,10 @@ import { lastSymbol, parseId } from './utils';
 import { createHash } from 'crypto';
 import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
+import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs, constants } from 'fs';
+import { defaultOptions } from './types';
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export interface Options {
@@ -73,22 +75,63 @@ export default class Context {
     if (!(await exists(this.mergeOption.cacheDir))) {
       await mkdir(this.mergeOption.cacheDir, { recursive: true });
     }
+    const imagePool = new ImagePool();
     const res = this.arr.map(async (item) => {
-      const sharpFile = loadImage(item);
-      const generateSrc = getBundleImageSrc(item);
-      const base = basename(item, extname(item));
-      // eslint-disable-next-line no-return-await
-      // eslint-disable-next-line no-return-await
-      const w = await writeImageFile(
-        sharpFile,
-        this.mergeOption,
-        `${base}.${generateSrc}`,
-      );
-      console.log(w);
-      return w;
+      if ((this, this.mergeOption.mode === 'squoosh')) {
+        const ext = extname(item).slice(1) ?? '';
+        const userRes = this.mergeOption.conversion.find((i) =>
+          `${i.from}`.includes(ext),
+        );
+        const type = this.mergeOption.isTurn
+          ? userRes?.to
+          : encodeMapBack.get(ext);
+        const current: any = encodeMap.get(type);
+        const image = imagePool.ingestImage(item);
+        const defaultSquooshOptions = {};
+        Object.keys(defaultOptions).forEach(
+          (key) => (defaultSquooshOptions[key] = { ...this.mergeOption[key] }),
+        );
+        const currentType = {
+          [type!]: defaultSquooshOptions[type!],
+        };
+        await image.encode(currentType);
+        const generateSrc = getBundleImageSrc(item);
+        const base = basename(item, extname(item));
+        const { cacheDir, build } = this.mergeOption;
+        const { assetsDir } = build;
+        const imagename = `${base}.${generateSrc}`;
+        const cachedFilename = join(cacheDir, imagename);
+        const encodedWith = await image.encodedWith[type];
+        // if (!(await exists(cachedFilename))) {
+        await fs.writeFile(cachedFilename, encodedWith.binary);
+        // }
+        const source = {
+          fileName: join(assetsDir, imagename),
+          name: imagename,
+          source: (await fs.readFile(cachedFilename)) as any,
+          isAsset: true,
+          type: 'asset',
+        };
+        return source;
+      }
+      if (this.mergeOption.mode === 'sharp') {
+        const sharpFile = loadImage(item);
+        const generateSrc = getBundleImageSrc(item);
+        const base = basename(item, extname(item));
+        // eslint-disable-next-line no-return-await
+        // eslint-disable-next-line no-return-await
+        const source = await writeImageFile(
+          sharpFile,
+          this.mergeOption,
+          `${base}.${generateSrc}`,
+        );
+        return source;
+      }
     });
+    const result = await Promise.all(res);
+    imagePool.close();
     // eslint-disable-next-line no-return-await
-    return await Promise.all(res);
+    return result;
   }
 }
 async function writeImageFile(image: any, options, imagename): Promise<any> {
