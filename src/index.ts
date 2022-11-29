@@ -23,7 +23,7 @@ export default createUnplugin<any | undefined>((options = {}): any => {
   let chunks: any;
   let cache: any;
   let configOption: any;
-  const ctx = new Context(options);
+  const ctx = new Context();
   if (!options.conversion) {
     options.conversion = [];
   }
@@ -34,26 +34,27 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
-    async configResolved({ base, command, root, build }) {
-      const config = {
-        base,
-        root,
-        build,
-        isBuild: command === 'build',
-        cacheDir: path.join(
-          root,
-          'node_modules',
-          '.cache',
-          'unplugin-imagemin',
-        ),
-        ...options,
-        outputPath: path.resolve(root, build.outDir),
-        // 判断 是否 需要转换类型
-        isTurn: isTurnImageType(options.conversion),
-        ...defaultOptions,
-      };
+    // { base, command, root, build }
+    async configResolved(config) {
+      // const config = {
+      //   base,
+      //   root,
+      //   build,
+      //   isBuild: command === 'build',
+      //   cacheDir: path.join(
+      //     root,
+      //     'node_modules',
+      //     '.cache',
+      //     'unplugin-imagemin',
+      //   ),
+      //   ...options,
+      //   outputPath: path.resolve(root, build.outDir),
+      //   // 判断 是否 需要转换类型
+      //   isTurn: isTurnImageType(options.conversion),
+      //   ...defaultOptions,
+      // };
       configOption = config;
-      ctx.handleMergeOption(config);
+      ctx.handleMergeOption({ ...config, options });
     },
     async load(id) {
       if (options.beforeBundle) {
@@ -67,11 +68,10 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       // chunks = bundler;
       if (options.beforeBundle) {
         // 生成动态bundle
-        await ctx.generateBundle();
-        // const res = await ctx.generateBundle();
-        // res.forEach((asset) => {
-        //   bundler[asset.fileName] = asset;
-        // });
+        const res = await ctx.generateBundle();
+        res.forEach((asset) => {
+          bundler[asset.fileName] = asset;
+        });
       } else {
         Object.keys(bundler).forEach((key) => {
           const { outputPath } = ctx.mergeOption;

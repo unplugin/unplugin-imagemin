@@ -8,13 +8,17 @@ import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs, constants } from 'fs';
 import { defaultOptions } from './types';
+import { isTurnImageType } from './utils';
+
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export interface Options {
   compress: any;
 }
 export default class Context {
-  options: ResolvedOptions;
+  config: ResolvedOptions | any;
+
+  mergeConfig: any;
 
   mergeOption: any;
 
@@ -25,14 +29,35 @@ export default class Context {
     /[\\/]\.git[\\/]/,
   ]);
 
-  root = process.cwd();
-
-  constructor(config) {
-    this.options = config;
-  }
-
-  handleMergeOption(defaultOptions) {
-    this.mergeOption = resolveOptions(defaultOptions, this.options);
+  handleMergeOption(useConfig: any) {
+    const {
+      base,
+      command,
+      root,
+      build: { assetsDir, outDir },
+      options,
+    } = useConfig;
+    const cwd = process.cwd();
+    const isBuild = command === 'build';
+    const cacheDir = join(root, 'node_modules', '.cache', 'unplugin-imagemin');
+    const isTurn = isTurnImageType(options.conversion);
+    const outputPath = resolve(root, outDir);
+    const chooseConfig = {
+      base,
+      command,
+      root,
+      cwd,
+      outDir,
+      assetsDir,
+      options,
+      isBuild,
+      cacheDir,
+      outputPath,
+      isTurn,
+    };
+    // squoosh & sharp merge config options
+    this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
+    this.config = chooseConfig;
   }
 
   handleTransform(bundle) {
@@ -189,23 +214,25 @@ export type ResolvedOptions = Omit<
 };
 
 export function resolveOptions(
-  defaultOptions: any,
-  options: Options,
+  options: any,
+  configOption: any,
 ): ResolvedOptions {
-  const transformType = transformEncodeType(options?.compress);
+  const transformType = transformEncodeType(configOption.options?.compress);
   const keys = Object.keys(transformType);
   const res = keys.map(
     (item) =>
       ({
-        ...defaultOptions[item],
+        ...options[item],
         ...transformType[item],
       } as ResolvedOptions),
   );
+  console.log(res);
+
   const obj = {};
   keys.forEach((item, index) => {
     obj[item] = res[index];
   });
-  return { ...defaultOptions, ...obj } as ResolvedOptions;
+  return { ...options, ...obj } as ResolvedOptions;
 }
 
 export function transformEncodeType(options = {}) {
