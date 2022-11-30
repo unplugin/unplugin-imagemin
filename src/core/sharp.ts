@@ -7,15 +7,17 @@ import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
 import { extname } from 'pathe';
 async function initSharp(config) {
-  const { files, outputPath, cache, chunks, options, inputPath, isTurn } =
-    config;
-  const images = files.map(async (filePath: string, index: number) => {
+  const { files, outputPath, cache, chunks, options, isTurn } = config;
+  const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
       logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
       return Promise.resolve();
     }
+    //     raw
+    // 强制输出为原始的、未压缩的uint8像素数据。
+    // 返回sharp实例
     const start = Date.now();
     const oldSize = fs.lstatSync(fileRootPath).size;
     let newSize = oldSize;
@@ -28,12 +30,9 @@ async function initSharp(config) {
     const currentType = options.conversion.find(
       (item) => item.from === extname(fileRootPath).slice(1),
     );
-    const buffer = await image
-      .png({
-        quality: 50,
-      })
-      .toBuffer();
     let resultBuffer;
+    console.log(await sharp(fileRootPath));
+
     const fileExt = extname(fileRootPath).slice(1);
     if (currentType !== undefined) {
       resultBuffer = await sharp(fileRootPath)
