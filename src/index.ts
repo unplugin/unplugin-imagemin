@@ -1,28 +1,18 @@
+import { resolveDefaultOptions } from './core/types/index';
 import { createUnplugin } from 'unplugin';
 import Context from './core/context';
-import { parseId } from './core/utils';
 
 export default createUnplugin<any | undefined>((options = {}): any => {
   const ctx = new Context();
-  if (!options.conversion) {
-    options.conversion = [];
-  }
-  if (!options.mode) {
-    options.mode = 'sharp';
-  }
+  const obj = Object.assign(options, resolveDefaultOptions);
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
     async configResolved(config) {
-      ctx.handleMergeOptionHook({ ...config, options });
+      ctx.handleMergeOptionHook({ ...config, options: obj });
     },
     async load(id) {
-      const imageModuleFlag = ctx.filter(id);
-      if (imageModuleFlag) {
-        const { path } = parseId(id);
-        ctx.setAssetsPath(path);
-      }
       if (options.beforeBundle) {
         const res = ctx.loadBundleHook(id);
         if (res) {

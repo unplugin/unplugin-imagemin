@@ -6,6 +6,7 @@ import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
 import { extname } from 'pathe';
+import { sharpOptions } from './types';
 async function initSharp(config) {
   const { files, outputPath, cache, chunks, options, isTurn } = config;
   const images = files.map(async (filePath: string) => {
@@ -31,19 +32,18 @@ async function initSharp(config) {
       (item) => item.from === extname(fileRootPath).slice(1),
     );
     let resultBuffer;
-    console.log(await sharp(fileRootPath));
-
     const fileExt = extname(fileRootPath).slice(1);
     if (currentType !== undefined) {
+      const merge = {
+        ...sharpOptions[ext],
+        ...options.compress[currentType.to],
+      };
       resultBuffer = await sharp(fileRootPath)
-        [currentType.to](options.compress[currentType.to])
+        [currentType.to](merge)
         .toBuffer();
     } else {
-      resultBuffer = await sharp(fileRootPath)
-        [fileExt]({
-          quality: 50,
-        })
-        .toBuffer();
+      const merge = { ...sharpOptions[ext], ...options.compress[ext] };
+      resultBuffer = await sharp(fileRootPath)[fileExt](merge).toBuffer();
     }
     await proFs.writeFile(filepath, resultBuffer);
     const data = await proFs.stat(filepath);

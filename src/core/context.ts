@@ -7,7 +7,6 @@ import {
   filterExtension,
   exists,
   generateImageID,
-  parseURL,
   transformFileName,
 } from './utils';
 import { basename, extname, join, resolve } from 'pathe';
@@ -129,6 +128,7 @@ export default class Context {
       );
       return `export default ${devalue(generatePath)}`;
     }
+    return '';
   }
 
   // 生成bundle
