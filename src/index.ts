@@ -1,5 +1,6 @@
 import { createUnplugin } from 'unplugin';
 import Context from './core/context';
+import { parseId } from './core/utils';
 
 export default createUnplugin<any | undefined>((options = {}): any => {
   const ctx = new Context();
@@ -17,6 +18,11 @@ export default createUnplugin<any | undefined>((options = {}): any => {
       ctx.handleMergeOptionHook({ ...config, options });
     },
     async load(id) {
+      const imageModuleFlag = ctx.filter(id);
+      if (imageModuleFlag) {
+        const { path } = parseId(id);
+        ctx.setAssetsPath(path);
+      }
       if (options.beforeBundle) {
         const res = ctx.loadBundleHook(id);
         if (res) {

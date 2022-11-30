@@ -6,8 +6,9 @@ import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
 async function initSharp(config) {
-  const { files, outputPath, cache, chunks, options, isTurn } = config;
-  const images = files.map(async (filePath: string) => {
+  const { files, outputPath, cache, chunks, options, inputPath, isTurn } =
+    config;
+  const images = files.map(async (filePath: string, index: number) => {
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
@@ -21,7 +22,7 @@ async function initSharp(config) {
     const res = options.conversion.find((item) => `${item.from}`.includes(ext));
     const type = isTurn ? res?.to : encodeMapBack.get(ext);
     const current: any = encodeMap.get(type);
-    const image = sharp(fileRootPath);
+    const image = sharp(inputPath[index]);
     const filepath = `${fileRootPath.replace(ext, isTurn ? current : ext)}`;
     const newFile = await image.toFile(filepath);
     newSize = newFile.size;

@@ -44,10 +44,16 @@ export default class Context {
 
   files: any = [];
 
+  assetPath: string[] = [];
+
   filter: any = createFilter(extRE, [
     /[\\/]node_modules[\\/]/,
     /[\\/]\.git[\\/]/,
   ]);
+
+  setAssetsPath(path) {
+    this.assetPath.push(path);
+  }
 
   handleMergeOptionHook(useConfig: any) {
     const {
@@ -173,11 +179,11 @@ export default class Context {
         return source;
       }
       if (this.config.options.mode === 'sharp') {
-        const sharpFile = await loadImage(item, this.config.options);
+        const sharpFileBuffer = await loadImage(item, this.config.options);
         const generateSrc = getBundleImageSrc(item, this.config.options);
         const base = basename(item, extname(item));
         const source = await writeImageFile(
-          sharpFile,
+          sharpFileBuffer,
           this.config,
           `${base}.${generateSrc}`,
         );
@@ -221,6 +227,7 @@ export default class Context {
       const initOptions = {
         files: this.files,
         outputPath,
+        inputPath: this.assetPath,
         options: this.config.options,
         isTurn,
         cache,
@@ -265,9 +272,15 @@ async function convertToSharp(inputImg, options) {
   const currentType = options.conversion.find(
     (item) => item.from === extname(inputImg).slice(1),
   );
-  const res = await sharp(inputImg)
-    [currentType.to](options.compress[currentType.to])
-    .toBuffer();
+  let res;
+  const ext = extname(inputImg).slice(1);
+  if (currentType !== undefined) {
+    res = await sharp(inputImg)
+      [currentType.to](options.compress[currentType.to])
+      .toBuffer();
+  } else {
+    res = await sharp(inputImg)[ext](options.compress[ext]).toBuffer();
+  }
   return res;
 }
 function getBundleImageSrc(filename: string, options: any) {
@@ -275,7 +288,10 @@ function getBundleImageSrc(filename: string, options: any) {
     options.conversion.find(
       (item) => item.from === extname(filename).slice(1),
     ) ?? extname(filename).slice(1);
-  const id = generateImageID(filename, currentType.to);
+  const id = generateImageID(
+    filename,
+    currentType.to ?? extname(filename).slice(1),
+  );
   return id;
 }
 export async function loadImage(url: string, options: any) {
