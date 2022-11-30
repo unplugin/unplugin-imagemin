@@ -23,7 +23,7 @@ export default defineConfig({
           quality: 0,
         },
         jpeg: {
-          quality: 60,
+          quality: 100,
         },
         png: {
           quality: 100,
@@ -33,7 +33,7 @@ export default defineConfig({
         },
       },
       conversion: [
-        { from: 'png', to: 'mozjpeg' },
+        { from: 'png', to: 'avif' },
         { from: 'jpeg', to: 'webp' },
       ],
       cache: false,

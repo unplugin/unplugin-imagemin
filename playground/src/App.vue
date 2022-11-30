@@ -6,6 +6,7 @@
     <router-link to="/about">Go to About</router-link>
     <RouterView />
     <img src="./assets/image/wallhaven-kx9rx7.png" alt="" />
+    <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="">
   </div>
 </template>
 

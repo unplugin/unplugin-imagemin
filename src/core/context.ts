@@ -115,9 +115,7 @@ export default class Context {
     if (imageModuleFlag) {
       const { path } = parseId(id);
       this.imageModulePath.push(path);
-      // TODO 不同 conversion 不同format 动态 便利format
-      // const generateSrc = getBundleImageSrc(path, format);
-      const generateSrc = getBundleImageSrc(path, 'webp');
+      const generateSrc = getBundleImageSrc(path, this.config.options);
       const base = basename(path, extname(path));
       const generatePath = join(
         `${this.config.base}${this.config.assetsDir}`,
@@ -140,7 +138,7 @@ export default class Context {
     spinner = await loadWithRocketGradient('');
     logger(pluginTitle('📦'), info, modeLog);
     const generateImageBundle = this.imageModulePath.map(async (item) => {
-      if ((this, this.config.options.mode === 'squoosh')) {
+      if (this.config.options.mode === 'squoosh') {
         const ext = extname(item).slice(1) ?? '';
         const userRes = this.config.options.conversion.find((i) =>
           `${i.from}`.includes(ext),
@@ -156,8 +154,7 @@ export default class Context {
           [type!]: defaultSquooshOptions[type!],
         };
         await image.encode(currentType);
-        // const generateSrc = getBundleImageSrc(item, format);
-        const generateSrc = getBundleImageSrc(item, 'webp');
+        const generateSrc = getBundleImageSrc(item, this.config.options);
         const base = basename(item, extname(item));
         const { cacheDir, assetsDir } = this.config;
         const imageName = `${base}.${generateSrc}`;
@@ -176,9 +173,8 @@ export default class Context {
         return source;
       }
       if (this.config.options.mode === 'sharp') {
-        console.log(item);
-        const sharpFile = loadImage(item, this.config.options);
-        const generateSrc = getBundleImageSrc(item, 'webp');
+        const sharpFile = await loadImage(item, this.config.options);
+        const generateSrc = getBundleImageSrc(item, this.config.options);
         const base = basename(item, extname(item));
         const source = await writeImageFile(
           sharpFile,
@@ -248,30 +244,43 @@ export default class Context {
     return true;
   }
 }
-async function writeImageFile(image: any, options, imageName): Promise<any> {
+async function writeImageFile(buffer, options, imageName): Promise<any> {
   const { cacheDir, assetsDir } = options;
 
   const cachedFilename = join(cacheDir, imageName);
-  if (!(await exists(cachedFilename))) {
-    await image.toFile(cachedFilename);
-  }
+  // if (!(await exists(cachedFilename))) {
+  // await image.toFile(cachedFilename);
+  // }
   return {
     fileName: join(assetsDir, imageName),
     name: imageName,
-    source: (await fs.readFile(cachedFilename)) as any,
+    // source: (await fs.readFile(cachedFilename)) as any,
+    source: buffer,
     isAsset: true,
     type: 'asset',
   };
 }
 
-function getBundleImageSrc(filename: string, format: string) {
-  const id = generateImageID(filename, format);
+async function convertToSharp(inputImg, options) {
+  const currentType = options.conversion.find(
+    (item) => item.from === extname(inputImg).slice(1),
+  );
+  const res = await sharp(inputImg)
+    [currentType.to](options.compress[currentType.to])
+    .toBuffer();
+  return res;
+}
+function getBundleImageSrc(filename: string, options: any) {
+  const currentType =
+    options.conversion.find(
+      (item) => item.from === extname(filename).slice(1),
+    ) ?? extname(filename).slice(1);
+  const id = generateImageID(filename, currentType.to);
   return id;
 }
-export function loadImage(url: string, options: any) {
-  console.log(options);
-  console.log(decodeURIComponent(url));
-  return sharp(url);
+export async function loadImage(url: string, options: any) {
+  const image = convertToSharp(url, options);
+  return image;
 }
 
 export type ResolvedOptions = Omit<
