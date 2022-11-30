@@ -5,9 +5,11 @@ import { promises as proFs } from 'fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
+import { extname } from 'pathe';
 async function initSharp(config) {
-  const { files, outputPath, cache, chunks, options, isTurn } = config;
-  const images = files.map(async (filePath: string) => {
+  const { files, outputPath, cache, chunks, options, inputPath, isTurn } =
+    config;
+  const images = files.map(async (filePath: string, index: number) => {
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
@@ -21,10 +23,32 @@ async function initSharp(config) {
     const res = options.conversion.find((item) => `${item.from}`.includes(ext));
     const type = isTurn ? res?.to : encodeMapBack.get(ext);
     const current: any = encodeMap.get(type);
-    const image = sharp(fileRootPath);
     const filepath = `${fileRootPath.replace(ext, isTurn ? current : ext)}`;
-    const newFile = await image.toFile(filepath);
-    newSize = newFile.size;
+    const image = await sharp(fileRootPath);
+    const currentType = options.conversion.find(
+      (item) => item.from === extname(fileRootPath).slice(1),
+    );
+    const buffer = await image
+      .png({
+        quality: 50,
+      })
+      .toBuffer();
+    let resultBuffer;
+    const fileExt = extname(fileRootPath).slice(1);
+    if (currentType !== undefined) {
+      resultBuffer = await sharp(fileRootPath)
+        [currentType.to](options.compress[currentType.to])
+        .toBuffer();
+    } else {
+      resultBuffer = await sharp(fileRootPath)
+        [fileExt]({
+          quality: 50,
+        })
+        .toBuffer();
+    }
+    await proFs.writeFile(filepath, resultBuffer);
+    const data = await proFs.stat(filepath);
+    newSize = data.size;
     if (newSize < oldSize) {
       if (options.cache && !cache.get(chunks[filePath])) {
         cache.set(chunks[filePath], await proFs.readFile(filepath));
