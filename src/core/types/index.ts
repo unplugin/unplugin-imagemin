@@ -88,8 +88,8 @@ export const defaultOptions: Options = {
     effort: 5,
     pass: 1,
     sns: 50,
-    uv_mode: 0 /*UVMode.UVModeAuto*/,
-    csp_type: 0 /*Csp.kYCoCg*/,
+    uv_mode: 0 /* UVMode.UVModeAuto */,
+    csp_type: 0 /* Csp.kYCoCg */,
     error_diffusion: 0,
     use_random_matrix: false,
   },
@@ -135,7 +135,7 @@ export const sharpOptions: any = {
     compressionLevel: 6,
     adaptiveFiltering: false,
     force: true,
-    palette: false,
+    palette: true,
     quality: 75,
     effort: 7,
     bitdepth: 8,
@@ -175,4 +175,12 @@ export const sharpOptions: any = {
     yres: 1,
     resolutionUnit: 'inch',
   },
+};
+
+export const resolveDefaultOptions = {
+  mode: 'sharp',
+  conversion: [],
+  beforeBundle: false,
+  cache: false,
+  compress: {},
 };

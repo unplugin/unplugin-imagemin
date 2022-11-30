@@ -15,28 +15,28 @@ export default defineConfig({
     imagemin({
       // 捆绑前构建 或者 捆绑后构建
       // beforeBundle: true,
-      beforeBundle: false,
-      mode: 'sharp',
+      // beforeBundle: false,
+      // mode: 'sharp',
       // mode: 'squoosh',
       compress: {
         // jpg: {
         //   quality: 0,
         // },
         // jpeg: {
-        //   quality: 100,
+        //   quality: 25,
         // },
         // png: {
-        //   quality: 100,
+        //   quality: 50,
         // },
         // webp: {
         //   quality: 60,
         // },
       },
-      conversion: [
-        // { from: 'png', to: 'avif' },
-        // { from: 'jpeg', to: 'webp' },
-      ],
-      cache: false,
+      // conversion: [
+      //   { from: 'png', to: 'avif' },
+      //   { from: 'jpeg', to: 'webp' },
+      // ],
+      // cache: false,
     }),
   ],
 });
