@@ -176,7 +176,8 @@ export default class Context {
         return source;
       }
       if (this.config.options.mode === 'sharp') {
-        const sharpFile = loadImage(item);
+        console.log(item);
+        const sharpFile = loadImage(item, this.config.options);
         const generateSrc = getBundleImageSrc(item, 'webp');
         const base = basename(item, extname(item));
         const source = await writeImageFile(
@@ -267,8 +268,10 @@ function getBundleImageSrc(filename: string, format: string) {
   const id = generateImageID(filename, format);
   return id;
 }
-export function loadImage(url: string) {
-  return sharp(decodeURIComponent(parseURL(url).pathname));
+export function loadImage(url: string, options: any) {
+  console.log(options);
+  console.log(decodeURIComponent(url));
+  return sharp(url);
 }
 
 export type ResolvedOptions = Omit<
