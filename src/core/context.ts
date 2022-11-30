@@ -1,14 +1,21 @@
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
-import { filterFile, lastSymbol, parseId } from './utils';
-import { createHash } from 'crypto';
+import {
+  filterFile,
+  parseId,
+  isTurnImageType,
+  filterExtension,
+  exists,
+  generateImageID,
+  parseURL,
+  transformFileName,
+} from './utils';
 import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
 import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
-import { promises as fs, constants } from 'fs';
+import { promises as fs } from 'fs';
 import { defaultOptions } from './types';
-import { isTurnImageType } from './utils';
 import devalue from './devalue';
 import chalk from 'chalk';
 import { logger, pluginTitle } from './log';
@@ -35,7 +42,7 @@ export default class Context {
 
   cache: any;
 
-  files: any;
+  files: any = [];
 
   filter: any = createFilter(extRE, [
     /[\\/]node_modules[\\/]/,
@@ -92,13 +99,13 @@ export default class Context {
 
     // transform css modules
     transformCode(
-      this.config,
+      this.config.options,
       needTransformAssetsBundle,
       imageFileBundle,
       'source',
     );
     // transform js modules
-    transformCode(this.config, chunkBundle, imageFileBundle, 'code');
+    transformCode(this.config.options, chunkBundle, imageFileBundle, 'code');
   }
 
   // eslint-disable-next-line consistent-return
@@ -127,6 +134,11 @@ export default class Context {
       await mkdir(this.config.cacheDir, { recursive: true });
     }
     const imagePool = new ImagePool();
+    const info = chalk.gray('Process start with');
+    const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
+    let spinner;
+    spinner = await loadWithRocketGradient('');
+    logger(pluginTitle('📦'), info, modeLog);
     const generateImageBundle = this.imageModulePath.map(async (item) => {
       if ((this, this.config.options.mode === 'squoosh')) {
         const ext = extname(item).slice(1) ?? '';
@@ -165,7 +177,7 @@ export default class Context {
       }
       if (this.config.options.mode === 'sharp') {
         const sharpFile = loadImage(item);
-        const generateSrc = getBundleImageSrc(item);
+        const generateSrc = getBundleImageSrc(item, 'webp');
         const base = basename(item, extname(item));
         const source = await writeImageFile(
           sharpFile,
@@ -181,6 +193,9 @@ export default class Context {
     result.forEach((asset) => {
       bundler[asset.fileName] = asset;
     });
+    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+    spinner.text = chalk.yellow('Image conversion completed!');
+    spinner.succeed();
   }
 
   // close bundle
@@ -247,16 +262,7 @@ async function writeImageFile(image: any, options, imageName): Promise<any> {
     type: 'asset',
   };
 }
-export function mkdirSync(mkdirPath: string): void {
-  fs.mkdir(mkdirPath, { recursive: true });
-}
-export async function exists(path: string) {
-  // eslint-disable-next-line no-return-await
-  return await fs.access(path, constants.F_OK).then(
-    () => true,
-    () => false,
-  );
-}
+
 function getBundleImageSrc(filename: string, format: string) {
   const id = generateImageID(filename, format);
   return id;
@@ -264,15 +270,7 @@ function getBundleImageSrc(filename: string, format: string) {
 export function loadImage(url: string) {
   return sharp(decodeURIComponent(parseURL(url).pathname));
 }
-function parseURL(rawURL: string) {
-  return new URL(rawURL.replace(/#/g, '%23'), 'file://');
-}
-export function generateImageID(filename: string, format: string = 'jpeg') {
-  return `${createHash('sha256')
-    .update(filename)
-    .digest('hex')
-    .slice(0, 8)}.${format}`;
-}
+
 export type ResolvedOptions = Omit<
   Required<Options>,
   'resolvers' | 'extensions' | 'dirs'
@@ -315,14 +313,6 @@ export function transformEncodeType(options = {}) {
     newCompressOptions[item] = options[transformOldKeys[index]];
   });
   return newCompressOptions;
-}
-export function transformFileName(file) {
-  return file.substring(0, file.lastIndexOf('.') + 1);
-}
-// 判断后缀名
-export function filterExtension(name: string, ext: string): boolean {
-  const reg = new RegExp(`.${ext}`);
-  return Boolean(name.match(reg));
 }
 
 // transform resolve code
