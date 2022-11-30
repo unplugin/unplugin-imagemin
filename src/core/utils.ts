@@ -1,5 +1,6 @@
 import { partial } from 'filesize';
 import { createHash } from 'node:crypto';
+import { promises as fs, constants } from 'fs';
 
 export const size = partial({ base: 2, standard: 'jedec' });
 const extRE = /(png|jpeg|jpg|webp|wb2|avif)$/i;
@@ -81,19 +82,39 @@ export function isTurnImageType(options) {
   return Boolean(hasConversion && hasType && isReallyType);
 }
 
-export function generateImageID(url: string) {
-  return `${
-    createHash('sha256')
-      .update(url)
-      // .update(JSON.stringify(args))
-      .digest('hex')
-      .slice(0, 8)
-    // (args.format && args.format !== 'original' ? `.${args.format}` : '')
-  }.webp`;
-}
-
 // 最后一个符号后的内容
 export function lastSymbol(string: string, symbol: string) {
   const arr = string.split(symbol);
   return arr[arr.length - 1];
+}
+
+export function mkdirSync(mkdirPath: string): void {
+  fs.mkdir(mkdirPath, { recursive: true });
+}
+export async function exists(path: string) {
+  // eslint-disable-next-line no-return-await
+  return await fs.access(path, constants.F_OK).then(
+    () => true,
+    () => false,
+  );
+}
+
+export function parseURL(rawURL: string) {
+  return new URL(rawURL.replace(/#/g, '%23'), 'file://');
+}
+
+export function generateImageID(filename: string, format: string = 'jpeg') {
+  return `${createHash('sha256')
+    .update(filename)
+    .digest('hex')
+    .slice(0, 8)}.${format}`;
+}
+
+export function transformFileName(file) {
+  return file.substring(0, file.lastIndexOf('.') + 1);
+}
+// 判断后缀名
+export function filterExtension(name: string, ext: string): boolean {
+  const reg = new RegExp(`.${ext}`);
+  return Boolean(name.match(reg));
 }

@@ -1,7 +1,7 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.0.27",
-  "description": "Library",
+  "version": "0.0.28",
+  "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch src",
@@ -97,6 +97,7 @@
     "chalk": "^4.1.2",
     "filesize": "^10.0.5",
     "ora": "5.1.0",
+    "pathe": "^1.0.0",
     "sharp": "0.30.5",
     "unplugin": "^1.0.0"
   },

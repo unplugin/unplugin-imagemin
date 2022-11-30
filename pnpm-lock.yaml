@@ -15,6 +15,7 @@ importers:
       fast-glob: ^3.2.12
       filesize: ^10.0.5
       ora: 5.1.0
+      pathe: ^1.0.0
       prettier: ^2.7.1
       rimraf: ^3.0.2
       sharp: 0.30.5
@@ -31,6 +32,7 @@ importers:
       chalk: 4.1.2
       filesize: 10.0.5
       ora: 5.1.0
+      pathe: 1.0.0
       sharp: 0.30.5
       unplugin: 1.0.0
     devDependencies:
@@ -3210,6 +3212,10 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
     dev: true
+
+  /pathe/1.0.0:
+    resolution: {integrity: sha512-nPdMG0Pd09HuSsr7QOKUXO2Jr9eqaDiZvDwdyIhNG5SHYujkQHYKDfGQkulBxvbDHz8oHLsTgKN86LSwYzSHAg==}
+    dev: false
 
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
