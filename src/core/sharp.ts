@@ -16,7 +16,7 @@ async function initSharp(config) {
       logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
       return Promise.resolve();
     }
-    //     raw
+    // raw
     // 强制输出为原始的、未压缩的uint8像素数据。
     // 返回sharp实例
     const start = Date.now();
@@ -27,7 +27,6 @@ async function initSharp(config) {
     const type = isTurn ? res?.to : encodeMapBack.get(ext);
     const current: any = encodeMap.get(type);
     const filepath = `${fileRootPath.replace(ext, isTurn ? current : ext)}`;
-    const image = await sharp(fileRootPath);
     const currentType = options.conversion.find(
       (item) => item.from === extname(fileRootPath).slice(1),
     );

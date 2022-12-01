@@ -15,6 +15,7 @@ import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
 import { defaultOptions, sharpOptions } from './types';
+import type { ResolvedOptions } from './types';
 import devalue from './devalue';
 import chalk from 'chalk';
 import { logger, pluginTitle } from './log';
@@ -50,9 +51,11 @@ export default class Context {
     /[\\/]\.git[\\/]/,
   ]);
 
-  setAssetsPath(path) {
-    this.assetPath.push(path);
-  }
+  /**
+   * @param useConfig
+   * configResolved hook  解析用户参数以及vite参数
+   * Parsing user parameters and vite parameters
+   */
 
   handleMergeOptionHook(useConfig: any) {
     const {
@@ -85,6 +88,64 @@ export default class Context {
     this.config = chooseConfig;
   }
 
+  /**
+   *
+   * @param id
+   * @returns
+   * load hooks  解析id 返回自定义内容 后续生成自定义bundle
+   * Parsing id returns custom content and then generates custom bundle
+   */
+  loadBundleHook(id) {
+    const imageModuleFlag = this.filter(id);
+    const exportValue = this.generateDefaultValue(imageModuleFlag, id);
+    return exportValue;
+  }
+
+  /**
+   *
+   * @param bundler
+   * 根据构建前获取用户自定义模块内容 动态生成chunk file
+   * Dynamically generate chunk file according to the content of user-defined module obtained before building
+   */
+  async generateBundleHook(bundler) {
+    this.chunks = bundler;
+    if (!(await exists(this.config.cacheDir))) {
+      await mkdir(this.config.cacheDir, { recursive: true });
+    }
+    const imagePool = new ImagePool();
+    this.startGenerate();
+    let spinner;
+    spinner = await loadWithRocketGradient('');
+    const generateImageBundle = this.imageModulePath.map(async (item) => {
+      if (this.config.options.mode === 'squoosh') {
+        await this.generateSquooshBundle(imagePool, item);
+      }
+      if (this.config.options.mode === 'sharp') {
+        await this.generateSharpBundle(item);
+      }
+    });
+    const result = await Promise.all(generateImageBundle);
+    imagePool.close();
+    this.generateBundleFile(bundler, result);
+    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+    spinner.text = chalk.yellow('Image conversion completed!');
+    spinner.succeed();
+  }
+
+  /**
+   *
+   * @param bundle
+   * 根据构建后transform已有chunk replace 代码结构 解析 css 与 js 模块
+   */
+  TransformChunksHook(bundle) {
+    this.filterBundleFile(bundle);
+    this.transformCodeHook(bundle);
+  }
+
+  setAssetsPath(path) {
+    this.assetPath.push(path);
+  }
+
   filterBundleFile(bundle) {
     Object.keys(bundle).forEach((key) => {
       const { outputPath } = this.config;
@@ -115,12 +176,6 @@ export default class Context {
     transformCode(this.config.options, chunkBundle, imageFileBundle, 'code');
   }
 
-  TransformChunksHook(bundle) {
-    this.filterBundleFile(bundle);
-    this.transformCodeHook(bundle);
-  }
-
-  // 抽取
   generateDefaultValue(imageModuleFlag, id) {
     if (imageModuleFlag) {
       const { path } = parseId(id);
@@ -135,14 +190,6 @@ export default class Context {
     }
   }
 
-  // eslint-disable-next-line consistent-return
-  loadBundleHook(id) {
-    const imageModuleFlag = this.filter(id);
-    const exportValue = this.generateDefaultValue(imageModuleFlag, id);
-    return exportValue;
-  }
-
-  // 抽取
   // squoosh
   async generateSquooshBundle(imagePool, item) {
     const ext = extname(item).slice(1) ?? '';
@@ -150,7 +197,6 @@ export default class Context {
       `${i.from}`.includes(ext),
     );
     const type = this.config.isTurn ? userRes?.to : encodeMapBack.get(ext);
-    // const current: any = encodeMap.get(type);
     const image = imagePool.ingestImage(item);
     const defaultSquooshOptions = {};
     Object.keys(defaultOptions).forEach(
@@ -203,33 +249,6 @@ export default class Context {
     logger(pluginTitle('📦'), info, modeLog);
   }
 
-  // 生成bundle
-  async generateBundleHook(bundler) {
-    this.chunks = bundler;
-    if (!(await exists(this.config.cacheDir))) {
-      await mkdir(this.config.cacheDir, { recursive: true });
-    }
-    const imagePool = new ImagePool();
-    this.startGenerate();
-    let spinner;
-    spinner = await loadWithRocketGradient('');
-    const generateImageBundle = this.imageModulePath.map(async (item) => {
-      if (this.config.options.mode === 'squoosh') {
-        await this.generateSquooshBundle(imagePool, item);
-      }
-      if (this.config.options.mode === 'sharp') {
-        await this.generateSharpBundle(item);
-      }
-    });
-    // TODO prepare before bundle generate loading animation
-    const result = await Promise.all(generateImageBundle);
-    imagePool.close();
-    this.generateBundleFile(bundler, result);
-    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-    spinner.text = chalk.yellow('Image conversion completed!');
-    spinner.succeed();
-  }
-
   // close bundle
   async closeBundleHook() {
     if (!this.config.options.beforeBundle) {
@@ -240,22 +259,15 @@ export default class Context {
   }
 
   async spinnerHooks(fn) {
-    // const { isTurn, outputPath } = this.config;
-    // const { mode, cache } = this.config.options;
     if (!this.files.length) {
       return false;
     }
-    // start spinner
     let spinner;
-    // if (!cache) {
     spinner = await loadWithRocketGradient('');
-    // }
     await fn.call(this);
     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-    // if (!this.config.cacheDir || !cache) {
     spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
-    // }
   }
 
   async closeBundleFn() {
@@ -292,13 +304,11 @@ async function writeImageFile(buffer, options, imageName): Promise<any> {
   const { cacheDir, assetsDir } = options;
 
   const cachedFilename = join(cacheDir, imageName);
-  // if (!(await exists(cachedFilename))) {
-  // await image.toFile(cachedFilename);
-  // }
+  if (!(await exists(cachedFilename))) {
+  }
   return {
     fileName: join(assetsDir, imageName),
     name: imageName,
-    // source: (await fs.readFile(cachedFilename)) as any,
     source: buffer,
     isAsset: true,
     type: 'asset',
@@ -341,18 +351,6 @@ export async function loadImage(url: string, options: any) {
   const image = convertToSharp(url, options);
   return image;
 }
-
-export type ResolvedOptions = Omit<
-  Required<Options>,
-  'resolvers' | 'extensions' | 'dirs'
-> & {
-  conversion: any[];
-  cache: boolean;
-  compress: any;
-  root?: string;
-  outputPath?: string;
-  isTurn?: boolean;
-};
 
 export function resolveOptions(
   options: any,

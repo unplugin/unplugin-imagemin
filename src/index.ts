@@ -15,9 +15,9 @@ export default createUnplugin<any | undefined>((options = {}): any => {
     },
     async load(id) {
       if (options.beforeBundle) {
-        const res = ctx.loadBundleHook(id);
-        if (res) {
-          return res;
+        const imageModule = ctx.loadBundleHook(id);
+        if (imageModule) {
+          return imageModule;
         }
       }
     },

@@ -7,6 +7,18 @@ export default interface Options {
   oxipng?: any;
 }
 
+export type ResolvedOptions = Omit<
+  Required<Options>,
+  'resolvers' | 'extensions' | 'dirs'
+> & {
+  conversion: any[];
+  cache: boolean;
+  compress: any;
+  root?: string;
+  outputPath?: string;
+  isTurn?: boolean;
+};
+
 export const defaultOptions: Options = {
   mozjpeg: {
     extension: /.(jpg|jpeg)$/,
