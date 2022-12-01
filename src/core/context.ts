@@ -14,7 +14,7 @@ import sharp from 'sharp';
 import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
-import { defaultOptions } from './types';
+import { defaultOptions, sharpOptions } from './types';
 import devalue from './devalue';
 import chalk from 'chalk';
 import { logger, pluginTitle } from './log';
@@ -275,11 +275,17 @@ async function convertToSharp(inputImg, options) {
   let res;
   const ext = extname(inputImg).slice(1);
   if (currentType !== undefined) {
-    res = await sharp(inputImg)
-      [currentType.to](options.compress[currentType.to])
-      .toBuffer();
+    const merge = {
+      ...sharpOptions[ext],
+      ...options.compress[currentType.to],
+    };
+    res = await sharp(inputImg)[currentType.to](merge).toBuffer();
   } else {
-    res = await sharp(inputImg)[ext](options.compress[ext]).toBuffer();
+    const merge = {
+      ...sharpOptions[ext],
+      ...options.compress[ext],
+    };
+    res = await sharp(inputImg)[ext](merge).toBuffer();
   }
   return res;
 }

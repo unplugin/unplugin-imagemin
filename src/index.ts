@@ -4,7 +4,8 @@ import Context from './core/context';
 
 export default createUnplugin<any | undefined>((options = {}): any => {
   const ctx = new Context();
-  const obj = Object.assign(options, resolveDefaultOptions);
+  // eslint-disable-next-line prefer-object-spread
+  const obj = Object.assign({}, resolveDefaultOptions, options);
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
