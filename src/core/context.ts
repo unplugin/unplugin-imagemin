@@ -191,6 +191,18 @@ export default class Context {
     return source;
   }
 
+  generateBundleFile(bundler, result) {
+    result.forEach((asset) => {
+      bundler[asset.fileName] = asset;
+    });
+  }
+
+  startGenerate() {
+    const info = chalk.gray('Process start with');
+    const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
+    logger(pluginTitle('📦'), info, modeLog);
+  }
+
   // 生成bundle
   async generateBundleHook(bundler) {
     this.chunks = bundler;
@@ -198,11 +210,9 @@ export default class Context {
       await mkdir(this.config.cacheDir, { recursive: true });
     }
     const imagePool = new ImagePool();
-    const info = chalk.gray('Process start with');
-    const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
+    this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
-    logger(pluginTitle('📦'), info, modeLog);
     const generateImageBundle = this.imageModulePath.map(async (item) => {
       if (this.config.options.mode === 'squoosh') {
         await this.generateSquooshBundle(imagePool, item);
@@ -214,9 +224,7 @@ export default class Context {
     // TODO prepare before bundle generate loading animation
     const result = await Promise.all(generateImageBundle);
     imagePool.close();
-    result.forEach((asset) => {
-      bundler[asset.fileName] = asset;
-    });
+    this.generateBundleFile(bundler, result);
     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
     spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
@@ -225,51 +233,59 @@ export default class Context {
   // close bundle
   async closeBundleHook() {
     if (!this.config.options.beforeBundle) {
-      const { isTurn, outputPath } = this.config;
-      const { mode, cache } = this.config.options;
-      if (!this.files.length) {
-        return false;
-      }
-      const info = chalk.gray('Process start with');
-      const modeLog = chalk.magenta(`Mode ${mode}`);
-      logger(pluginTitle('📦'), info, modeLog);
-      // start spinner
-      let spinner;
-      if (!cache) {
-        spinner = await loadWithRocketGradient('');
-      }
-      const defaultSquooshOptions = {};
-      Object.keys(defaultOptions).forEach(
-        (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
-      );
-      if (cache) {
-        this.cache = new Cache({ outputPath });
-      }
-      const initOptions = {
-        files: this.files,
-        outputPath,
-        inputPath: this.assetPath,
-        options: this.config.options,
-        isTurn,
-        cache,
-        chunks: this.chunks,
-      };
-      if (mode === 'squoosh') {
-        await initSquoosh({ ...initOptions, defaultSquooshOptions });
-      } else if (mode === 'sharp') {
-        await initSharp(initOptions);
-      } else {
-        throw new Error(
-          '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
-        );
-      }
-      logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-      if (!this.config.cacheDir || !cache) {
-        spinner.text = chalk.yellow('Image conversion completed!');
-        spinner.succeed();
-      }
+      this.startGenerate();
+      this.spinnerHooks(this.closeBundleFn);
     }
     return true;
+  }
+
+  async spinnerHooks(fn) {
+    // const { isTurn, outputPath } = this.config;
+    // const { mode, cache } = this.config.options;
+    if (!this.files.length) {
+      return false;
+    }
+    // start spinner
+    let spinner;
+    // if (!cache) {
+    spinner = await loadWithRocketGradient('');
+    // }
+    await fn.call(this);
+    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+    // if (!this.config.cacheDir || !cache) {
+    spinner.text = chalk.yellow('Image conversion completed!');
+    spinner.succeed();
+    // }
+  }
+
+  async closeBundleFn() {
+    const { isTurn, outputPath } = this.config;
+    const { mode, cache } = this.config.options;
+    const defaultSquooshOptions = {};
+    Object.keys(defaultOptions).forEach(
+      (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
+    );
+    if (cache) {
+      this.cache = new Cache({ outputPath });
+    }
+    const initOptions = {
+      files: this.files,
+      outputPath,
+      inputPath: this.assetPath,
+      options: this.config.options,
+      isTurn,
+      cache,
+      chunks: this.chunks,
+    };
+    if (mode === 'squoosh') {
+      await initSquoosh({ ...initOptions, defaultSquooshOptions });
+    } else if (mode === 'sharp') {
+      await initSharp(initOptions);
+    } else {
+      throw new Error(
+        '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
+      );
+    }
   }
 }
 async function writeImageFile(buffer, options, imageName): Promise<any> {
