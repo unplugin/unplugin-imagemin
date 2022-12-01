@@ -14,28 +14,25 @@ export default defineConfig({
     vue(),
     imagemin({
       // 捆绑前构建 或者 捆绑后构建
-      beforeBundle: true,
+      // beforeBundle: true,
       // beforeBundle: false,
       // mode: 'sharp',
-      // mode: 'squoosh',
-      // compress: {
-      // jpg: {
-      //   quality: 0,
-      // },
-      // jpeg: {
-      //   quality: 25,
-      // },
-      // png: {
-      //   quality: 50,
-      // },
-      // webp: {
-      //   quality: 60,
-      // },
-      // },
-      // conversion: [
-      //   { from: 'png', to: 'avif' },
-      //   { from: 'jpeg', to: 'webp' },
-      // ],
+      mode: 'squoosh',
+      compress: {
+        jpeg: {
+          quality: 25,
+        },
+        png: {
+          quality: 25,
+        },
+        webp: {
+          quality: 25,
+        },
+      },
+      conversion: [
+        { from: 'png', to: 'avif' },
+        { from: 'jpeg', to: 'webp' },
+      ],
       // cache: false,
     }),
   ],
