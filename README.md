@@ -83,7 +83,7 @@ module.exports = {
 ```ts
     imagemin({
       // Whether to compress by default before building or after building
-      beforeBundle: false
+      beforeBundle: false，
       
       // mode Only squoosh or sharp can be selected for mode option
       mode: 'squoosh',
