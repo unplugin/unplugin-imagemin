@@ -82,8 +82,12 @@ module.exports = {
 
 ```ts
     imagemin({
+      // Whether to compress by default before building or after building
+      beforeBundle: false
+      
       // mode Only squoosh or sharp can be selected for mode option
       mode: 'squoosh',
+      
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
@@ -105,8 +109,7 @@ module.exports = {
         { from: 'png', to: 'mozjpeg' },
         { from: 'jpeg', to: 'webp' },
       ],
-
-
+      
       // Whether image caching is required defaults to true
       cache: false,
     }),
