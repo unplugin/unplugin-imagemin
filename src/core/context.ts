@@ -85,12 +85,15 @@ export default class Context {
     this.config = chooseConfig;
   }
 
-  TransformChunksHook(bundle) {
+  filterBundleFile(bundle) {
     Object.keys(bundle).forEach((key) => {
       const { outputPath } = this.config;
       // eslint-disable-next-line no-unused-expressions
       filterFile(resolve(outputPath!, key), extRE) && this.files.push(key);
     });
+  }
+
+  transformCodeHook(bundle) {
     const allBundles = Object.values(bundle);
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
     const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
@@ -101,7 +104,6 @@ export default class Context {
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
       filterExtension(item.fileName, 'css'),
     );
-
     // transform css modules
     transformCode(
       this.config.options,
@@ -113,10 +115,13 @@ export default class Context {
     transformCode(this.config.options, chunkBundle, imageFileBundle, 'code');
   }
 
-  // eslint-disable-next-line consistent-return
-  loadBundleHook(id) {
-    // filter image modules
-    const imageModuleFlag = this.filter(id);
+  TransformChunksHook(bundle) {
+    this.filterBundleFile(bundle);
+    this.transformCodeHook(bundle);
+  }
+
+  // 抽取
+  generateDefaultValue(imageModuleFlag, id) {
     if (imageModuleFlag) {
       const { path } = parseId(id);
       this.imageModulePath.push(path);
@@ -128,7 +133,62 @@ export default class Context {
       );
       return `export default ${devalue(generatePath)}`;
     }
-    return '';
+  }
+
+  // eslint-disable-next-line consistent-return
+  loadBundleHook(id) {
+    const imageModuleFlag = this.filter(id);
+    const exportValue = this.generateDefaultValue(imageModuleFlag, id);
+    return exportValue;
+  }
+
+  // 抽取
+  // squoosh
+  async generateSquooshBundle(imagePool, item) {
+    const ext = extname(item).slice(1) ?? '';
+    const userRes = this.config.options.conversion.find((i) =>
+      `${i.from}`.includes(ext),
+    );
+    const type = this.config.isTurn ? userRes?.to : encodeMapBack.get(ext);
+    // const current: any = encodeMap.get(type);
+    const image = imagePool.ingestImage(item);
+    const defaultSquooshOptions = {};
+    Object.keys(defaultOptions).forEach(
+      (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
+    );
+    const currentType = {
+      [type!]: defaultSquooshOptions[type!],
+    };
+    await image.encode(currentType);
+    const generateSrc = getBundleImageSrc(item, this.config.options);
+    const base = basename(item, extname(item));
+    const { cacheDir, assetsDir } = this.config;
+    const imageName = `${base}.${generateSrc}`;
+    const cachedFilename = join(cacheDir, imageName);
+    const encodedWith = await image.encodedWith[type];
+    // if (!(await exists(cachedFilename))) {
+    await fs.writeFile(cachedFilename, encodedWith.binary);
+    // }
+    const source = {
+      fileName: join(assetsDir, imageName),
+      name: imageName,
+      source: (await fs.readFile(cachedFilename)) as any,
+      isAsset: true,
+      type: 'asset',
+    };
+    return source;
+  }
+
+  async generateSharpBundle(item) {
+    const sharpFileBuffer = await loadImage(item, this.config.options);
+    const generateSrc = getBundleImageSrc(item, this.config.options);
+    const base = basename(item, extname(item));
+    const source = await writeImageFile(
+      sharpFileBuffer,
+      this.config,
+      `${base}.${generateSrc}`,
+    );
+    return source;
   }
 
   // 生成bundle
@@ -145,49 +205,10 @@ export default class Context {
     logger(pluginTitle('📦'), info, modeLog);
     const generateImageBundle = this.imageModulePath.map(async (item) => {
       if (this.config.options.mode === 'squoosh') {
-        const ext = extname(item).slice(1) ?? '';
-        const userRes = this.config.options.conversion.find((i) =>
-          `${i.from}`.includes(ext),
-        );
-        const type = this.config.isTurn ? userRes?.to : encodeMapBack.get(ext);
-        // const current: any = encodeMap.get(type);
-        const image = imagePool.ingestImage(item);
-        const defaultSquooshOptions = {};
-        Object.keys(defaultOptions).forEach(
-          (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
-        );
-        const currentType = {
-          [type!]: defaultSquooshOptions[type!],
-        };
-        await image.encode(currentType);
-        const generateSrc = getBundleImageSrc(item, this.config.options);
-        const base = basename(item, extname(item));
-        const { cacheDir, assetsDir } = this.config;
-        const imageName = `${base}.${generateSrc}`;
-        const cachedFilename = join(cacheDir, imageName);
-        const encodedWith = await image.encodedWith[type];
-        // if (!(await exists(cachedFilename))) {
-        await fs.writeFile(cachedFilename, encodedWith.binary);
-        // }
-        const source = {
-          fileName: join(assetsDir, imageName),
-          name: imageName,
-          source: (await fs.readFile(cachedFilename)) as any,
-          isAsset: true,
-          type: 'asset',
-        };
-        return source;
+        await this.generateSquooshBundle(imagePool, item);
       }
       if (this.config.options.mode === 'sharp') {
-        const sharpFileBuffer = await loadImage(item, this.config.options);
-        const generateSrc = getBundleImageSrc(item, this.config.options);
-        const base = basename(item, extname(item));
-        const source = await writeImageFile(
-          sharpFileBuffer,
-          this.config,
-          `${base}.${generateSrc}`,
-        );
-        return source;
+        await this.generateSharpBundle(item);
       }
     });
     // TODO prepare before bundle generate loading animation

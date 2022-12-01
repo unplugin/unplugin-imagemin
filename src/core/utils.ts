@@ -1,6 +1,7 @@
 import { partial } from 'filesize';
 import { createHash } from 'node:crypto';
 import { promises as fs, constants } from 'fs';
+import { resolve } from 'pathe';
 
 export const size = partial({ base: 2, standard: 'jedec' });
 const extRE = /(png|jpeg|jpg|webp|wb2|avif)$/i;
