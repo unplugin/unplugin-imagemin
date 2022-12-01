@@ -30,21 +30,26 @@ async function initSquoosh(config) {
     let newSize = oldSize;
     const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
     const res = options.conversion.find((item) => `${item.from}`.includes(ext));
-    const type = isTurn ? res?.to : encodeMapBack.get(ext);
+    const itemConversion = isTurn && res?.from === ext;
+    const type = itemConversion ? res?.to : encodeMapBack.get(ext);
     const current: any = encodeMap.get(type);
     await image.encode({
       [type!]: defaultSquooshOptions[type!],
     });
+    // TODO 有些类型不能转换 切记 文档要写
     const encodedWith = await image.encodedWith[type];
     newSize = encodedWith.size;
     if (newSize < oldSize) {
-      const filepath = `${fileRootPath.replace(ext, isTurn ? current : ext)}`;
+      const filepath = `${fileRootPath.replace(
+        ext,
+        itemConversion ? current : ext,
+      )}`;
       fs.writeFileSync(filepath, encodedWith.binary);
 
       if (options.cache && !cache.get(chunks[filePath])) {
         cache.set(chunks[filePath], encodedWith.binary);
       }
-      if (isTurn) {
+      if (itemConversion) {
         fs.unlinkSync(fileRootPath);
       }
       compressSuccess(

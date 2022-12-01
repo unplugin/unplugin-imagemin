@@ -24,9 +24,14 @@ async function initSharp(config) {
     let newSize = oldSize;
     const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
     const res = options.conversion.find((item) => `${item.from}`.includes(ext));
-    const type = isTurn ? res?.to : encodeMapBack.get(ext);
+    // 当前item是否需要转换
+    const itemConversion = isTurn && res?.from === ext;
+    const type = itemConversion ? res?.to : encodeMapBack.get(ext);
     const current: any = encodeMap.get(type);
-    const filepath = `${fileRootPath.replace(ext, isTurn ? current : ext)}`;
+    const filepath = `${fileRootPath.replace(
+      ext,
+      itemConversion ? current : ext,
+    )}`;
     const currentType = options.conversion.find(
       (item) => item.from === extname(fileRootPath).slice(1),
     );
@@ -51,7 +56,7 @@ async function initSharp(config) {
       if (options.cache && !cache.get(chunks[filePath])) {
         cache.set(chunks[filePath], await proFs.readFile(filepath));
       }
-      if (isTurn) {
+      if (itemConversion) {
         fs.unlinkSync(fileRootPath);
       }
       compressSuccess(

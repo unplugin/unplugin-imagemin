@@ -18,7 +18,7 @@ import { defaultOptions, sharpOptions } from './types';
 import type { ResolvedOptions } from './types';
 import devalue from './devalue';
 import chalk from 'chalk';
-import { logger, pluginTitle } from './log';
+import { compressSuccess, logger, pluginTitle } from './log';
 import { loadWithRocketGradient } from './gradient';
 import Cache from './cache';
 import initSquoosh from './squoosh';
@@ -118,10 +118,12 @@ export default class Context {
     spinner = await loadWithRocketGradient('');
     const generateImageBundle = this.imageModulePath.map(async (item) => {
       if (this.config.options.mode === 'squoosh') {
-        await this.generateSquooshBundle(imagePool, item);
+        const squooshBundle = await this.generateSquooshBundle(imagePool, item);
+        return squooshBundle;
       }
       if (this.config.options.mode === 'sharp') {
-        await this.generateSharpBundle(item);
+        const sharpBundle = await this.generateSharpBundle(item);
+        return sharpBundle;
       }
     });
     const result = await Promise.all(generateImageBundle);
@@ -192,11 +194,18 @@ export default class Context {
 
   // squoosh
   async generateSquooshBundle(imagePool, item) {
+    const start = Date.now();
+    const size = await fs.lstat(item);
+    const oldSize = size.size;
+    let newSize = oldSize;
     const ext = extname(item).slice(1) ?? '';
     const userRes = this.config.options.conversion.find((i) =>
       `${i.from}`.includes(ext),
     );
-    const type = this.config.isTurn ? userRes?.to : encodeMapBack.get(ext);
+    // const itemConversion = this.config.isTurn && userRes?.from === ext;
+    // TODO 图片接口转化
+    const type =
+      this.config.isTurn && userRes?.to ? userRes?.to : encodeMapBack.get(ext);
     const image = imagePool.ingestImage(item);
     const defaultSquooshOptions = {};
     Object.keys(defaultOptions).forEach(
@@ -212,9 +221,11 @@ export default class Context {
     const imageName = `${base}.${generateSrc}`;
     const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type];
+    newSize = encodedWith.size;
     // if (!(await exists(cachedFilename))) {
     await fs.writeFile(cachedFilename, encodedWith.binary);
     // }
+    compressSuccess(`${item}`, newSize, oldSize, start);
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
@@ -226,6 +237,10 @@ export default class Context {
   }
 
   async generateSharpBundle(item) {
+    const start = Date.now();
+    const size = await fs.lstat(item);
+    const oldSize = size.size;
+    let newSize = oldSize;
     const sharpFileBuffer = await loadImage(item, this.config.options);
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const base = basename(item, extname(item));
@@ -233,6 +248,13 @@ export default class Context {
       sharpFileBuffer,
       this.config,
       `${base}.${generateSrc}`,
+    );
+    newSize = sharpFileBuffer.length;
+    compressSuccess(
+      `${item.replace(process.cwd(), '')}`,
+      newSize,
+      oldSize,
+      start,
     );
     return source;
   }
