@@ -6,13 +6,13 @@ import Context from './core/context';
 export default createUnplugin<any | undefined>((options = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
-  const obj = Object.assign({}, resolveDefaultOptions, options);
+  const assignOptions = Object.assign({}, resolveDefaultOptions, options);
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
     async configResolved(config) {
-      ctx.handleMergeOptionHook({ ...config, options: obj });
+      ctx.handleMergeOptionHook({ ...config, options: assignOptions });
     },
     async load(id) {
       if (options.beforeBundle) {
