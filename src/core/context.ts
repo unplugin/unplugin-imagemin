@@ -116,12 +116,13 @@ export default class Context {
     this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
+    const { mode } = this.config.options;
     const generateImageBundle = this.imageModulePath.map(async (item) => {
-      if (this.config.options.mode === 'squoosh') {
+      if (mode === 'squoosh') {
         const squooshBundle = await this.generateSquooshBundle(imagePool, item);
         return squooshBundle;
       }
-      if (this.config.options.mode === 'sharp') {
+      if (mode === 'sharp') {
         const sharpBundle = await this.generateSharpBundle(item);
         return sharpBundle;
       }
