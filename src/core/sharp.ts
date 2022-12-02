@@ -69,10 +69,4 @@ async function initSharp(config) {
   });
   await Promise.all(images);
 }
-export function loadImage(url: string) {
-  return sharp(decodeURIComponent(parseURL(url).pathname));
-}
-function parseURL(rawURL: string) {
-  return new URL(rawURL.replace(/#/g, '%23'), 'file://');
-}
 export default initSharp;
