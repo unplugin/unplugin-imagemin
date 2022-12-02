@@ -266,6 +266,7 @@ export default class Context {
   }
 
   startGenerate() {
+    console.log('\n');
     const info = chalk.gray('Process start with');
     const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
     logger(pluginTitle('📦'), info, modeLog);
