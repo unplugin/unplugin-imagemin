@@ -16,8 +16,8 @@ export default defineConfig({
       // 捆绑前构建 或者 捆绑后构建
       beforeBundle: true,
       // beforeBundle: false,
-      mode: 'sharp',
-      // mode: 'squoosh',
+      // mode: 'sharp',
+      mode: 'squoosh',
       compress: {
         jpeg: {
           quality: 25,
