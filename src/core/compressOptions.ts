@@ -259,3 +259,11 @@ export const sharpOptions: any = {
   // options.delay (number  | Array <number >)? delay(s) between animation frames (in milliseconds)
   // options.force boolean  force GIF output, otherwise attempt to use input format (optional, default true)
 };
+
+export const resolveDefaultOptions = {
+  mode: 'sharp',
+  conversion: [],
+  beforeBundle: false,
+  cache: false,
+  compress: {},
+};

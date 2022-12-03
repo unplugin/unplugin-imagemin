@@ -1,4 +1,4 @@
-export interface Options {
+export interface CompressTypeOptions {
   mozjpeg?: any;
   jpeg?: any;
   webp?: any;
@@ -7,10 +7,26 @@ export interface Options {
   wp2?: any;
   oxipng?: any;
   png?: any;
+  git?: any;
+  svg?: any;
+  tiff?: any;
+}
+
+interface ConversionItemType {
+  from: string;
+  to: string;
+}
+export interface PluginOptions {
+  conversion?: ConversionItemType[];
+  cache?: boolean;
+  cacheDir?: string;
+  compress?: CompressTypeOptions;
+  mode?: 'squoosh' | 'sharp';
+  beforeBundle?: boolean;
 }
 
 export type ResolvedOptions = Omit<
-  Required<Options>,
+  Required<CompressTypeOptions>,
   'resolvers' | 'extensions' | 'dirs'
 > & {
   conversion: any[];
@@ -19,12 +35,4 @@ export type ResolvedOptions = Omit<
   root?: string;
   outputPath?: string;
   isTurn?: boolean;
-};
-
-export const resolveDefaultOptions = {
-  mode: 'sharp',
-  conversion: [],
-  beforeBundle: false,
-  cache: false,
-  compress: {},
 };
