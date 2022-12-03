@@ -14,7 +14,7 @@ import sharp from 'sharp';
 import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
-import { defaultOptions, sharpOptions } from './types';
+import { defaultOptions, sharpOptions } from './compressOptions';
 import type { ResolvedOptions } from './types';
 import devalue from './devalue';
 import chalk from 'chalk';
