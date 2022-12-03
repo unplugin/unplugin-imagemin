@@ -61,23 +61,6 @@ export default defineConfig({
 
 <br></details>
 
-<details>
-<summary>Webpack</summary><br>
-
-```ts
-// webpack.config.js
-module.exports = {
-  /* ... */
-  plugins: [
-    require('imagemin/webpack')({
-      /* options */
-    }),
-  ],
-// };
-// ```
-
-// <br></details>
-
 ## Configuration
 
 ```ts
