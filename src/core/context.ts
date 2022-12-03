@@ -277,7 +277,6 @@ export default class Context {
 
   // close bundle
   async closeBundleHook() {
-    console.log(this);
     if (!this.config.options.beforeBundle) {
       this.startGenerate();
       this.spinnerHooks(this.closeBundleFn);
