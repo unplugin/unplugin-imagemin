@@ -5,41 +5,39 @@ import Context from './core/context';
 const PLUGIN_NAME = 'unplugin:webpack';
 // TODO conversion 一套接口问题
 // TODO 提取出结构赋值
-export default createUnplugin<PluginOptions | undefined>(
-  (options = {}): any => {
-    const ctx = new Context();
-    // eslint-disable-next-line prefer-object-spread
-    const assignOptions = Object.assign({}, resolveDefaultOptions, options);
-    return {
-      name: 'unplugin-imagemin',
-      apply: 'build',
-      enforce: 'pre',
-      async configResolved(config) {
-        ctx.handleMergeOptionHook({ ...config, options: assignOptions });
-      },
-      vite: {
-        async load(id) {
-          if (options.beforeBundle) {
-            const imageModule = ctx.loadBundleHook(id);
-            if (imageModule) {
-              return imageModule;
-            }
-          }
-        },
-      },
-      webpack(complier) {
-        complier.hooks.done.tap(PLUGIN_NAME, () => {});
-      },
-      async generateBundle(_, bundler) {
+export default createUnplugin((options: PluginOptions = {}): any => {
+  const ctx = new Context();
+  // eslint-disable-next-line prefer-object-spread
+  const assignOptions = Object.assign({}, resolveDefaultOptions, options);
+  return {
+    name: 'unplugin-imagemin',
+    apply: 'build',
+    enforce: 'pre',
+    async configResolved(config) {
+      ctx.handleMergeOptionHook({ ...config, options: assignOptions });
+    },
+    vite: {
+      async load(id) {
         if (options.beforeBundle) {
-          await ctx.generateBundleHook(bundler);
-        } else {
-          ctx.TransformChunksHook(bundler);
+          const imageModule = ctx.loadBundleHook(id);
+          if (imageModule) {
+            return imageModule;
+          }
         }
       },
-      async closeBundle() {
-        ctx.closeBundleHook();
-      },
-    };
-  },
-);
+    },
+    webpack(complier) {
+      complier.hooks.done.tap(PLUGIN_NAME, () => {});
+    },
+    async generateBundle(_, bundler) {
+      if (options.beforeBundle) {
+        await ctx.generateBundleHook(bundler);
+      } else {
+        ctx.TransformChunksHook(bundler);
+      }
+    },
+    async closeBundle() {
+      ctx.closeBundleHook();
+    },
+  };
+});
