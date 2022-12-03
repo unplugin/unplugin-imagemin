@@ -31,8 +31,10 @@ async function initSquoosh(config) {
     const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
     const res = options.conversion.find((item) => `${item.from}`.includes(ext));
     const itemConversion = isTurn && res?.from === ext;
-    const type = itemConversion ? res?.to : encodeMapBack.get(ext);
-    const current: any = encodeMap.get(type);
+    const type = itemConversion
+      ? encodeMapBack.get(res?.to)
+      : encodeMapBack.get(ext);
+    const current: any = encodeMap.get(type!);
     await image.encode({
       [type!]: defaultSquooshOptions[type!],
     });

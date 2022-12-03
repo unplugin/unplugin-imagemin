@@ -141,7 +141,39 @@ export const defaultOptions: Options = {
 };
 
 export const sharpOptions: any = {
+  avif: {
+    // options.quality number  quality, integer 1-100 (optional, default 50)
+    // options.lossless boolean  use lossless compression (optional, default false)
+    // options.effort number  CPU effort, between 0 (fastest) and 9 (slowest) (optional, default 4)
+    // options.chromaSubsampling string  set to '4:2:0' to use chroma subsampling (optional, default '4:4:4')
+  },
   jpeg: {
+    //     quality (Number) 图片质量，整数1-100(可选，默认80)
+    // progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
+    // chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
+    // trellisQuantisation (Boolean) 应用网格量化，需要mozjpeg(可选，默认为false)
+    // overshootDeringing (Boolean) 应用超调脱靶，需要mozjpeg(可选，默认为false)
+    // optimiseScans (Boolean) 优化渐进式扫描，强制渐进式扫描，要求mozjpeg(可选，默认为false)
+    // optimizeScans (Boolean) optimisescan的替代拼写(可选，默认为false)
+    // optimiseCoding (Boolean) 优化Huffman编码表(可选，默认为true)
+    // optimizeCoding (Boolean) optimiseCoding的替代拼写(可选，默认为true)
+    // quantisationTable (Number) 要使用量子化表，整数0-8，需要mozjpeg(可选，默认为0)
+    // quantizationTable(Number) quantisationTable的替代边写，整数0-8，需要mozjpeg(可选，默认为0)
+    // force (Boolean) 强制JPEG输出，否则尝试使用输入格式(可选，默认为true)
+    quality: 75,
+    progressive: false,
+    chromaSubsampling: '4:4:4',
+    trellisQuantisation: false,
+    overshootDeringing: false,
+    optimiseScans: false,
+    optimizeScans: false,
+    optimiseCoding: true,
+    optimizeCoding: true,
+    quantisationTable: 0,
+    quantizationTable: 0,
+    force: true,
+  },
+  jpg: {
     //     quality (Number) 图片质量，整数1-100(可选，默认80)
     // progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
     // chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
@@ -216,4 +248,14 @@ export const sharpOptions: any = {
     yres: 1,
     resolutionUnit: 'inch',
   },
+  // gif
+  //   options.reoptimise boolean  always generate new palettes (slow), re-use existing by default (optional, default false)
+  // options.reoptimize boolean  alternative spelling of options.reoptimise (optional, default false)
+  // options.colours number  maximum number of palette entries, including transparency, between 2 and 256 (optional, default 256)
+  // options.colors number  alternative spelling of options.colours (optional, default 256)
+  // options.effort number  CPU effort, between 1 (fastest) and 10 (slowest) (optional, default 7)
+  // options.dither number  level of Floyd-Steinberg error diffusion, between 0 (least) and 1 (most) (optional, default 1.0)
+  // options.loop number  number of animation iterations, use 0 for infinite animation (optional, default 0)
+  // options.delay (number  | Array <number >)? delay(s) between animation frames (in milliseconds)
+  // options.force boolean  force GIF output, otherwise attempt to use input format (optional, default true)
 };
