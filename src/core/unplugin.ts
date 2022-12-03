@@ -2,7 +2,7 @@ import { resolveDefaultOptions } from './compressOptions';
 import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
 import Context from './context';
-
+const PLUGIN_NAME = 'unplugin:webpack';
 // TODO conversion 一套接口问题
 // TODO 提取出结构赋值
 export default createUnplugin<PluginOptions | undefined>(
@@ -17,13 +17,18 @@ export default createUnplugin<PluginOptions | undefined>(
       async configResolved(config) {
         ctx.handleMergeOptionHook({ ...config, options: assignOptions });
       },
-      async load(id) {
-        if (options.beforeBundle) {
-          const imageModule = ctx.loadBundleHook(id);
-          if (imageModule) {
-            return imageModule;
+      vite: {
+        async load(id) {
+          if (options.beforeBundle) {
+            const imageModule = ctx.loadBundleHook(id);
+            if (imageModule) {
+              return imageModule;
+            }
           }
-        }
+        },
+      },
+      webpack(complier) {
+        complier.hooks.done.tap(PLUGIN_NAME, () => {});
       },
       async generateBundle(_, bundler) {
         if (options.beforeBundle) {

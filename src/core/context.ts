@@ -206,7 +206,9 @@ export default class Context {
     // const itemConversion = this.config.isTurn && userRes?.from === ext;
     // TODO 图片接口转化
     const type =
-      this.config.isTurn && userRes?.to ? userRes?.to : encodeMapBack.get(ext);
+      this.config.isTurn && userRes?.to
+        ? encodeMapBack.get(userRes?.to)
+        : encodeMapBack.get(ext);
     const image = imagePool.ingestImage(item);
     const defaultSquooshOptions = {};
     Object.keys(defaultOptions).forEach(
@@ -221,7 +223,7 @@ export default class Context {
     const { cacheDir, assetsDir } = this.config;
     const imageName = `${base}.${generateSrc}`;
     const cachedFilename = join(cacheDir, imageName);
-    const encodedWith = await image.encodedWith[type];
+    const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
     // if (!(await exists(cachedFilename))) {
     await fs.writeFile(cachedFilename, encodedWith.binary);
@@ -275,6 +277,7 @@ export default class Context {
 
   // close bundle
   async closeBundleHook() {
+    console.log(this);
     if (!this.config.options.beforeBundle) {
       this.startGenerate();
       this.spinnerHooks(this.closeBundleFn);
