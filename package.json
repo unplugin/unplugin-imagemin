@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
     "build": "tsup",
@@ -92,7 +92,6 @@
     "webpack": "^5.75.0",
     "filesize": "^10.0.5",
     "pathe": "^1.0.0"
-
   },
   "dependencies": {
     "@rollup/pluginutils": "^5.0.2",
