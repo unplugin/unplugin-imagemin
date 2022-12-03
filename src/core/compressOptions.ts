@@ -1,5 +1,5 @@
-import type { Options } from './types';
-export const defaultOptions: Options = {
+import type { PluginOptions } from './types';
+export const defaultOptions: PluginOptions = {
   jpeg: {
     extension: /.(jpg|jpeg)$/,
     quality: 75,

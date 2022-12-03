@@ -1,21 +1,21 @@
-import { basename, dirname, resolve } from 'path';
+import { basename, resolve } from 'path';
 import { promises as fs } from 'fs';
-import { fileURLToPath } from 'url';
 import fg from 'fast-glob';
-import chalk from 'chalk';
 
 async function run() {
   // fix cjs exports
-  const files = await fg('*.cjs', {
-    ignore: ['chunk-*'],
+  const files = await fg('*.js', {
+    ignore: ['index.js', 'chunk-*'],
     absolute: true,
-    cwd: resolve(dirname(fileURLToPath(import.meta.url)), '../dist'),
+    cwd: resolve(__dirname, '../dist'),
   });
   for (const file of files) {
-    console.log(chalk.cyan.inverse(' POST '), `Fix ${basename(file)}`);
+    console.log('[postbuild]', basename(file));
+    // eslint-disable-next-line no-await-in-loop
     let code = await fs.readFile(file, 'utf8');
     code = code.replace('exports.default =', 'module.exports =');
     code += 'exports.default = module.exports;';
+    // eslint-disable-next-line no-await-in-loop
     await fs.writeFile(file, code);
   }
 }

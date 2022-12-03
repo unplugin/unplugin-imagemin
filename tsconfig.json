@@ -1,21 +1,24 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "esnext",
+    "target": "es2017",
+    "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
     "declaration": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "sourceMap": false,
     "noEmitOnError": true,
     "noImplicitAny": false,
     "resolveJsonModule": true
   },
-  // "include": [
-  //   "*.d.ts"
-  // ],
-  "exclude": ["node_modules", "playground", "dist"]
+  "exclude": [
+    "node_modules",
+    "playground",
+    "dist"
+  ]
 }

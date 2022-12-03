@@ -1,7 +1,7 @@
-import type { Options } from './types';
+import type { PluginOptions } from './core/types';
 import unplugin from '.';
 
-export default function (this: any, options?: Options) {
+export default function (this: any, options?: PluginOptions) {
   // install webpack plugin
   this.extendBuild((config: any) => {
     config.plugins = config.plugins || [];
