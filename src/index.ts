@@ -3,8 +3,7 @@ import type { PluginOptions } from './core/types';
 import { createUnplugin } from 'unplugin';
 import Context from './core/context';
 const PLUGIN_NAME = 'unplugin:webpack';
-// TODO conversion 一套接口问题
-// TODO 提取出结构赋值
+// TODO 优化代码
 export default createUnplugin((options: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
