@@ -77,7 +77,6 @@ export function isTurnImageType(options) {
   const isReallyType = options?.every(
     (item) => item.from.match(extRE) && item.to.match(extRE),
   );
-  // console.log(isReallyType);
 
   return Boolean(hasConversion && hasType && isReallyType);
 }
