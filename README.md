@@ -73,10 +73,10 @@ module.exports = {
       /* options */
     }),
   ],
-};
-```
+// };
+// ```
 
-<br></details>
+// <br></details>
 
 ## Configuration
 
