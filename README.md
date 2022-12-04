@@ -29,6 +29,7 @@ It will be solved in the future.
 If there are similar requirements, it is recommended to change mode to sharp.
 
 
+## Effect display
 ![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
 
 
