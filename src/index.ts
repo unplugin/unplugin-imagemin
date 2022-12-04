@@ -17,7 +17,7 @@ export default createUnplugin((options: PluginOptions = {}): any => {
     },
     // vite: {
     async load(id) {
-      if (options.beforeBundle) {
+      if (assignOptions.beforeBundle) {
         const imageModule = ctx.loadBundleHook(id);
         if (imageModule) {
           return imageModule;
@@ -29,7 +29,7 @@ export default createUnplugin((options: PluginOptions = {}): any => {
       complier.hooks.done.tap(PLUGIN_NAME, () => {});
     },
     async generateBundle(_, bundler) {
-      if (options.beforeBundle) {
+      if (assignOptions.beforeBundle) {
         await ctx.generateBundleHook(bundler);
       } else {
         ctx.TransformChunksHook(bundler);
