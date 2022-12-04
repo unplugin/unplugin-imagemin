@@ -3,7 +3,7 @@ import type { PluginOptions } from './core/types';
 import { createUnplugin } from 'unplugin';
 import Context from './core/context';
 const PLUGIN_NAME = 'unplugin:webpack';
-// TODO 优化代码
+// TODO 优化代码  imagemin sass 报错啊
 export default createUnplugin((options: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
@@ -11,7 +11,7 @@ export default createUnplugin((options: PluginOptions = {}): any => {
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
-    enforce: 'pre',
+    enforce: 'post',
     async configResolved(config) {
       ctx.handleMergeOptionHook({ ...config, options: assignOptions });
     },

@@ -36,20 +36,17 @@ export default class Context {
 
   mergeOption: any;
 
-  imageModulePath: any = [];
+  imageModulePath: string[] = [];
 
   chunks: any;
 
   cache: any;
 
-  files: any = [];
+  files: string[] = [];
 
   assetPath: string[] = [];
 
-  filter: any = createFilter(extRE, [
-    /[\\/]node_modules[\\/]/,
-    /[\\/]\.git[\\/]/,
-  ]);
+  filter = createFilter(extRE, [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/]);
 
   /**
    * @param useConfig
@@ -67,7 +64,12 @@ export default class Context {
     } = useConfig;
     const cwd = process.cwd();
     const isBuild = command === 'build';
-    const cacheDir = join(root, 'node_modules', '.cache', 'unplugin-imagemin');
+    const cacheDir = join(
+      root,
+      'node_modules',
+      options.cacheDir,
+      'unplugin-imagemin',
+    );
     const isTurn = isTurnImageType(options.conversion);
     const outputPath = resolve(root, outDir);
     const chooseConfig = {
@@ -112,11 +114,14 @@ export default class Context {
     if (!(await exists(this.config.cacheDir))) {
       await mkdir(this.config.cacheDir, { recursive: true });
     }
-    const imagePool = new ImagePool();
+    let imagePool;
+    const { mode } = this.config.options;
+    if (mode === 'squoosh') {
+      // imagePool = new ImagePool();
+    }
     this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
-    const { mode } = this.config.options;
     const generateImageBundle = this.imageModulePath.map(async (item) => {
       if (mode === 'squoosh') {
         const squooshBundle = await this.generateSquooshBundle(imagePool, item);
@@ -128,7 +133,9 @@ export default class Context {
       }
     });
     const result = await Promise.all(generateImageBundle);
-    imagePool.close();
+    if (mode === 'squoosh') {
+      imagePool.close();
+    }
     this.generateBundleFile(bundler, result);
     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
     spinner.text = chalk.yellow('Image conversion completed!');

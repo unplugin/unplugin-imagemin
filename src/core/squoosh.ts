@@ -16,7 +16,10 @@ async function initSquoosh(config) {
     isTurn,
     defaultSquooshOptions,
   } = config;
-  const imagePool = new ImagePool(os.cpus().length);
+  let imagePool;
+  if (options.mode === 'squoosh') {
+    // imagePool = new ImagePool(os.cpus().length);
+  }
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
