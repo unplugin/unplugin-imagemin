@@ -11,20 +11,20 @@ export default createUnplugin((options: PluginOptions = {}): any => {
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
-    enforce: 'post',
+    enforce: 'pre',
     async configResolved(config) {
       ctx.handleMergeOptionHook({ ...config, options: assignOptions });
     },
-    vite: {
-      async load(id) {
-        if (options.beforeBundle) {
-          const imageModule = ctx.loadBundleHook(id);
-          if (imageModule) {
-            return imageModule;
-          }
+    // vite: {
+    async load(id) {
+      if (options.beforeBundle) {
+        const imageModule = ctx.loadBundleHook(id);
+        if (imageModule) {
+          return imageModule;
         }
-      },
+      }
     },
+    // },
     webpack(complier) {
       complier.hooks.done.tap(PLUGIN_NAME, () => {});
     },

@@ -14,7 +14,7 @@ export default defineConfig({
     vue(),
     imagemin({
       // 捆绑前构建 或者 捆绑后构建
-      // beforeBundle: true,
+      beforeBundle: true,
       // beforeBundle: false,
       mode: 'sharp',
       // mode: 'squoosh',

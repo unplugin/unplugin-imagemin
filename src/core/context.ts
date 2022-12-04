@@ -1,4 +1,4 @@
-import { encodeMap, encodeMapBack } from './encodeMap';
+import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
 import {
   filterFile,
@@ -260,8 +260,10 @@ export default class Context {
       `${base}.${generateSrc}`,
     );
     newSize = sharpFileBuffer.length;
+    const { outDir } = this.config;
+
     compressSuccess(
-      `${item.replace(process.cwd(), '')}`,
+      join(this.config.base, outDir, source.fileName),
       newSize,
       oldSize,
       start,
@@ -359,13 +361,15 @@ async function convertToSharp(inputImg, options) {
       ...sharpOptions[ext],
       ...options.compress[currentType.to],
     };
-    res = await sharp(inputImg)[currentType.to](merge).toBuffer();
+    res = await sharp(inputImg)
+      [sharpEncodeMap.get(currentType.to)](merge)
+      .toBuffer();
   } else {
     const merge = {
       ...sharpOptions[ext],
       ...options.compress[ext],
     };
-    res = await sharp(inputImg)[ext](merge).toBuffer();
+    res = await sharp(inputImg)[sharpEncodeMap.get(ext)](merge).toBuffer();
   }
   return res;
 }
