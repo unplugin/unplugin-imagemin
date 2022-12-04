@@ -53,9 +53,38 @@ import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), imagemin(
-  /* options */
-  )],
+  plugins: [vue(),     imagemin({
+      // Whether to compress by default before building or after building
+      beforeBundle: false，
+      
+      // mode Only squoosh or sharp can be selected for mode option
+      mode: 'squoosh',
+      
+      // Default configuration options for compressing different pictures
+      compress: {
+        jpg: {
+          quality: 0,
+        },
+        jpeg: {
+          quality: 100,
+        },
+        png: {
+          quality: 100,
+        },
+        webp: {
+          quality: 100,
+        },
+      },
+
+      // The type of picture converted after the build
+      conversion: [
+        { from: 'png', to: 'mozjpeg' },
+        { from: 'jpeg', to: 'webp' },
+      ],
+      
+      // Whether image caching is required defaults to true
+      cache: false,
+    }),],
 });
 ```
 
