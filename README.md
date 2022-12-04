@@ -84,6 +84,83 @@ export default defineConfig({
 
 <br></details>
 
+## Sharp DefaultConfiguration
+
+### jpeg
+
+```
+  jpeg: {
+    //     quality (Number) 图片质量，整数1-100(可选，默认80)
+    // progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
+    // chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
+    // trellisQuantisation (Boolean) 应用网格量化，需要mozjpeg(可选，默认为false)
+    // overshootDeringing (Boolean) 应用超调脱靶，需要mozjpeg(可选，默认为false)
+    // optimiseScans (Boolean) 优化渐进式扫描，强制渐进式扫描，要求mozjpeg(可选，默认为false)
+    // optimizeScans (Boolean) optimisescan的替代拼写(可选，默认为false)
+    // optimiseCoding (Boolean) 优化Huffman编码表(可选，默认为true)
+    // optimizeCoding (Boolean) optimiseCoding的替代拼写(可选，默认为true)
+    // quantisationTable (Number) 要使用量子化表，整数0-8，需要mozjpeg(可选，默认为0)
+    // quantizationTable(Number) quantisationTable的替代边写，整数0-8，需要mozjpeg(可选，默认为0)
+    // force (Boolean) 强制JPEG输出，否则尝试使用输入格式(可选，默认为true)
+    quality: 75,
+    progressive: false,
+    chromaSubsampling: '4:4:4',
+    trellisQuantisation: false,
+    overshootDeringing: false,
+    optimiseScans: false,
+    optimizeScans: false,
+    optimiseCoding: true,
+    optimizeCoding: true,
+    quantisationTable: 0,
+    quantizationTable: 0,
+    force: true,
+  }
+```
+
+### png
+```
+  png: {
+    progressive: false,
+    compressionLevel: 6,
+    adaptiveFiltering: false,
+    force: true,
+    palette: true,
+    quality: 75,
+    effort: 5,
+    bitdepth: 8,
+    dither: 1,
+  }
+```
+
+### webp
+```
+  webp: {
+    quality: 75,
+    alphaQuality: 100,
+    lossless: false,
+    nearLossless: false,
+    smartSubsample: false,
+    effort: 4,
+  },
+```
+
+### tiff
+```
+  tiff: {
+    quality: 80,
+    compression: 'jpeg',
+    predictor: 'horizontal',
+    pyramid: false,
+    bitdepth: 8,
+    tile: false,
+    tileHeight: 256,
+    tileWidth: 256,
+    xres: 1,
+    yres: 1,
+    resolutionUnit: 'inch',
+  },
+```
+
 ## Squoosh DefaultConfiguration
 
 Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | JPEG-XL | AVIF | OxiPNG)

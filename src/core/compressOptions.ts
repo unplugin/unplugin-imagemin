@@ -142,6 +142,10 @@ export const defaultOptions: PluginOptions = {
 
 export const sharpOptions: any = {
   avif: {
+    quality: 50,
+    lossless: false,
+    effort: 4,
+    chromaSubsampling: '4:4:4',
     // options.quality number  quality, integer 1-100 (optional, default 50)
     // options.lossless boolean  use lossless compression (optional, default false)
     // options.effort number  CPU effort, between 0 (fastest) and 9 (slowest) (optional, default 4)
