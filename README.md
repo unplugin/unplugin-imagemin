@@ -89,7 +89,7 @@ export default defineConfig({
 
 ### jpeg
 
-```
+```ts
   jpeg: {
     //     quality (Number) 图片质量，整数1-100(可选，默认80)
     // progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
@@ -119,7 +119,7 @@ export default defineConfig({
 ```
 
 ### png
-```
+```ts
   png: {
     progressive: false,
     compressionLevel: 6,
@@ -134,7 +134,7 @@ export default defineConfig({
 ```
 
 ### webp
-```
+```ts
   webp: {
     quality: 75,
     alphaQuality: 100,
@@ -146,7 +146,7 @@ export default defineConfig({
 ```
 
 ### tiff
-```
+```ts
   tiff: {
     quality: 80,
     compression: 'jpeg',
