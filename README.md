@@ -29,13 +29,7 @@ It will be solved in the future.
 If there are similar requirements, it is recommended to change mode to sharp.
 
 
-## Build In the case of 60% quality with **Squoosh**
-![image](https://user-images.githubusercontent.com/66500121/204133582-6a8d0472-9aea-4b53-b54f-fbde96439d25.png)
-
-
-## Build In the case of 60% quality with **Sharp**
-![image](https://user-images.githubusercontent.com/66500121/204133424-1404963a-3a26-4d7a-86d1-d809941d5dc1.png)
-
+![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
 
 
 ## Installation
@@ -89,43 +83,6 @@ export default defineConfig({
 ```
 
 <br></details>
-
-## Configuration
-
-```ts
-    imagemin({
-      // Whether to compress by default before building or after building
-      beforeBundle: false，
-      
-      // mode Only squoosh or sharp can be selected for mode option
-      mode: 'squoosh',
-      
-      // Default configuration options for compressing different pictures
-      compress: {
-        jpg: {
-          quality: 0,
-        },
-        jpeg: {
-          quality: 100,
-        },
-        png: {
-          quality: 100,
-        },
-        webp: {
-          quality: 100,
-        },
-      },
-
-      // The type of picture converted after the build
-      conversion: [
-        { from: 'png', to: 'mozjpeg' },
-        { from: 'jpeg', to: 'webp' },
-      ],
-      
-      // Whether image caching is required defaults to true
-      cache: false,
-    }),
-```
 
 ## Squoosh DefaultConfiguration
 
