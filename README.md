@@ -4,7 +4,7 @@
 
 ### ✨✨ Continuous iterative development in testing
 
-###### Features
+###### 🌈 Features
 
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
@@ -22,18 +22,18 @@ Unplugin-imagemin supports two compression modes
  **Squoosh** with rust & wasm 
 
 
-## Be careful
+## 🚧 Be careful
 Sass is not supported because of a global variable conflict
 It will be solved in the future.
 If there are similar requirements, it is recommended to change mode to sharp.
 
 #### Temporarily turn off squoosh mode due to squooshlib and sass compatibility issues
 
-## Effect display
+## 🍰 Effect display
 ![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
 
 
-## Installation
+## 📦 Installation
 
 ```bash
 npm i unplugin-imagemin -D
@@ -85,7 +85,7 @@ export default defineConfig({
 
 <br></details>
 
-## Sharp DefaultConfiguration
+## 🌸 Sharp DefaultConfiguration
 
 ### jpeg
 
@@ -162,7 +162,7 @@ export default defineConfig({
   },
 ```
 
-## Squoosh DefaultConfiguration
+## 🌸 Squoosh DefaultConfiguration
 
 Six types are commonly supported in picture parsing. (MozJPEG | WebP | WebP2 | JPEG-XL | AVIF | OxiPNG)
 
