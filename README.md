@@ -55,24 +55,21 @@ export default defineConfig({
           quality: 0,
         },
         jpeg: {
-          quality: 100,
+          quality: 70,
         },
         png: {
-          quality: 100,
+          quality: 70,
         },
         webp: {
-          quality: 100,
+          quality: 70,
         },
       },
 
       // The type of picture converted after the build
       conversion: [
-        { from: 'png', to: 'mozjpeg' },
+        { from: 'png', to: 'jpeg' },
         { from: 'jpeg', to: 'webp' },
-      ],
-      
-      // Whether image caching is required defaults to true
-      cache: false,
+      ]
     }),],
 });
 ```
