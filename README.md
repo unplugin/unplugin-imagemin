@@ -49,9 +49,6 @@ import imagemin from 'unplugin-imagemin/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(),     imagemin({
-      // mode Only squoosh or sharp can be selected for mode option
-      mode: 'sharp',
-      
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
