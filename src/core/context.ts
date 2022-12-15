@@ -1,5 +1,6 @@
 import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
+import { optimize } from 'svgo';
 import {
   filterFile,
   parseId,
@@ -25,6 +26,7 @@ import initSquoosh from './squoosh';
 import initSharp from './sharp';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
+const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export interface Options {
   compress: any;
@@ -46,7 +48,10 @@ export default class Context {
 
   assetPath: string[] = [];
 
-  filter = createFilter(extRE, [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/]);
+  filter = createFilter(extSvgRE, [
+    /[\\/]node_modules[\\/]/,
+    /[\\/]\.git[\\/]/,
+  ]);
 
   /**
    * @param useConfig
@@ -123,14 +128,36 @@ export default class Context {
     let spinner;
     spinner = await loadWithRocketGradient('');
     const generateImageBundle = this.imageModulePath.map(async (item) => {
-      if (mode === 'squoosh') {
-        const squooshBundle = await this.generateSquooshBundle(imagePool, item);
-        return squooshBundle;
+      if (extname(item) !== '.svg') {
+        if (mode === 'squoosh') {
+          const squooshBundle = await this.generateSquooshBundle(
+            imagePool,
+            item,
+          );
+          return squooshBundle;
+        }
+        if (mode === 'sharp') {
+          const sharpBundle = await this.generateSharpBundle(item);
+          return sharpBundle;
+        }
       }
-      if (mode === 'sharp') {
-        const sharpBundle = await this.generateSharpBundle(item);
-        return sharpBundle;
-      }
+      const svgCode = await fs.readFile(item, 'utf8');
+      const result = optimize(svgCode, {
+        // optional but recommended field
+        // path, // all config fields are also available here
+        multipass: true,
+      });
+      const generateSrc = getBundleImageSrc(item, this.config.options);
+      const base = basename(item, extname(item));
+      const { assetsDir } = this.config;
+      const imageName = `${base}.${generateSrc}`;
+      return {
+        fileName: join(assetsDir, imageName),
+        name: imageName,
+        source: result.data,
+        isAsset: true,
+        type: 'asset',
+      };
     });
     const result = await Promise.all(generateImageBundle);
     if (mode === 'squoosh') {
