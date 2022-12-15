@@ -6,6 +6,7 @@
 
 ###### 🌈 Features
 
+- 🍰 Support png jpeg webp avif svg tiff Format
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
