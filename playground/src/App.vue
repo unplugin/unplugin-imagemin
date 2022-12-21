@@ -5,21 +5,20 @@
     <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
     <RouterView />
-    <!-- <img src="./assets/image/wallhaven-kx9rx7.png" alt="" /> -->
-    <!-- <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" /> -->
-    <img src="./assets/vuetify.svg" alt="">
+    <img src="./assets/image/wallhaven-kx9rx7.png" alt="" />
+    <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" />
+    <img src="./assets/vuetify.svg" alt="" />
   </div>
 </template>
 
 <!-- <style> -->
-<style lang="scss">
+<style>
 div {
   display: flex;
   flex-wrap: wrap;
 }
 
 body {
-  background-image: url('./assets/image/wallhaven-zyxvqy.jpeg');
   width: 100%;
   height: 100%;
 }

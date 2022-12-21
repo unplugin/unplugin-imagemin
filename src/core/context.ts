@@ -122,7 +122,7 @@ export default class Context {
     let imagePool;
     const { mode } = this.config.options;
     if (mode === 'squoosh') {
-      // imagePool = new ImagePool();
+      imagePool = new ImagePool();
     }
     this.startGenerate();
     let spinner;
@@ -253,16 +253,15 @@ export default class Context {
     };
     await image.encode(currentType);
     const generateSrc = getBundleImageSrc(item, this.config.options);
-    const base = basename(item, extname(item));
+    const baseDir = basename(item, extname(item));
     const { cacheDir, assetsDir } = this.config;
-    const imageName = `${base}.${generateSrc}`;
+    const imageName = `${baseDir}.${generateSrc}`;
     const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
     // if (!(await exists(cachedFilename))) {
     await fs.writeFile(cachedFilename, encodedWith.binary);
     // }
-    compressSuccess(`${item}`, newSize, oldSize, start);
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
@@ -270,6 +269,13 @@ export default class Context {
       isAsset: true,
       type: 'asset',
     };
+    const { base, outDir } = this.config;
+    compressSuccess(
+      join(base, outDir, source.fileName),
+      newSize,
+      oldSize,
+      start,
+    );
     return source;
   }
 
