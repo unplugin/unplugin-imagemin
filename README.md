@@ -4,7 +4,7 @@
 
 ### ✨✨ Continuous iterative development in testing
 
-###### 🌈 Features
+#### 🌈 Features
 
 - 🍰 Support png jpeg webp avif svg tiff Format
 - 🦾 High Performance based on squoosh
@@ -21,14 +21,6 @@ Unplugin-imagemin supports two compression modes
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
-
-
-## 🚧 Be careful
-Sass is not supported because of a global variable conflict
-It will be solved in the future.
-If there are similar requirements, it is recommended to change mode to sharp.
-
-#### Temporarily turn off squoosh mode due to squooshlib and sass compatibility issues
 
 ## 🍰 Effect display
 ![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
