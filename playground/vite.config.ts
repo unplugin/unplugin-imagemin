@@ -17,7 +17,7 @@ export default defineConfig({
       // beforeBundle: true,
       // // beforeBundle: false,
       // mode: 'sharp',
-      mode: 'squoosh',
+      // mode: 'squoosh',
       // compress: {
       //   // jpeg: {
       //   //   quality: 1,

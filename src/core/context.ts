@@ -256,16 +256,19 @@ export default class Context {
     const baseDir = basename(item, extname(item));
     const { cacheDir, assetsDir } = this.config;
     const imageName = `${baseDir}.${generateSrc}`;
-    const cachedFilename = join(cacheDir, imageName);
+    // const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
+    // TODO cache
     // if (!(await exists(cachedFilename))) {
-    await fs.writeFile(cachedFilename, encodedWith.binary);
+    // console.log(cachedFilename);
+    // await fs.writeFile(cachedFilename, encodedWith.binary);
     // }
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
-      source: (await fs.readFile(cachedFilename)) as any,
+      // source: (await fs.readFile(cachedFilename)) as any,
+      source: encodedWith.binary,
       isAsset: true,
       type: 'asset',
     };
