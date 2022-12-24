@@ -4,6 +4,7 @@ import { createUnplugin } from 'unplugin';
 import Context from './core/context';
 const PLUGIN_NAME = 'unplugin:webpack';
 // TODO 优化代码  imagemin sass 报错啊
+delete globalThis.navigator;
 export default createUnplugin((options: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
