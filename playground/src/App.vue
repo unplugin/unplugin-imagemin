@@ -12,7 +12,7 @@
 </template>
 
 <!-- <style> -->
-<style>
+<style lang="scss">
 div {
   display: flex;
   flex-wrap: wrap;
