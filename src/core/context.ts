@@ -123,6 +123,7 @@ export default class Context {
     const { mode } = this.config.options;
     if (mode === 'squoosh') {
       imagePool = new ImagePool();
+      delete globalThis.navigator;
     }
     this.startGenerate();
     let spinner;

@@ -19,6 +19,7 @@ async function initSquoosh(config) {
   let imagePool;
   if (options.mode === 'squoosh') {
     imagePool = new ImagePool(os.cpus().length);
+    delete globalThis.navigator;
   }
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);
