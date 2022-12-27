@@ -41,7 +41,9 @@ import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(),     imagemin({
+  plugins: [
+    vue(),   
+    imagemin({
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
@@ -57,13 +59,13 @@ export default defineConfig({
           quality: 70,
         },
       },
-
       // The type of picture converted after the build
       conversion: [
         { from: 'png', to: 'jpeg' },
         { from: 'jpeg', to: 'webp' },
       ]
-    }),],
+    })
+  ]
 });
 ```
 
