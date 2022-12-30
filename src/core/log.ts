@@ -26,7 +26,7 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
   console.log(
     chalk.blue(filePath.replace('/', '')),
     chalk.yellow(size(oldSize).toString()),
-    '➡️',
+    '➡️ ',
     chalk.green(size(newSize).toString()),
     chalk.magenta(`+${Date.now() - start}ms`),
   );
