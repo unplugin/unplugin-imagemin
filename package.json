@@ -3,6 +3,7 @@
   "version": "0.2.0-beta.1",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
+    "bootstrap": "pnpm install && pnpm build",
     "build": "tsup && pnpm build:fix",
     "dev": "tsup --watch src && pnpm build:fix",
     "build:fix": "esno scripts/postbuild.ts",
