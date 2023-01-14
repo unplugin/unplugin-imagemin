@@ -265,7 +265,7 @@ export const sharpOptions: any = {
 };
 
 export const resolveDefaultOptions = {
-  mode: 'sharp',
+  mode: 'squoosh',
   conversion: [],
   beforeBundle: true,
   cache: false,

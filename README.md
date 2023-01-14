@@ -4,8 +4,9 @@
 
 ### ✨✨ Continuous iterative development in testing
 
-###### 🌈 Features
+#### 🌈 Features
 
+- 🍰 Support png jpeg webp avif svg tiff Format
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
@@ -20,14 +21,6 @@ Unplugin-imagemin supports two compression modes
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
-
-
-## 🚧 Be careful
-Sass is not supported because of a global variable conflict
-It will be solved in the future.
-If there are similar requirements, it is recommended to change mode to sharp.
-
-#### Temporarily turn off squoosh mode due to squooshlib and sass compatibility issues
 
 ## 🍰 Effect display
 ![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
@@ -48,35 +41,33 @@ import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(),     imagemin({
-      // mode Only squoosh or sharp can be selected for mode option
-      mode: 'sharp',
-      
+  plugins: [
+    vue(),   
+    imagemin({
+      // Default mode squoosh. support squoosh and sharp
+      mode: 'squoosh'
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
           quality: 0,
         },
         jpeg: {
-          quality: 100,
+          quality: 70,
         },
         png: {
-          quality: 100,
+          quality: 70,
         },
         webp: {
-          quality: 100,
+          quality: 70,
         },
       },
-
       // The type of picture converted after the build
       conversion: [
-        { from: 'png', to: 'mozjpeg' },
+        { from: 'png', to: 'jpeg' },
         { from: 'jpeg', to: 'webp' },
-      ],
-      
-      // Whether image caching is required defaults to true
-      cache: false,
-    }),],
+      ]
+    })
+  ]
 });
 ```
 
@@ -88,18 +79,18 @@ export default defineConfig({
 
 ```ts
   jpeg: {
-    //     quality (Number) 图片质量，整数1-100(可选，默认80)
-    // progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
-    // chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
-    // trellisQuantisation (Boolean) 应用网格量化，需要mozjpeg(可选，默认为false)
-    // overshootDeringing (Boolean) 应用超调脱靶，需要mozjpeg(可选，默认为false)
-    // optimiseScans (Boolean) 优化渐进式扫描，强制渐进式扫描，要求mozjpeg(可选，默认为false)
-    // optimizeScans (Boolean) optimisescan的替代拼写(可选，默认为false)
-    // optimiseCoding (Boolean) 优化Huffman编码表(可选，默认为true)
-    // optimizeCoding (Boolean) optimiseCoding的替代拼写(可选，默认为true)
-    // quantisationTable (Number) 要使用量子化表，整数0-8，需要mozjpeg(可选，默认为0)
-    // quantizationTable(Number) quantisationTable的替代边写，整数0-8，需要mozjpeg(可选，默认为0)
-    // force (Boolean) 强制JPEG输出，否则尝试使用输入格式(可选，默认为true)
+    quality (Number) 图片质量，整数1-100(可选，默认80)
+    progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
+    chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
+    trellisQuantisation (Boolean) 应用网格量化，需要mozjpeg(可选，默认为false)
+    overshootDeringing (Boolean) 应用超调脱靶，需要mozjpeg(可选，默认为false)
+    optimiseScans (Boolean) 优化渐进式扫描，强制渐进式扫描，要求mozjpeg(可选，默认为false)
+    optimizeScans (Boolean) optimisescan的替代拼写(可选，默认为false)
+    optimiseCoding (Boolean) 优化Huffman编码表(可选，默认为true)
+    optimizeCoding (Boolean) optimiseCoding的替代拼写(可选，默认为true)
+    quantisationTable (Number) 要使用量子化表，整数0-8，需要mozjpeg(可选，默认为0)
+    quantizationTable(Number) quantisationTable的替代边写，整数0-8，需要mozjpeg(可选，默认为0)
+    force (Boolean) 强制JPEG输出，否则尝试使用输入格式(可选，默认为true)
     quality: 75,
     progressive: false,
     chromaSubsampling: '4:4:4',
@@ -281,21 +272,11 @@ Png format converts webp format by default, but if you do not specify the conver
 ```
 
 
-<!-- ## Sharp DefaultConfiguration -->
-
-<!-- ## TODO
-
-- sass moudle navigator web error (refactor)
-- transform with unplugin context
 - use cache in node_modules
-- refactor user options
+
 - Various types of pictures （Svg is not supported）
-- pref If there is this type or picture, then continue to go down.
-- transform get global ctx || context
-- resolve generateBundle callback replace code
+
 - Attribute compress test error
-- Css module conversion
-- refactor generateBundle before write chunk
+
 - typescript Type hint
-- Optimize the overall logical structure of the code
-- Provides two modes to build and closebundle -->
+

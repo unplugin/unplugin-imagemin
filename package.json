@@ -79,6 +79,8 @@
     "eslint-config-relaxed-ts": "^2.0.2",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
+    "filesize": "^10.0.5",
+    "pathe": "^1.0.0",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "tsup": "^6.5.0",
@@ -86,9 +88,7 @@
     "typescript": "^4.9.3",
     "vite": "4.0.0-alpha.0",
     "vitest": "^0.25.2",
-    "webpack": "^5.75.0",
-    "filesize": "^10.0.5",
-    "pathe": "^1.0.0"
+    "webpack": "^5.75.0"
   },
   "dependencies": {
     "@rollup/pluginutils": "^5.0.2",
@@ -96,6 +96,7 @@
     "chalk": "^4.1.2",
     "ora": "5.1.0",
     "sharp": "0.30.5",
+    "svgo": "^3.0.2",
     "unplugin": "^1.0.0"
   },
   "engines": {

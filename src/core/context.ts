@@ -1,5 +1,7 @@
 import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
+import consola from 'consola';
+import { optimize } from 'svgo';
 import {
   filterFile,
   parseId,
@@ -25,6 +27,7 @@ import initSquoosh from './squoosh';
 import initSharp from './sharp';
 
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
+const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export interface Options {
   compress: any;
@@ -46,7 +49,10 @@ export default class Context {
 
   assetPath: string[] = [];
 
-  filter = createFilter(extRE, [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/]);
+  filter = createFilter(extSvgRE, [
+    /[\\/]node_modules[\\/]/,
+    /[\\/]\.git[\\/]/,
+  ]);
 
   /**
    * @param useConfig
@@ -117,27 +123,61 @@ export default class Context {
     let imagePool;
     const { mode } = this.config.options;
     if (mode === 'squoosh') {
-      // imagePool = new ImagePool();
+      imagePool = new ImagePool();
     }
     this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
-    const generateImageBundle = this.imageModulePath.map(async (item) => {
+    if (this.imageModulePath.length > 0) {
+      const generateImageBundle = this.imageModulePath.map(async (item) => {
+        if (extname(item) !== '.svg') {
+          if (mode === 'squoosh') {
+            const squooshBundle = await this.generateSquooshBundle(
+              imagePool,
+              item,
+            );
+            return squooshBundle;
+          }
+          if (mode === 'sharp') {
+            const sharpBundle = await this.generateSharpBundle(item);
+            return sharpBundle;
+          }
+        }
+        const svgCode = await fs.readFile(item, 'utf8');
+        const result = optimize(svgCode, {
+          // optional but recommended field
+          // path, // all config fields are also available here
+          multipass: true,
+        });
+        const generateSrc = getBundleImageSrc(item, this.config.options);
+        const base = basename(item, extname(item));
+        const { assetsDir } = this.config;
+        const imageName = `${base}.${generateSrc}`;
+        return {
+          fileName: join(assetsDir, imageName),
+          name: imageName,
+          source: result.data,
+          isAsset: true,
+          type: 'asset',
+        };
+      });
+      const result = await Promise.all(generateImageBundle);
       if (mode === 'squoosh') {
-        const squooshBundle = await this.generateSquooshBundle(imagePool, item);
-        return squooshBundle;
+        imagePool.close();
       }
-      if (mode === 'sharp') {
-        const sharpBundle = await this.generateSharpBundle(item);
-        return sharpBundle;
+      this.generateBundleFile(bundler, result);
+      logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+    } else {
+      console.log(
+        chalk.yellow(
+          'Not Found Image Module,  if you want to use style with image style, such as "background-image" you can use "beforeBundle: false" in plugin config',
+        ),
+      );
+      if (mode === 'squoosh') {
+        imagePool.close();
       }
-    });
-    const result = await Promise.all(generateImageBundle);
-    if (mode === 'squoosh') {
-      imagePool.close();
     }
-    this.generateBundleFile(bundler, result);
-    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+
     spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
   }
@@ -194,7 +234,7 @@ export default class Context {
       const base = basename(path, extname(path));
       const generatePath = join(
         `${this.config.base}${this.config.assetsDir}`,
-        `${base}.${generateSrc}`,
+        `${base}-${generateSrc}`,
       );
       return `export default ${devalue(generatePath)}`;
     }
@@ -226,23 +266,32 @@ export default class Context {
     };
     await image.encode(currentType);
     const generateSrc = getBundleImageSrc(item, this.config.options);
-    const base = basename(item, extname(item));
+    const baseDir = basename(item, extname(item));
     const { cacheDir, assetsDir } = this.config;
-    const imageName = `${base}.${generateSrc}`;
-    const cachedFilename = join(cacheDir, imageName);
+    const imageName = `${baseDir}-${generateSrc}`;
+    // const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
+    // TODO cache
     // if (!(await exists(cachedFilename))) {
-    await fs.writeFile(cachedFilename, encodedWith.binary);
+    // console.log(cachedFilename);
+    // await fs.writeFile(cachedFilename, encodedWith.binary);
     // }
-    compressSuccess(`${item}`, newSize, oldSize, start);
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
-      source: (await fs.readFile(cachedFilename)) as any,
+      // source: (await fs.readFile(cachedFilename)) as any,
+      source: encodedWith.binary,
       isAsset: true,
       type: 'asset',
     };
+    const { base, outDir } = this.config;
+    compressSuccess(
+      join(base, outDir, source.fileName),
+      newSize,
+      oldSize,
+      start,
+    );
     return source;
   }
 

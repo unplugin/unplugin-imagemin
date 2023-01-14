@@ -24,9 +24,9 @@ export const bgCyan = (res: string | number) => colorResult(res, 'bgCyan');
 // eslint-disable-next-line max-params
 export function compressSuccess(filePath, newSize, oldSize, start) {
   console.log(
-    chalk.blue(filePath),
+    chalk.blue(filePath.replace('/', '')),
     chalk.yellow(size(oldSize).toString()),
-    '➡️',
+    '➡️ ',
     chalk.green(size(newSize).toString()),
     chalk.magenta(`+${Date.now() - start}ms`),
   );
