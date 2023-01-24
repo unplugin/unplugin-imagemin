@@ -13,30 +13,11 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      // // 捆绑前构建 或者 捆绑后构建
-      // beforeBundle: true,
-      // beforeBundle: false,
-      // mode: 'sharp',
-      // mode: 'squoosh',
-      // compress: {
-      //   // jpeg: {
-      //   //   quality: 1,
-      //   // },
-      //   // jpg: {
-      //   //   quality: 1,
-      //   // },
-      //   // png: {
-      //   //   quality: 1,
-      //   // },
-      //   // webp: {
-      //   //   quality: 1,
-      //   // },
-      // },
       conversion: [
         { from: 'png', to: 'webp' },
+        { from: 'jpg', to: 'webp' },
         { from: 'jpeg', to: 'webp' },
       ],
-      // // cache: false,
     }),
   ],
 });
