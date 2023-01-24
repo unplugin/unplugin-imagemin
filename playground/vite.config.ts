@@ -32,10 +32,10 @@ export default defineConfig({
       //   //   quality: 1,
       //   // },
       // },
-      // conversion: [
-      //   // { from: 'png', to: 'jpg' },
-      //   // { from: 'jpeg', to: 'webp' },
-      // ],
+      conversion: [
+        { from: 'png', to: 'webp' },
+        { from: 'jpeg', to: 'webp' },
+      ],
       // // cache: false,
     }),
   ],
