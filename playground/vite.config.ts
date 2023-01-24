@@ -13,6 +13,7 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
+      mode: 'sharp',
       beforeBundle: false,
       conversion: [
         { from: 'png', to: 'webp' },
