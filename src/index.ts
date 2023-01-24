@@ -14,6 +14,8 @@ export default createUnplugin((options: PluginOptions = {}): any => {
     apply: 'build',
     enforce: 'pre',
     async configResolved(config) {
+      // console.log(config);
+
       ctx.handleMergeOptionHook({ ...config, options: assignOptions });
     },
     // vite: {
