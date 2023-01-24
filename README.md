@@ -22,6 +22,10 @@ Unplugin-imagemin supports two compression modes
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
 
+## ✨Warning
+Due to the loading problem of squoosh, unplugin-imagmin currently only supports versions below node 18.
+
+
 ## 🍰 Effect display
 ![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
 
