@@ -349,9 +349,13 @@ export default class Context {
     const html = await fs.readFile(resolve(process.cwd(), htmlBundlePath));
     const htmlBuffer = Buffer.from(html);
     const htmlCodeString = htmlBuffer.toString();
+    let newFile: string = '';
     if (htmlCodeString.includes('<img')) {
       this.config.options.conversion.forEach(async (item) => {
-        const newFile = htmlCodeString.replace(item.from, item.to);
+        newFile =
+          newFile.length > 0
+            ? newFile.replace(item.from, item.to)
+            : htmlCodeString.replace(item.from, item.to);
         await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
       });
     }
