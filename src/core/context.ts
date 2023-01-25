@@ -1,6 +1,6 @@
 import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
-import consola from 'consola';
+import { Blob, Buffer } from 'node:buffer';
 import { optimize } from 'svgo';
 import {
   filterFile,
@@ -204,7 +204,7 @@ export default class Context {
     });
   }
 
-  transformCodeHook(bundle) {
+  async transformCodeHook(bundle) {
     const allBundles = Object.values(bundle);
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
     const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
@@ -215,6 +215,7 @@ export default class Context {
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
       filterExtension(item.fileName, 'css'),
     );
+
     // transform css modules
     transformCode(
       this.config.options,
@@ -338,6 +339,16 @@ export default class Context {
     if (!this.config.options.beforeBundle) {
       this.startGenerate();
       this.spinnerHooks(this.closeBundleFn);
+      const html = await fs.readFile(resolve(process.cwd(), 'dist/index.html'));
+      // console.log(Buffer.toString(html));
+      const buf1 = Buffer.from(html);
+      const res = buf1.toString();
+      const newFile = res.replace(
+        'wallhaven-x61xdo-4d9e01e2.jpg',
+        'wallhaven-x61xdo-4d9e01e2.webp',
+      );
+      console.log(newFile);
+      await fs.writeFile(resolve(process.cwd(), 'dist/index.html'), newFile);
     }
     return true;
   }
