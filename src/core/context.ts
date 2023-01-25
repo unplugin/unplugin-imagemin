@@ -351,11 +351,14 @@ export default class Context {
     const htmlCodeString = htmlBuffer.toString();
     let newFile: string = '';
     if (htmlCodeString.includes('<img')) {
+      //  let pattern = new RegExp(search, "g");
+      //  let str = text.value.replace(pattern, "young");
       this.config.options.conversion.forEach(async (item) => {
+        const pattern = new RegExp(item.from, 'g');
         newFile =
           newFile.length > 0
-            ? newFile.replace(item.from, item.to)
-            : htmlCodeString.replace(item.from, item.to);
+            ? newFile.replace(pattern, item.to)
+            : htmlCodeString.replace(pattern, item.to);
         await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
       });
     }
