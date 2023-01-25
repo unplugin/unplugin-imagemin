@@ -345,16 +345,16 @@ export default class Context {
   }
 
   async transformHtmlModule() {
-    const html = await fs.readFile(resolve(process.cwd(), 'dist/index.html'));
-    // console.log(Buffer.toString(html));
-    const buf1 = Buffer.from(html);
-    const res = buf1.toString();
-    const newFile = res.replace(
-      'wallhaven-x61xdo-4d9e01e2.jpg',
-      'wallhaven-x61xdo-4d9e01e2.webp',
-    );
-    console.log(newFile);
-    await fs.writeFile(resolve(process.cwd(), 'dist/index.html'), newFile);
+    const htmlBundlePath = `${this.config.outDir}/index.html`;
+    const html = await fs.readFile(resolve(process.cwd(), htmlBundlePath));
+    const htmlBuffer = Buffer.from(html);
+    const htmlCodeString = htmlBuffer.toString();
+    if (htmlCodeString.includes('<img')) {
+      this.config.options.conversion.forEach(async (item) => {
+        const newFile = htmlCodeString.replace(item.from, item.to);
+        await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
+      });
+    }
   }
 
   async spinnerHooks(fn) {
