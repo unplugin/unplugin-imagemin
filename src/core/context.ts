@@ -307,7 +307,7 @@ export default class Context {
     const source = await writeImageFile(
       sharpFileBuffer,
       this.config,
-      `${base}.${generateSrc}`,
+      `${base}-${generateSrc}`,
     );
     newSize = sharpFileBuffer.length;
     const { outDir } = this.config;

@@ -14,7 +14,6 @@ export default defineConfig({
     vue(),
     imagemin({
       mode: 'sharp',
-      beforeBundle: false,
       conversion: [
         { from: 'png', to: 'webp' },
         { from: 'jpg', to: 'webp' },

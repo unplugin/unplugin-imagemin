@@ -1,10 +1,10 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHashHistory } from 'vue-router';
 const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    redirect: '/about',
-  },
+  // {
+  // path: '/',
+  // redirect: '/about',
+  // },
   {
     path: '/about',
     component: () => import('../views/about.vue'),
