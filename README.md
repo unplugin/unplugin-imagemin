@@ -34,7 +34,7 @@ Due to the loading problem of squoosh, unplugin-imagmin currently only supports 
 ## 📦 Installation
 
 ```bash
-npm i unplugin-imagemin -D
+npm i unplugin-imagemin@latest -D
 ```
 
 <details>
