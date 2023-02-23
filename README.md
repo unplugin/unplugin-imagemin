@@ -15,7 +15,7 @@
 - 🌈 You can convert different picture types at build time
 
 
-- Node <= 18 & vite >= 3
+## Node <= 18
 
 ## Squoosh && Sharp
 
