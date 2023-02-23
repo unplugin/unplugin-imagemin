@@ -15,8 +15,6 @@
 - 🌈 You can convert different picture types at build time
 
 
-## Node <= 18
-
 ## Squoosh && Sharp
 
 Unplugin-imagemin supports two compression modes 
