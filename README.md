@@ -14,6 +14,9 @@
 - 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
 
+
+- Node <= 18 & vite >= 3
+
 ## Squoosh && Sharp
 
 Unplugin-imagemin supports two compression modes 
