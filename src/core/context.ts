@@ -172,7 +172,7 @@ export default class Context {
         const generateSrc = getBundleImageSrc(item, this.config.options);
         const base = basename(item, extname(item));
         const { assetsDir } = this.config;
-        const imageName = `${base}.${generateSrc}`;
+        const imageName = `${base}-${generateSrc}`;
         return {
           fileName: join(assetsDir, imageName),
           name: imageName,

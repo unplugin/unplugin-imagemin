@@ -10,10 +10,13 @@ export default defineConfig({
       '@/': `${path.resolve(__dirname, 'src')}/`,
     },
   },
+  build: {
+    assetsInlineLimit: 4096 * 2,
+  },
   plugins: [
     vue(),
     imagemin({
-      mode: 'sharp',
+      mode: 'squoosh',
       conversion: [
         { from: 'png', to: 'webp' },
         { from: 'jpg', to: 'webp' },
