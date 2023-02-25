@@ -1,11 +1,27 @@
-import { ImagePool } from '@squoosh/lib';
+// import { ImagePool } from '@squoosh/lib';
 import os from 'node:os';
 import path from 'node:path';
 import * as fs from 'node:fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
+const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
+const SquooshErrorVersion = 18;
+const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
+let SquooshPool;
+if (SquooshUseFlag) {
+  console.log('node < 18');
 
+  import('@squoosh/lib')
+    .then((module) => {
+      // 加载模块成功后执行的代码
+      SquooshPool = module.ImagePool;
+    })
+    .catch((err) => {
+      // 加载模块失败后执行的代码
+      console.log(err);
+    });
+}
 async function initSquoosh(config) {
   const {
     files,
@@ -18,7 +34,7 @@ async function initSquoosh(config) {
   } = config;
   let imagePool;
   if (options.mode === 'squoosh') {
-    imagePool = new ImagePool(os.cpus().length);
+    imagePool = new SquooshPool(os.cpus().length);
   }
   const images = files.map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);

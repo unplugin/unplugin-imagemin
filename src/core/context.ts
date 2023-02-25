@@ -13,7 +13,6 @@ import {
 } from './utils';
 import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
-import { ImagePool } from '@squoosh/lib';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
 import { defaultOptions, sharpOptions } from './compressOptions';
@@ -26,6 +25,24 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 
+// 切换整数字符串 尝试使用正则
+const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
+const SquooshErrorVersion = 18;
+const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
+let SquooshPool;
+if (SquooshUseFlag) {
+  console.log('node < 18');
+
+  import('@squoosh/lib')
+    .then((module) => {
+      // 加载模块成功后执行的代码
+      SquooshPool = module.ImagePool;
+    })
+    .catch((err) => {
+      // 加载模块失败后执行的代码
+      console.log(err);
+    });
+}
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
@@ -122,8 +139,8 @@ export default class Context {
     }
     let imagePool;
     const { mode } = this.config.options;
-    if (mode === 'squoosh') {
-      imagePool = new ImagePool();
+    if (mode === 'squoosh' && SquooshUseFlag) {
+      imagePool = new SquooshPool();
     }
     this.startGenerate();
     let spinner;
@@ -131,17 +148,21 @@ export default class Context {
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
         if (extname(item) !== '.svg') {
-          if (mode === 'squoosh') {
+          if (mode === 'squoosh' && SquooshUseFlag) {
             const squooshBundle = await this.generateSquooshBundle(
               imagePool,
               item,
             );
             return squooshBundle;
-          }
-          if (mode === 'sharp') {
+          } else if (mode === 'sharp') {
             const sharpBundle = await this.generateSharpBundle(item);
             return sharpBundle;
           }
+          console.log(
+            chalk.yellow(
+              'Squoosh mode is not supported in node 18. Please use sharp.',
+            ),
+          );
         }
         const svgCode = await fs.readFile(item, 'utf8');
         const result = optimize(svgCode, {
@@ -393,7 +414,7 @@ export default class Context {
       cache,
       chunks: this.chunks,
     };
-    if (mode === 'squoosh') {
+    if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
     } else if (mode === 'sharp') {
       await initSharp(initOptions);
