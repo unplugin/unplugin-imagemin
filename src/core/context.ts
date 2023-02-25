@@ -31,12 +31,11 @@ const SquooshErrorVersion = 18;
 const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
 if (SquooshUseFlag) {
-  console.log('node < 18');
-
   import('@squoosh/lib')
     .then((module) => {
       // 加载模块成功后执行的代码
       SquooshPool = module.ImagePool;
+      delete globalThis.navigator;
     })
     .catch((err) => {
       // 加载模块失败后执行的代码
