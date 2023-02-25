@@ -74,21 +74,21 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.14.1",
     "bumpp": "^8.2.1",
-    "eslint": "^8.28.0",
-    "eslint-config-relaxed-ts": "^2.0.2",
+    "eslint": "^8.34.0",
+    "eslint-config-relaxed-ts": "^2.0.13",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.12",
-    "filesize": "^10.0.5",
-    "pathe": "^1.0.0",
-    "prettier": "^2.7.1",
+    "filesize": "^10.0.6",
+    "pathe": "^1.1.0",
+    "prettier": "^2.8.4",
     "rimraf": "^3.0.2",
-    "tsup": "^6.5.0",
-    "turbo": "^1.6.3",
-    "typescript": "^4.9.3",
+    "tsup": "^6.6.3",
+    "turbo": "^1.8.2",
+    "typescript": "^4.9.5",
     "vite": "4.0.0-alpha.0",
-    "vitest": "^0.25.2",
+    "vitest": "^0.25.8",
     "webpack": "^5.75.0"
   },
   "dependencies": {
@@ -98,7 +98,7 @@
     "ora": "5.1.0",
     "sharp": "0.30.5",
     "svgo": "^3.0.2",
-    "unplugin": "^1.0.0"
+    "unplugin": "^1.1.0"
   },
   "engines": {
     "node": "^14.18.0 || >=16.12.0"
