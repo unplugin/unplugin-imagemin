@@ -75,7 +75,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^18.14.1",
-    "bumpp": "^8.2.1",
+    "bumpp": "^9.0.0",
     "eslint": "^8.34.0",
     "eslint-config-relaxed-ts": "^2.0.13",
     "esno": "^0.16.3",
