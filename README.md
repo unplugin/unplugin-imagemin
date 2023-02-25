@@ -38,6 +38,15 @@ Due to the loading problem of squoosh, unplugin-imagmin currently only supports 
 npm i unplugin-imagemin@latest -D
 ```
 
+```bash
+yarn add unplugin-imagemin@latest -D
+```
+
+```bash
+pnpm add unplugin-imagemin@latest -D
+```
+
+
 <details>
 <summary>Vite</summary><br>
 
