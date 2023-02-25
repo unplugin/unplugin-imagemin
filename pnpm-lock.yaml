@@ -14,7 +14,7 @@ importers:
       esno: ^0.16.3
       fast-glob: ^3.2.12
       filesize: ^10.0.6
-      ora: 5.1.0
+      ora: 5.4.1
       pathe: ^1.1.0
       prettier: ^2.8.4
       rimraf: ^4.0.0
@@ -31,7 +31,7 @@ importers:
       '@rollup/pluginutils': 5.0.2
       '@squoosh/lib': 0.5.3
       chalk: 4.1.2
-      ora: 5.1.0
+      ora: 5.4.1
       sharp: 0.30.5
       svgo: 3.0.2
       unplugin: 1.1.0
@@ -3559,6 +3559,7 @@ packages:
 
   /mute-stream/0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
+    dev: true
 
   /mz/2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
@@ -3706,16 +3707,17 @@ packages:
       word-wrap: 1.2.3
     dev: true
 
-  /ora/5.1.0:
-    resolution: {integrity: sha512-9tXIMPvjZ7hPTbk8DFq1f7Kow/HU/pQYB60JbNq+QnGwcyhWVZaQ4hM9zQDEsPxw/muLpgiHSaumUZxCAmod/w==}
+  /ora/5.4.1:
+    resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
     engines: {node: '>=10'}
     dependencies:
+      bl: 4.1.0
       chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.7.0
       is-interactive: 1.0.0
+      is-unicode-supported: 0.1.0
       log-symbols: 4.1.0
-      mute-stream: 0.0.8
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
     dev: false
