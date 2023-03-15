@@ -50,7 +50,7 @@ Currently only vite rollup is supported.
 
 
 <details>
-<summary>Vite</summary><br>
+<summary>Basic</summary><br>
 
 ```ts
 import { defineConfig } from 'vite';
@@ -60,30 +60,7 @@ import imagemin from 'unplugin-imagemin/vite';
 export default defineConfig({
   plugins: [
     vue(),   
-    imagemin({
-      // Default mode squoosh. support squoosh and sharp
-      mode: 'squoosh'
-      // Default configuration options for compressing different pictures
-      compress: {
-        jpg: {
-          quality: 0,
-        },
-        jpeg: {
-          quality: 70,
-        },
-        png: {
-          quality: 70,
-        },
-        webp: {
-          quality: 70,
-        },
-      },
-      // The type of picture converted after the build
-      conversion: [
-        { from: 'png', to: 'jpeg' },
-        { from: 'jpeg', to: 'webp' },
-      ]
-    })
+    imagemin()
   ]
 });
 ```
@@ -93,7 +70,7 @@ export default defineConfig({
 
 
 <details>
-<summary>Vite</summary><br>
+<summary>Advanced</summary><br>
 
 ```ts
 import { defineConfig } from 'vite';
