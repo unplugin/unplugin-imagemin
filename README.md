@@ -46,6 +46,51 @@ yarn add unplugin-imagemin@latest -D
 pnpm add unplugin-imagemin@latest -D
 ```
 
+Currently only vite rollup is supported.
+
+
+<details>
+<summary>Vite</summary><br>
+
+```ts
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import imagemin from 'unplugin-imagemin/vite';
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    vue(),   
+    imagemin({
+      // Default mode squoosh. support squoosh and sharp
+      mode: 'squoosh'
+      // Default configuration options for compressing different pictures
+      compress: {
+        jpg: {
+          quality: 0,
+        },
+        jpeg: {
+          quality: 70,
+        },
+        png: {
+          quality: 70,
+        },
+        webp: {
+          quality: 70,
+        },
+      },
+      // The type of picture converted after the build
+      conversion: [
+        { from: 'png', to: 'jpeg' },
+        { from: 'jpeg', to: 'webp' },
+      ]
+    })
+  ]
+});
+```
+
+<br></details>
+
+
 
 <details>
 <summary>Vite</summary><br>
