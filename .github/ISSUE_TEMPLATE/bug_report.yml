@@ -1,5 +1,5 @@
 name: Bug Report
-description: Use this when swc breaks something
+description: Use this when farm breaks something
 labels: C-bug
 body:
   - type: textarea
