@@ -11,6 +11,7 @@ body:
 
         - You have a local rust environment
         - Node version greater than or equal to 16
+
         Also try to search for your issue - it may have already been answered or even fixed in the development branch.
         However, if you find that an old, closed issue still persists in the latest version,
         you should open a new issue using the form below instead of commenting on the old issue.
