@@ -39,7 +39,6 @@ body:
     id: system-info
     attributes:
       label: System Info
-      description: Output of `npx envinfo --system --npmPackages vue --binaries --browsers`
       render: shell
       placeholder: System, Binaries, Browsers
   - type: textarea
