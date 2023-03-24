@@ -9,8 +9,8 @@ body:
         This form is only for submitting bug reports. If you have a usage question
         or are unsure if this is really a bug, make sure to:
 
-        - Read the [docs](https://vuejs.org/)
-        - Ask on [Discord Chat](https://chat.vuejs.org/)
+        - You have a local rust environment
+        - Node version greater than or equal to 16
         - Ask on [GitHub Discussions](https://github.com/vuejs/core/discussions)
         - Look for / ask questions on [Stack Overflow](https://stackoverflow.com/questions/ask?tags=vue.js)
 
