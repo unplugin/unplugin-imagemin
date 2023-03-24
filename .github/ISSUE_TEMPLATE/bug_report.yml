@@ -9,11 +9,9 @@ body:
         This form is only for submitting bug reports. If you have a usage question
         or are unsure if this is really a bug, make sure to:
 
-        - Read the [docs](https://vuejs.org/)
-        - Ask on [Discord Chat](https://chat.vuejs.org/)
-        - Ask on [GitHub Discussions](https://github.com/vuejs/core/discussions)
-        - Look for / ask questions on [Stack Overflow](https://stackoverflow.com/questions/ask?tags=vue.js)
-
+        - You have a local rust environment
+        - Node version greater than or equal to 16
+        
         Also try to search for your issue - it may have already been answered or even fixed in the development branch.
         However, if you find that an old, closed issue still persists in the latest version,
         you should open a new issue using the form below instead of commenting on the old issue.
