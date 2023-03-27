@@ -16,10 +16,26 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      mode: 'squoosh',
+      // Default mode squoosh. support squoosh and sharp
+      mode: 'sharp',
+      beforeBundle: false,
+      // Default configuration options for compressing different pictures
+      compress: {
+        jpg: {
+          quality: 50,
+        },
+        jpeg: {
+          quality: 70,
+        },
+        png: {
+          quality: 70,
+        },
+        webp: {
+          quality: 70,
+        },
+      },
       conversion: [
         { from: 'png', to: 'webp' },
-        { from: 'jpg', to: 'webp' },
         { from: 'jpeg', to: 'webp' },
       ],
     }),

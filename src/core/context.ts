@@ -144,6 +144,8 @@ export default class Context {
     this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
+    console.log(this.imageModulePath);
+
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
         if (extname(item) !== '.svg') {

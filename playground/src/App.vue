@@ -20,7 +20,7 @@ div {
 body {
   width: 100%;
   height: 100%;
-  /* background: url("./assets/image/wallhaven-x61xdo.jpg"); */
+  background: url("./assets/image/wallhaven-l8z9jr.jpeg");
   background-size: cover;
 }
 .logo {
