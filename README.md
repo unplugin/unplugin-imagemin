@@ -89,7 +89,7 @@ export default defineConfig({
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
-          quality: 0,
+          quality: 70,
         },
         jpeg: {
           quality: 70,
