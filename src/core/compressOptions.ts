@@ -265,9 +265,22 @@ export const sharpOptions: any = {
 };
 
 export const resolveDefaultOptions = {
-  mode: 'squoosh',
+  mode: 'sharp',
   conversion: [],
-  beforeBundle: true,
+  beforeBundle: false,
   cache: false,
-  compress: {},
+  compress: {
+    jpg: {
+      quality: 70,
+    },
+    jpeg: {
+      quality: 70,
+    },
+    png: {
+      quality: 70,
+    },
+    webp: {
+      quality: 70,
+    },
+  },
 };
