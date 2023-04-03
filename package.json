@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
     "bootstrap": "pnpm install && pnpm build",
@@ -95,8 +95,8 @@
     "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.5.3",
     "chalk": "^4.1.2",
-    "ora": "6.1.2",
-    "sharp": "0.31.3",
+    "ora": "6.3.0",
+    "sharp": "0.32.0",
     "svgo": "^3.0.2",
     "unplugin": "^1.3.1"
   },

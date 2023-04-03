@@ -27,6 +27,9 @@ Unplugin-imagemin supports two compression modes
 ## ✨Warning
 Due to the loading problem of squoosh, unplugin-imagmin currently only supports versions below node 18.
 
+Due to the rapid update of vite version and squoosh stop maintenance and other unstable factors
+
+It is recommended that mode choose `sharp`.
 
 ## 🍰 Effect display
 ![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
@@ -86,7 +89,7 @@ export default defineConfig({
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
-          quality: 0,
+          quality: 70,
         },
         jpeg: {
           quality: 70,
