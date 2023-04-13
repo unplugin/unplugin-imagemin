@@ -38,8 +38,11 @@ export default createUnplugin((options: PluginOptions = {}): any => {
         ctx.TransformChunksHook(bundler);
       }
     },
-    async closeBundle() {
-      ctx.closeBundleHook();
+    closeBundle: {
+      sequential: true,
+      async handler() {
+        await ctx.closeBundleHook();
+      }
     },
   };
 });
