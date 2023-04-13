@@ -42,7 +42,7 @@ export default createUnplugin((options: PluginOptions = {}): any => {
       sequential: true,
       async handler() {
         await ctx.closeBundleHook();
-      }
+      },
     },
   };
 });
