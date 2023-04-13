@@ -360,7 +360,7 @@ export default class Context {
   async closeBundleHook() {
     if (!this.config.options.beforeBundle) {
       this.startGenerate();
-      this.spinnerHooks(this.closeBundleFn);
+      await this.spinnerHooks(this.closeBundleFn);
       this.transformHtmlModule();
     }
     return true;
