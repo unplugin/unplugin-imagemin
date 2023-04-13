@@ -144,7 +144,7 @@ export default class Context {
     this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
-    console.log(this.imageModulePath);
+    // console.log(this.imageModulePath);
 
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
@@ -295,7 +295,7 @@ export default class Context {
     // const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
-    // TODO cache
+    // TODO add cache module
     // if (!(await exists(cachedFilename))) {
     // console.log(cachedFilename);
     // await fs.writeFile(cachedFilename, encodedWith.binary);
