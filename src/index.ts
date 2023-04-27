@@ -9,19 +9,19 @@ export default createUnplugin((options: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
   const assignOptions = Object.assign({}, resolveDefaultOptions, options);
+
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
     enforce: 'pre',
     async configResolved(config) {
-      // console.log(config);
-
-      ctx.handleMergeOptionHook({ ...config, options: assignOptions });
+      ctx.handleResolveOptionHook({ ...config, options: assignOptions });
     },
     // vite: {
     async load(id) {
       if (assignOptions.beforeBundle) {
         const imageModule = ctx.loadBundleHook(id);
+
         if (imageModule) {
           return imageModule;
         }

@@ -1,5 +1,7 @@
-import { size } from './utils';
 import chalk from 'chalk';
+import { performance } from 'node:perf_hooks';
+
+import { size } from './utils';
 type colorTuple = string | number | any;
 function colorResult(args, color): void {
   console.log(chalk[color](...args));
@@ -28,7 +30,7 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
     chalk.yellow(size(oldSize).toString()),
     '➡️ ',
     chalk.green(size(newSize).toString()),
-    chalk.magenta(`+${Date.now() - start}ms`),
+    chalk.magenta(`+${Math.ceil(performance.now() - start)}ms`),
   );
 }
 

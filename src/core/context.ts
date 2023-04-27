@@ -1,6 +1,7 @@
 import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
 import { Blob, Buffer } from 'node:buffer';
+import { performance } from 'node:perf_hooks';
 import { optimize } from 'svgo';
 import {
   filterFile,
@@ -71,19 +72,19 @@ export default class Context {
   ]);
 
   /**
-   * @param useConfig
+   * @param userConfig
    * configResolved hook  解析用户参数以及vite参数
    * Parsing user parameters and vite parameters
    */
 
-  handleMergeOptionHook(useConfig: any) {
+  handleResolveOptionHook(userConfig: any) {
     const {
       base,
       command,
       root,
       build: { assetsDir, outDir },
       options,
-    } = useConfig;
+    } = userConfig;
     const cwd = process.cwd();
     const isBuild = command === 'build';
     const cacheDir = join(
@@ -138,55 +139,46 @@ export default class Context {
     }
     let imagePool;
     const { mode } = this.config.options;
-    if (mode === 'squoosh' && SquooshUseFlag) {
+    const useModeFlag = resolveNodeVersion();
+    if (mode === 'squoosh' && !useModeFlag) {
+      console.log(
+        chalk.yellow(
+          'Squoosh mode is not supported in node 18. change use sharp...',
+        ),
+      );
+    }
+    let changeMode = useModeFlag ? mode : 'sharp';
+    if (changeMode === 'squoosh' && SquooshUseFlag) {
       imagePool = new SquooshPool();
     }
     this.startGenerate();
     let spinner;
     spinner = await loadWithRocketGradient('');
-    // console.log(this.imageModulePath);
 
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
         if (extname(item) !== '.svg') {
-          if (mode === 'squoosh' && SquooshUseFlag) {
+          if (changeMode === 'squoosh' && SquooshUseFlag) {
             const squooshBundle = await this.generateSquooshBundle(
               imagePool,
               item,
             );
             return squooshBundle;
-          } else if (mode === 'sharp') {
+          } else if (changeMode === 'sharp') {
             const sharpBundle = await this.generateSharpBundle(item);
             return sharpBundle;
           }
-          console.log(
-            chalk.yellow(
-              'Squoosh mode is not supported in node 18. Please use sharp.',
-            ),
-          );
         }
-        const svgCode = await fs.readFile(item, 'utf8');
-        const result = optimize(svgCode, {
-          // optional but recommended field
-          // path, // all config fields are also available here
-          multipass: true,
-        });
-        const generateSrc = getBundleImageSrc(item, this.config.options);
-        const base = basename(item, extname(item));
-        const { assetsDir } = this.config;
-        const imageName = `${base}-${generateSrc}`;
-        return {
-          fileName: join(assetsDir, imageName),
-          name: imageName,
-          source: result.data,
-          isAsset: true,
-          type: 'asset',
-        };
+        // transform svg
+        const svgBundle = this.generateSvgBundle(item);
+        return svgBundle;
       });
+
       const result = await Promise.all(generateImageBundle);
-      if (mode === 'squoosh') {
+      if (changeMode === 'squoosh') {
         imagePool.close();
       }
+
       this.generateBundleFile(bundler, result);
       logger(pluginTitle('✨'), chalk.yellow('Successfully'));
     } else {
@@ -195,7 +187,7 @@ export default class Context {
           'Not Found Image Module,  if you want to use style with image style, such as "background-image" you can use "beforeBundle: false" in plugin config',
         ),
       );
-      if (mode === 'squoosh') {
+      if (changeMode === 'squoosh') {
         imagePool.close();
       }
     }
@@ -252,9 +244,11 @@ export default class Context {
   generateDefaultValue(imageModuleFlag, id) {
     if (imageModuleFlag) {
       const { path } = parseId(id);
+
       this.imageModulePath.push(path);
       const generateSrc = getBundleImageSrc(path, this.config.options);
       const base = basename(path, extname(path));
+
       const generatePath = join(
         `${this.config.base}${this.config.assetsDir}`,
         `${base}-${generateSrc}`,
@@ -265,7 +259,7 @@ export default class Context {
 
   // squoosh
   async generateSquooshBundle(imagePool, item) {
-    const start = Date.now();
+    const start = performance.now();
     const size = await fs.lstat(item);
     const oldSize = size.size;
     let newSize = oldSize;
@@ -319,7 +313,7 @@ export default class Context {
   }
 
   async generateSharpBundle(item) {
-    const start = Date.now();
+    const start = performance.now();
     const size = await fs.lstat(item);
     const oldSize = size.size;
     let newSize = oldSize;
@@ -394,6 +388,40 @@ export default class Context {
     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
     spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
+  }
+  async generateSvgBundle(item) {
+    const svgCode = await fs.readFile(item, 'utf8');
+
+    const result = optimize(svgCode, {
+      // optional but recommended field
+      // path, // all config fields are also available here
+      multipass: true,
+    });
+
+    const generateSrc = getBundleImageSrc(item, this.config.options);
+    const base = basename(item, extname(item));
+    const { assetsDir, outDir } = this.config;
+    const imageName = `${base}-${generateSrc}`;
+    const start = performance.now();
+    const size = await fs.lstat(item);
+
+    const oldSize = size.size;
+    let newSize = Buffer.byteLength(result.data);
+    const svgResult = {
+      fileName: join(assetsDir, imageName),
+      name: imageName,
+      source: result.data,
+      isAsset: true,
+      type: 'asset',
+    };
+
+    compressSuccess(
+      join(this.config.base, outDir, svgResult.fileName),
+      newSize,
+      oldSize,
+      start,
+    );
+    return svgResult;
   }
 
   async closeBundleFn() {
@@ -529,4 +557,15 @@ export function transformCode(options, currentChunk, changeBundle, sourceCode) {
       },
     );
   });
+}
+
+export function resolveNodeVersion() {
+  const currentVersion = process.versions.node;
+  const requiredMajorVersion = parseInt(currentVersion.split('.')[0], 10);
+  const minimumMajorVersion = 14;
+
+  if (requiredMajorVersion < minimumMajorVersion) {
+    return true;
+  }
+  return false;
 }
