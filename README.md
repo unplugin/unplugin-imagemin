@@ -122,18 +122,18 @@ export default defineConfig({
 
 ```ts
   jpeg: {
-    quality (Number) 图片质量，整数1-100(可选，默认80)
-    progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
-    chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
-    trellisQuantisation (Boolean) 应用网格量化，需要mozjpeg(可选，默认为false)
-    overshootDeringing (Boolean) 应用超调脱靶，需要mozjpeg(可选，默认为false)
-    optimiseScans (Boolean) 优化渐进式扫描，强制渐进式扫描，要求mozjpeg(可选，默认为false)
-    optimizeScans (Boolean) optimisescan的替代拼写(可选，默认为false)
-    optimiseCoding (Boolean) 优化Huffman编码表(可选，默认为true)
-    optimizeCoding (Boolean) optimiseCoding的替代拼写(可选，默认为true)
-    quantisationTable (Number) 要使用量子化表，整数0-8，需要mozjpeg(可选，默认为0)
-    quantizationTable(Number) quantisationTable的替代边写，整数0-8，需要mozjpeg(可选，默认为0)
-    force (Boolean) 强制JPEG输出，否则尝试使用输入格式(可选，默认为true)
+    quality (Number) Image quality, an integer from 1 to 100 (optional, default is 80)
+    progressive (Boolean) Use progressive (interlaced) scanning (optional, default is false)
+    chromaSubsampling (String) Set to "4:4:4" to prevent chroma subsampling when quality <= 90 (optional, default is "4:2:0")
+    trellisQuantisation (Boolean) Apply trellis quantization, requires mozjpeg (optional, default is false)
+    overshootDeringing (Boolean) Apply overshoot deringing, requires mozjpeg (optional, default is false)
+    optimiseScans (Boolean) Optimize progressive scanning, force progressive scanning, requires mozjpeg (optional, default is false)
+    optimizeScans (Boolean) Alternative spelling for optimiseScans (optional, default is false)
+    optimiseCoding (Boolean) Optimize Huffman coding table (optional, default is true)
+    optimizeCoding (Boolean) Alternative spelling for optimiseCoding (optional, default is true)
+    quantisationTable (Number) Which quantization table to use, an integer from 0 to 8, requires mozjpeg (optional, default is 0)
+    quantizationTable (Number) Alternative spelling for quantisationTable, an integer from 0 to 8, requires mozjpeg (optional, default is 0)
+    force (Boolean) Force JPEG output, otherwise attempt to use input format (optional, default is true)
     quality: 75,
     progressive: false,
     chromaSubsampling: '4:4:4',
