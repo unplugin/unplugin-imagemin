@@ -87,8 +87,8 @@
     "tsup": "^7.0.0",
     "turbo": "^1.9.3",
     "typescript": "^5.0.4",
+    "vitest": "^0.33.0",
     "vite": "4.4.7",
-    "vitest": "^0.29.8",
     "webpack": "^5.81.0"
   },
   "dependencies": {
