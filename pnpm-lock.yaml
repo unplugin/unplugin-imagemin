@@ -18,6 +18,8 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2
       ora:
+        specifier: 6.3.1
+        version: 6.3.1
         specifier: 7.0.0
         version: 7.0.0
       sharp:
@@ -3818,6 +3820,9 @@ packages:
       word-wrap: 1.2.3
     dev: true
 
+  /ora@6.3.1:
+    resolution: {integrity: sha512-ERAyNnZOfqM+Ao3RAvIXkYh5joP220yf59gVe2X/cI6SiCxIdi4c9HZKZD8R6q/RDXEje1THBju6iExiSsgJaQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
   /ora@7.0.0:
     resolution: {integrity: sha512-jYSRKdGWCA69vNIcpuJwf8zJ8n1wlEyYmT+P5ljsQHAn1stHi+HGXJQWKtCOybQ+7oOekPgIhTdj0xexo2F/Sg==}
     engines: {node: '>=16'}
