@@ -135,6 +135,8 @@ export default class Context {
   async generateBundleHook(bundler) {
     this.chunks = bundler;
     if (!(await exists(this.config.cacheDir))) {
+      console.log('TODO cache');
+
       await mkdir(this.config.cacheDir, { recursive: true });
     }
     let imagePool;
@@ -143,7 +145,7 @@ export default class Context {
     if (mode === 'squoosh' && !useModeFlag) {
       console.log(
         chalk.yellow(
-          'Squoosh mode is not supported in node 18. change use sharp...',
+          'Squoosh mode is not supported in node v18 or v16. prepare change use sharp...',
         ),
       );
     }
@@ -151,10 +153,9 @@ export default class Context {
     if (changeMode === 'squoosh' && SquooshUseFlag) {
       imagePool = new SquooshPool();
     }
-    this.startGenerate();
-    let spinner;
-    spinner = await loadWithRocketGradient('');
 
+    this.startGenerateLogger();
+    let spinner = await loadWithRocketGradient('');
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
         if (extname(item) !== '.svg') {
@@ -173,7 +174,6 @@ export default class Context {
         const svgBundle = this.generateSvgBundle(item);
         return svgBundle;
       });
-
       const result = await Promise.all(generateImageBundle);
       if (changeMode === 'squoosh') {
         imagePool.close();
@@ -260,6 +260,7 @@ export default class Context {
   // squoosh
   async generateSquooshBundle(imagePool, item) {
     const start = performance.now();
+
     const size = await fs.lstat(item);
     const oldSize = size.size;
     let newSize = oldSize;
@@ -274,6 +275,7 @@ export default class Context {
         ? encodeMapBack.get(userRes?.to)
         : encodeMapBack.get(ext);
     const image = imagePool.ingestImage(item);
+
     const defaultSquooshOptions = {};
     Object.keys(defaultOptions).forEach(
       (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
@@ -281,11 +283,19 @@ export default class Context {
     const currentType = {
       [type!]: defaultSquooshOptions[type!],
     };
-    await image.encode(currentType);
+
+    try {
+      await image.encode(currentType);
+    } catch (error) {
+      console.log(error);
+    }
+
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const baseDir = basename(item, extname(item));
     const { cacheDir, assetsDir } = this.config;
     const imageName = `${baseDir}-${generateSrc}`;
+    console.log(imageName);
+
     // const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
@@ -343,7 +353,7 @@ export default class Context {
     });
   }
 
-  startGenerate() {
+  startGenerateLogger() {
     console.log('\n');
     const info = chalk.gray('Process start with');
     const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
@@ -353,7 +363,7 @@ export default class Context {
   // close bundle
   async closeBundleHook() {
     if (!this.config.options.beforeBundle) {
-      this.startGenerate();
+      this.startGenerateLogger();
       await this.spinnerHooks(this.closeBundleFn);
       this.transformHtmlModule();
     }
@@ -389,6 +399,7 @@ export default class Context {
     spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
   }
+
   async generateSvgBundle(item) {
     const svgCode = await fs.readFile(item, 'utf8');
 
@@ -519,7 +530,7 @@ export function resolveOptions(
       ({
         ...options[item],
         ...transformType[item],
-      } as ResolvedOptions),
+      }) as ResolvedOptions,
   );
   const obj = {};
   keys.forEach((item, index) => {
