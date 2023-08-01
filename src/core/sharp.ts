@@ -19,7 +19,7 @@ async function initSharp(config) {
     // raw
     // 强制输出为原始的、未压缩的uint8像素数据。
     // 返回sharp实例
-    const start = Date.now();
+    const start = performance.now();
     const oldSize = fs.lstatSync(fileRootPath).size;
     let newSize = oldSize;
     const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';

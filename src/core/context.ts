@@ -26,9 +26,12 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 
+export const cssUrlRE =
+  /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
+
 // 切换整数字符串 尝试使用正则
 const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
-const SquooshErrorVersion = 18;
+const SquooshErrorVersion = 16;
 const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
 if (SquooshUseFlag) {
@@ -294,7 +297,6 @@ export default class Context {
     const baseDir = basename(item, extname(item));
     const { cacheDir, assetsDir } = this.config;
     const imageName = `${baseDir}-${generateSrc}`;
-    console.log(imageName);
 
     // const cachedFilename = join(cacheDir, imageName);
     const encodedWith = await image.encodedWith[type!];
@@ -454,9 +456,10 @@ export default class Context {
       cache,
       chunks: this.chunks,
     };
+
     if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
-    } else if (mode === 'sharp') {
+    } else if (mode === 'sharp' || !SquooshUseFlag) {
       await initSharp(initOptions);
     } else {
       throw new Error(

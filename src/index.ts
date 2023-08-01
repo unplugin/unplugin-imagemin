@@ -8,7 +8,6 @@ export default createUnplugin((options: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
   const assignOptions = Object.assign({}, resolveDefaultOptions, options);
-  console.log(assignOptions);
 
   return {
     name: 'unplugin-imagemin',
