@@ -95,7 +95,7 @@
     "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.5.3",
     "chalk": "^4.1.2",
-    "ora": "7.0.0",
+    "ora": "7.0.1",
     "sharp": "0.32.4",
     "svgo": "^3.0.2",
     "unplugin": "^1.3.1"
