@@ -49,14 +49,6 @@ It is recommended that mode choose `sharp`.
 ## 📦 Installation
 
 ```bash
-npm i unplugin-imagemin@latest -D
-```
-
-```bash
-yarn add unplugin-imagemin@latest -D
-```
-
-```bash
 pnpm add unplugin-imagemin@latest -D
 ```
 
