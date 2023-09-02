@@ -456,6 +456,13 @@ export default class Context {
     if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
     } else if (mode === 'sharp' || !SquooshUseFlag) {
+      if (mode === 'squoosh')
+        logger(
+          pluginTitle('✨'),
+          chalk.yellow(
+            'Since the current version of node does not support squoosh, it will automatically change you to sharp.',
+          ),
+        );
       await initSharp(initOptions);
     } else {
       throw new Error(

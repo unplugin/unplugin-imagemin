@@ -42,7 +42,6 @@ async function initSquoosh(config) {
       logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
       return Promise.resolve();
     }
-    const start = Date.now();
     const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
     const oldSize = fs.lstatSync(fileRootPath).size;
     let newSize = oldSize;
@@ -52,17 +51,20 @@ async function initSquoosh(config) {
     const type = itemConversion
       ? encodeMapBack.get(res?.to)
       : encodeMapBack.get(ext);
+    const start = Date.now();
     // Decode image
     await image.decoded;
     const current: any = encodeMap.get(type!);
-
     await image.encode({
       [type!]: defaultSquooshOptions[type!],
     });
+
     // TODO 有些类型不能转换 切记 文档要写
     const encodedWith = await image.encodedWith[type!];
 
     newSize = encodedWith.size;
+    const end = Date.now() - start;
+
     if (newSize < oldSize) {
       const filepath = `${fileRootPath.replace(
         ext,
@@ -80,7 +82,7 @@ async function initSquoosh(config) {
         `${filepath.replace(process.cwd(), '')}`,
         newSize,
         oldSize,
-        start,
+        end,
       );
     }
   });
