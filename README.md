@@ -7,9 +7,9 @@
 ```bash
 ✨ : unplugin-imagemin
 ✔ : Process start with mode squoosh 
-✅ : [test1.png] [12.39 MB] -> [423.54 KB]
+✅ : [test1.png] [12.39 MB] -> [102.54 KB]
 ✔ : Process start with mode squoosh  
-✅ : [test2.png] [16.38 MB] -> [117.79 KB]
+✅ : [test2.png] [16.38 MB] -> [106.79 KB]
 ```
 
 #### 🌈 Features
