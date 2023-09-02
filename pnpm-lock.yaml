@@ -61,7 +61,7 @@ importers:
       sass: ^1.56.1
       typescript: ^5.0.0
       unplugin-imagemin: workspace:*
-      vite: 4.4.8
+      vite: 4.4.9
       vue: ^3.2.41
       vue-router: ^4.1.6
       vue-tsc: ^1.0.9
@@ -72,10 +72,10 @@ importers:
       vue: 3.3.4
       vue-router: 4.2.4_vue@3.3.4
     devDependencies:
-      '@vitejs/plugin-vue': 4.3.4_vite@4.4.8+vue@3.3.4
+      '@vitejs/plugin-vue': 4.3.4_vite@4.4.9+vue@3.3.4
       typescript: 5.2.2
       unplugin-imagemin: link:..
-      vite: 4.4.8_less@4.2.0+sass@1.66.1
+      vite: 4.4.9_less@4.2.0+sass@1.66.1
       vue-tsc: 1.8.8_typescript@5.2.2
 
 packages:
@@ -709,14 +709,14 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vitejs/plugin-vue/4.3.4_vite@4.4.8+vue@3.3.4:
+  /@vitejs/plugin-vue/4.3.4_vite@4.4.9+vue@3.3.4:
     resolution: {integrity: sha512-ciXNIHKPriERBisHFBvnTbfKa6r9SAesOYXeGDzgegcvy9Q4xdScSHAmKbNT0M3O0S9LKhIf5/G+UYG4NnnzYw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.8_less@4.2.0+sass@1.66.1
+      vite: 4.4.9_less@4.2.0+sass@1.66.1
       vue: 3.3.4
     dev: true
 
@@ -838,7 +838,7 @@ packages:
     dependencies:
       '@babel/parser': 7.22.14
       '@vue/compiler-core': 3.3.4
-      '@vue/shared': 3.2.39
+      '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       magic-string: 0.30.3
 
@@ -868,9 +868,6 @@ packages:
       '@vue/compiler-ssr': 3.3.4
       '@vue/shared': 3.3.4
       vue: 3.3.4
-
-  /@vue/shared/3.2.39:
-    resolution: {integrity: sha512-D3dl2ZB9qE6mTuWPk9RlhDeP1dgNRUKC3NJxji74A4yL8M2MwlhLKUC/49WHjrNzSPug58fWx/yFbaTzGAQSBw==}
 
   /@vue/shared/3.3.4:
     resolution: {integrity: sha512-7OjdcV8vQ74eiz1TZLzZP4JwqM5fA94K6yntPS5Z25r9HDuGNzaGdgvwKYq6S+MxwF0TFRwe50fIR/MYnakdkQ==}
@@ -5556,43 +5553,6 @@ packages:
       - terser
     dev: true
 
-  /vite/4.4.8_less@4.2.0+sass@1.66.1:
-    resolution: {integrity: sha512-LONawOUUjxQridNWGQlNizfKH89qPigK36XhMI7COMGztz8KNY0JHim7/xDd71CZwGT4HtSRgI7Hy+RlhG0Gvg==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.18.20
-      less: 4.2.0
-      postcss: 8.4.29
-      rollup: 3.28.1
-      sass: 1.66.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
   /vite/4.4.9_@types+node@18.17.13:
     resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -5625,6 +5585,43 @@ packages:
       esbuild: 0.18.20
       postcss: 8.4.29
       rollup: 3.28.1
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
+  /vite/4.4.9_less@4.2.0+sass@1.66.1:
+    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.18.20
+      less: 4.2.0
+      postcss: 8.4.29
+      rollup: 3.28.1
+      sass: 1.66.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
