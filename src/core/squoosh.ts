@@ -55,14 +55,12 @@ async function initSquoosh(config) {
     // Decode image
     await image.decoded;
     const current: any = encodeMap.get(type!);
-    console.log(image.encode);
 
     await image.encode({
       [type!]: defaultSquooshOptions[type!],
     });
     // TODO 有些类型不能转换 切记 文档要写
     const encodedWith = await image.encodedWith[type!];
-    console.log(encodedWith);
 
     newSize = encodedWith.size;
     if (newSize < oldSize) {

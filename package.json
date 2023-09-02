@@ -95,7 +95,7 @@
     "@nuxt/kit": "^3.7.0",
     "@nuxt/schema": "^3.7.0",
     "@rollup/pluginutils": "^5.0.2",
-    "@squoosh/lib": "^0.5.3",
+    "@squoosh/lib": "0.4.0",
     "chalk": "^4.1.2",
     "ora": "6.3.0",
     "sharp": "0.32.5",

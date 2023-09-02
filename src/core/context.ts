@@ -31,7 +31,7 @@ export const cssUrlRE =
 
 // 切换整数字符串 尝试使用正则
 const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
-const SquooshErrorVersion = 16;
+const SquooshErrorVersion = 18;
 const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
 if (SquooshUseFlag) {
@@ -453,13 +453,9 @@ export default class Context {
       chunks: this.chunks,
     };
 
-    // if (mode === 'squoosh' && SquooshUseFlag) {
-    if (mode === 'squoosh') {
-      console.log('走进来了 squoosh');
-
+    if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
     } else if (mode === 'sharp' || !SquooshUseFlag) {
-      console.log('走进来了 sharp');
       await initSharp(initOptions);
     } else {
       throw new Error(
