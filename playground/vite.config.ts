@@ -18,20 +18,19 @@ export default defineConfig({
     imagemin({
       // Default mode sharp. support squoosh and sharp
       mode: 'squoosh',
-      beforeBundle: false,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
-          quality: 50,
+          quality: 10,
         },
         jpeg: {
-          quality: 70,
+          quality: 10,
         },
         png: {
-          quality: 70,
+          quality: 10,
         },
         webp: {
-          quality: 70,
+          quality: 10,
         },
       },
       conversion: [

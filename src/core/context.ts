@@ -37,12 +37,10 @@ let SquooshPool;
 if (SquooshUseFlag) {
   import('@squoosh/lib')
     .then((module) => {
-      // 加载模块成功后执行的代码
       SquooshPool = module.ImagePool;
       delete globalThis.navigator;
     })
     .catch((err) => {
-      // 加载模块失败后执行的代码
       console.log(err);
     });
 }
@@ -378,7 +376,6 @@ export default class Context {
     const htmlBuffer = Buffer.from(html);
     const htmlCodeString = htmlBuffer.toString();
     let newFile: string = '';
-    // if (htmlCodeString.includes('<img')) {
     this.config.options.conversion.forEach(async (item) => {
       const pattern = new RegExp(item.from, 'g');
       newFile =
@@ -387,7 +384,6 @@ export default class Context {
           : htmlCodeString.replace(pattern, item.to);
       await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
     });
-    // }
   }
 
   async spinnerHooks(fn) {
@@ -457,9 +453,13 @@ export default class Context {
       chunks: this.chunks,
     };
 
-    if (mode === 'squoosh' && SquooshUseFlag) {
+    // if (mode === 'squoosh' && SquooshUseFlag) {
+    if (mode === 'squoosh') {
+      console.log('走进来了 squoosh');
+
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
     } else if (mode === 'sharp' || !SquooshUseFlag) {
+      console.log('走进来了 sharp');
       await initSharp(initOptions);
     } else {
       throw new Error(

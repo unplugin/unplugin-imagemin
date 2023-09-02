@@ -3,9 +3,9 @@
   "version": "0.5.0",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
-    "bootstrap": "pnpm install && pnpm build",
-    "build": "tsup && pnpm build:fix",
-    "dev": "tsup --watch src && pnpm build:fix",
+    "bootstrap": "npm run install && npm run build",
+    "build": "tsup && npm run build:fix",
+    "dev": "tsup --watch src && npm run build:fix",
     "build:fix": "esno scripts/postbuild.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -87,15 +87,17 @@
     "tsup": "^6.7.0",
     "turbo": "^1.9.3",
     "typescript": "^5.0.4",
-    "vitest": "^0.34.0",
     "vite": "4.4.9",
+    "vitest": "^0.34.0",
     "webpack": "^5.81.0"
   },
   "dependencies": {
+    "@nuxt/kit": "^3.7.0",
+    "@nuxt/schema": "^3.7.0",
     "@rollup/pluginutils": "^5.0.2",
     "@squoosh/lib": "^0.5.3",
     "chalk": "^4.1.2",
-    "ora": "7.0.1",
+    "ora": "6.3.0",
     "sharp": "0.32.5",
     "svgo": "^3.0.2",
     "unplugin": "^1.4.0"
