@@ -23,7 +23,7 @@
 - 🌈 You can convert different picture types at build time
 
 
-## Squoosh && Sharp
+## Squoosh && Sharp && Svgo
 
 Unplugin-imagemin supports two compression modes 
 
@@ -31,6 +31,8 @@ Unplugin-imagemin supports two compression modes
 
  [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
  **Squoosh** with rust & wasm 
+
+ [Svgo](https://github.com/svg/svgo) Support compression of pictures in svg format
 
 ## ✨Warning
 
