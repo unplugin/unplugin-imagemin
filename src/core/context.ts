@@ -83,7 +83,11 @@ export default class Context {
       base,
       command,
       root,
-      build: { assetsDir, outDir },
+      build: {
+        rollupOptions: { input },
+        assetsDir,
+        outDir,
+      },
       options,
     } = userConfig;
     const cwd = process.cwd();
@@ -97,6 +101,7 @@ export default class Context {
     const isTurn = isTurnImageType(options.conversion);
     const outputPath = resolve(root, outDir);
     const chooseConfig = {
+      input,
       base,
       command,
       root,
@@ -373,18 +378,26 @@ export default class Context {
   }
 
   async transformHtmlModule() {
-    const htmlBundlePath = `${this.config.outDir}/index.html`;
-    const html = await fs.readFile(resolve(process.cwd(), htmlBundlePath));
-    const htmlBuffer = Buffer.from(html);
-    const htmlCodeString = htmlBuffer.toString();
-    let newFile: string = '';
-    this.config.options.conversion.forEach(async (item) => {
-      const pattern = new RegExp(item.from, 'g');
-      newFile =
-        newFile.length > 0
-          ? newFile.replace(pattern, item.to)
-          : htmlCodeString.replace(pattern, item.to);
-      await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
+    const htmls = Object.values<string>(this.config.input).map((file) => {
+      if (file.startsWith(this.config.root)) {
+        return resolve(
+          process.cwd(),
+          join(this.config.outDir, file.substring(this.config.root.length)),
+        );
+      }
+
+      return resolve(process.cwd(), file);
+    });
+    htmls.forEach(async (htmlBundlePath) => {
+      const html = await fs.readFile(htmlBundlePath);
+      const htmlBuffer = Buffer.from(html);
+      const htmlCodeString = htmlBuffer.toString();
+      const file = {
+        code: htmlCodeString
+      };
+     
+      transformCode(this.config.options, [file], this.files, 'code');
+      await fs.writeFile(htmlBundlePath, file.code);
     });
   }
 
@@ -569,11 +582,11 @@ export function transformCode(options, currentChunk, changeBundle, sourceCode) {
     options.conversion.forEach(
       (type: { from: string | RegExp; to: string }) => {
         changeBundle.forEach((file) => {
-          if (file.includes(type.from)) {
-            const name = transformFileName(file);
-            item[sourceCode] = item[sourceCode].replace(
-              `${name}${type.from}`,
-              `${name}${encodeMap.get(type.to)}`,
+          if (file.endsWith(type.from)) {
+            const name2 = transformFileName(file);
+            item[sourceCode] = item[sourceCode].replaceAll(
+              `${name2}${type.from}`,
+              `${name2}${encodeMap.get(type.to)}`,
             );
           }
         });
