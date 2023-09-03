@@ -17,7 +17,7 @@ import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
 import { defaultOptions, sharpOptions } from './compressOptions';
-import type { ResolvedOptions } from './types';
+import type { PluginOptions, ResolvedOptions } from './types';
 import devalue from './devalue';
 import chalk from 'chalk';
 import { compressSuccess, logger, pluginTitle } from './log';
@@ -26,6 +26,7 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 import initSvg from './svgo';
+import { AnyAaaaRecord } from 'node:dns';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
@@ -49,6 +50,14 @@ const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export interface Options {
   compress: any;
+}
+
+export interface UserConfig {
+  base: string;
+  command: string;
+  root: string;
+  build: { assetsDir: string; outDir: string };
+  options: PluginOptions;
 }
 export default class Context {
   config: ResolvedOptions | any;
@@ -78,7 +87,7 @@ export default class Context {
    * Parsing user parameters and vite parameters
    */
 
-  handleResolveOptionHook(userConfig: any) {
+  handleResolveOptionHook(userConfig: UserConfig) {
     const {
       base,
       command,
@@ -91,7 +100,7 @@ export default class Context {
     const cacheDir = join(
       root,
       'node_modules',
-      options.cacheDir,
+      options.cacheDir!,
       'unplugin-imagemin',
     );
     const isTurn = isTurnImageType(options.conversion);
@@ -269,7 +278,7 @@ export default class Context {
     let newSize = oldSize;
     const ext = extname(item).slice(1) ?? '';
     const userRes = this.config.options.conversion.find((i) =>
-      `${i.from}`.includes(ext),
+      `${i.from}`.endsWith(ext),
     );
     // const itemConversion = this.config.isTurn && userRes?.from === ext;
     // TODO 图片接口转化
@@ -569,7 +578,7 @@ export function transformCode(options, currentChunk, changeBundle, sourceCode) {
     options.conversion.forEach(
       (type: { from: string | RegExp; to: string }) => {
         changeBundle.forEach((file) => {
-          if (file.includes(type.from)) {
+          if (file.endsWith(type.from)) {
             const name = transformFileName(file);
             item[sourceCode] = item[sourceCode].replace(
               `${name}${type.from}`,

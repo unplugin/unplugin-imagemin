@@ -3,11 +3,11 @@
 <template>
   <div>
     <img src="./assets/shuimo.svg" alt="" />
-    <!-- <router-link to="/home">Go to Home</router-link> -->
-    <!-- <router-link to="/about">Go to About</router-link> -->
-    <!-- <RouterView /> -->
+    <router-link to="/home">Go to Home</router-link>
+    <router-link to="/about">Go to About</router-link>
+    <RouterView />
     <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" />
-    <!-- <img src="./assets/vuetify.svg" alt="" /> -->
+    <img src="./assets/vuetify.svg" alt="" />
   </div>
 </template>
 
