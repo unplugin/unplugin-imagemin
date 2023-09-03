@@ -2,6 +2,8 @@
 import os from 'node:os';
 import path from 'node:path';
 import * as fs from 'node:fs';
+import { extname } from 'pathe';
+
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
@@ -36,6 +38,7 @@ async function initSquoosh(config) {
     imagePool = new SquooshPool(os.cpus().length);
   }
   const images = files.map(async (filePath: string) => {
+    if (extname(filePath) === '.svg') return;
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
@@ -51,7 +54,7 @@ async function initSquoosh(config) {
     const type = itemConversion
       ? encodeMapBack.get(res?.to)
       : encodeMapBack.get(ext);
-    const start = Date.now();
+    const start = performance.now();
     // Decode image
     await image.decoded;
     const current: any = encodeMap.get(type!);
@@ -61,9 +64,7 @@ async function initSquoosh(config) {
 
     // TODO 有些类型不能转换 切记 文档要写
     const encodedWith = await image.encodedWith[type!];
-
     newSize = encodedWith.size;
-    const end = Date.now() - start;
 
     if (newSize < oldSize) {
       const filepath = `${fileRootPath.replace(
@@ -78,11 +79,12 @@ async function initSquoosh(config) {
       if (itemConversion) {
         fs.unlinkSync(fileRootPath);
       }
+
       compressSuccess(
-        `${filepath.replace(process.cwd(), '')}`,
+        `${filepath.replace(process.cwd(), '').slice(1)}`,
         newSize,
         oldSize,
-        end,
+        start,
       );
     }
   });

@@ -18,6 +18,7 @@ export default defineConfig({
     imagemin({
       // Default mode sharp. support squoosh and sharp
       mode: 'squoosh',
+      beforeBundle: false,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {

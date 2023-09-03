@@ -25,7 +25,7 @@ import { loadWithRocketGradient } from './gradient';
 import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
-
+import initSvg from './svgo';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
@@ -136,17 +136,17 @@ export default class Context {
   async generateBundleHook(bundler) {
     this.chunks = bundler;
     if (!(await exists(this.config.cacheDir))) {
-      console.log('TODO cache');
-
+      // TODO cache
       await mkdir(this.config.cacheDir, { recursive: true });
     }
     let imagePool;
     const { mode } = this.config.options;
     const useModeFlag = resolveNodeVersion();
+
     if (mode === 'squoosh' && !useModeFlag) {
       console.log(
         chalk.yellow(
-          'Squoosh mode is not supported in node v18 or v16. prepare change use sharp...',
+          'Squoosh mode is not supported in node v18 or higher. prepare change use sharp...',
         ),
       );
     }
@@ -157,6 +157,7 @@ export default class Context {
 
     this.startGenerateLogger();
     let spinner = await loadWithRocketGradient('');
+
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
         if (extname(item) !== '.svg') {
@@ -215,16 +216,17 @@ export default class Context {
     Object.keys(bundle).forEach((key) => {
       const { outputPath } = this.config;
       // eslint-disable-next-line no-unused-expressions
-      filterFile(resolve(outputPath!, key), extRE) && this.files.push(key);
+      filterFile(resolve(outputPath!, key), extSvgRE) && this.files.push(key);
     });
   }
 
   async transformCodeHook(bundle) {
     const allBundles = Object.values(bundle);
+
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
     const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
     const imageBundle = assetBundle.filter((item: any) =>
-      item.fileName.match(extRE),
+      item.fileName.match(extSvgRE),
     );
     const imageFileBundle = imageBundle.map((item: any) => item.fileName);
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
@@ -452,7 +454,11 @@ export default class Context {
       cache,
       chunks: this.chunks,
     };
-
+    this.files.forEach(async (item: string) => {
+      if (extname(item) === '.svg') {
+        await initSvg({ ...initOptions }, item);
+      }
+    });
     if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
     } else if (mode === 'sharp' || !SquooshUseFlag) {
@@ -498,14 +504,14 @@ async function convertToSharp(inputImg, options) {
       ...options.compress[currentType.to],
     };
     res = await sharp(inputImg)
-      [sharpEncodeMap.get(currentType.to)](merge)
+      [sharpEncodeMap.get(currentType.to)!](merge)
       .toBuffer();
   } else {
     const merge = {
       ...sharpOptions[ext],
       ...options.compress[ext],
     };
-    res = await sharp(inputImg)[sharpEncodeMap.get(ext)](merge).toBuffer();
+    res = await sharp(inputImg)[sharpEncodeMap.get(ext)!](merge).toBuffer();
   }
   return res;
 }
@@ -579,7 +585,7 @@ export function transformCode(options, currentChunk, changeBundle, sourceCode) {
 export function resolveNodeVersion() {
   const currentVersion = process.versions.node;
   const requiredMajorVersion = parseInt(currentVersion.split('.')[0], 10);
-  const minimumMajorVersion = 14;
+  const minimumMajorVersion = 18;
 
   if (requiredMajorVersion < minimumMajorVersion) {
     return true;

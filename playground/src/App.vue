@@ -2,10 +2,11 @@
 
 <template>
   <div>
-    <router-link to="/home">Go to Home</router-link>
-    <router-link to="/about">Go to About</router-link>
-    <RouterView />
-    <!-- <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" /> -->
+    <img src="./assets/shuimo.svg" alt="" />
+    <!-- <router-link to="/home">Go to Home</router-link> -->
+    <!-- <router-link to="/about">Go to About</router-link> -->
+    <!-- <RouterView /> -->
+    <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" />
     <!-- <img src="./assets/vuetify.svg" alt="" /> -->
   </div>
 </template>
@@ -20,7 +21,7 @@ div {
 body {
   width: 100%;
   height: 100%;
-  background: url("./assets/image/wallhaven-l8z9jr.jpeg");
+  /* background: url("./assets/image/wallhaven-l8z9jr.jpeg"); */
   background-size: cover;
 }
 .logo {

@@ -10,6 +10,7 @@ import { sharpOptions } from './compressOptions';
 async function initSharp(config) {
   const { files, outputPath, cache, chunks, options, isTurn } = config;
   const images = files.map(async (filePath: string) => {
+    if (extname(filePath) === '.svg') return;
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
@@ -43,12 +44,12 @@ async function initSharp(config) {
         ...options.compress[currentType.to],
       };
       resultBuffer = await sharp(fileRootPath)
-        [sharpEncodeMap.get(currentType.to)](merge)
+        [sharpEncodeMap.get(currentType.to)!](merge)
         .toBuffer();
     } else {
       const merge = { ...sharpOptions[ext], ...options.compress[ext] };
       resultBuffer = await sharp(fileRootPath)
-        [sharpEncodeMap.get(fileExt)](merge)
+        [sharpEncodeMap.get(fileExt)!](merge)
         .toBuffer();
     }
     await proFs.writeFile(filepath, resultBuffer);
