@@ -45,7 +45,8 @@ Due to the rapid update of vite version and squoosh stop maintenance and other u
 It is recommended that mode choose `sharp`.
 
 ## 🍰 Effect display
-![2](https://user-images.githubusercontent.com/66500121/205471785-7bf4c1b8-42ca-4d3e-a160-4e1d3562f2d2.gif)
+https://github.com/unplugin/unplugin-imagemin/assets/66500121/a3354463-f8cb-4bab-b769-61894365330f
+
 
 
 ## 📦 Installation
