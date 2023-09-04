@@ -594,7 +594,7 @@ export function transformCode(options, currentChunk, changeBundle, sourceCode) {
         changeBundle.forEach((file) => {
           if (file.endsWith(type.from)) {
             const name = transformFileName(file);
-            item[sourceCode] = item[sourceCode].replace(
+            item[sourceCode] = item[sourceCode].replaceAll(
               `${name}${type.from}`,
               `${name}${encodeMap.get(type.to)}`,
             );
