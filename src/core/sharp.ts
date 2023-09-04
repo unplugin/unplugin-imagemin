@@ -8,7 +8,8 @@ import chalk from 'chalk';
 import { extname } from 'pathe';
 import { sharpOptions } from './compressOptions';
 async function initSharp(config) {
-  const { files, outputPath, cache, chunks, options, isTurn } = config;
+  const { files, outputPath, cache, chunks, options, isTurn, publicDir } =
+    config;
   const images = files.map(async (filePath: string) => {
     if (extname(filePath) === '.svg') return;
     const fileRootPath = path.resolve(outputPath, filePath);
@@ -52,14 +53,22 @@ async function initSharp(config) {
         [sharpEncodeMap.get(fileExt)!](merge)
         .toBuffer();
     }
-    await proFs.writeFile(filepath, resultBuffer);
+
+    if (filePath.startsWith(publicDir)) {
+      const relativePathRace = path.relative(publicDir, fileRootPath);
+
+      const finalPath = path.join(outputPath, relativePathRace);
+      await proFs.writeFile(finalPath, resultBuffer);
+    } else {
+      await proFs.writeFile(filepath, resultBuffer);
+    }
     const data = await proFs.stat(filepath);
     newSize = data.size;
     if (newSize < oldSize) {
       if (options.cache && !cache.get(chunks[filePath])) {
         cache.set(chunks[filePath], await proFs.readFile(filepath));
       }
-      if (itemConversion) {
+      if (itemConversion && !filePath.startsWith(publicDir)) {
         fs.unlinkSync(fileRootPath);
       }
       compressSuccess(

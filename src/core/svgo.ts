@@ -5,13 +5,14 @@ import { compressSuccess, logger } from './log';
 import { optimize } from 'svgo';
 
 export default async function initSvgo(config, filePath: string) {
-  const { outputPath, cache, chunks, options } = config;
+  const { outputPath, cache, chunks, options, publicDir } = config;
   const fileRootPath = path.resolve(outputPath, filePath);
   if (options.cache && cache.get(chunks[filePath])) {
     fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
     logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
     return Promise.resolve();
   }
+
   const start = performance.now();
 
   const oldSize = fs.lstatSync(fileRootPath).size;
@@ -29,5 +30,12 @@ export default async function initSvgo(config, filePath: string) {
   compressSuccess(relativePath, newSize, oldSize, start);
 
   const svgBinaryData = Buffer.from(result.data, 'utf-8');
-  fs.writeFileSync(fileRootPath, svgBinaryData);
+  if (filePath.startsWith(publicDir)) {
+    const relativePathRace = path.relative(publicDir, fileRootPath);
+
+    const finalPath = path.join(outputPath, relativePathRace);
+    fs.writeFileSync(finalPath, svgBinaryData);
+  } else {
+    fs.writeFileSync(fileRootPath, svgBinaryData);
+  }
 }

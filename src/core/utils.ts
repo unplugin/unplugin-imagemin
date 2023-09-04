@@ -1,6 +1,7 @@
 import { partial } from 'filesize';
 import { createHash } from 'node:crypto';
-import { promises as fs, constants } from 'fs';
+import fs, { promises as fsPromise, constants } from 'fs';
+import path from 'pathe';
 
 export const size = partial({ base: 2, standard: 'jedec' });
 const extRE = /(png|jpeg|jpg|webp|wb2|avif)$/i;
@@ -88,11 +89,11 @@ export function lastSymbol(string: string, symbol: string) {
 }
 
 export function mkdirSync(mkdirPath: string): void {
-  fs.mkdir(mkdirPath, { recursive: true });
+  fsPromise.mkdir(mkdirPath, { recursive: true });
 }
-export async function exists(path: string) {
+export async function exists(pathe: string) {
   // eslint-disable-next-line no-return-await
-  return await fs.access(path, constants.F_OK).then(
+  return await fsPromise.access(pathe, constants.F_OK).then(
     () => true,
     () => false,
   );
@@ -116,4 +117,25 @@ export function transformFileName(file) {
 export function filterExtension(name: string, ext: string): boolean {
   const reg = new RegExp(`.${ext}`);
   return Boolean(name.match(reg));
+}
+
+export function readFilesRecursive(root: string, reg?: RegExp) {
+  let resultArr: string[] = [];
+  try {
+    // Check if the root path exists and is a directory.
+    if (fs.existsSync(root) && fs.lstatSync(root).isDirectory())
+      // Read all files in the root directory, and recursively read files in subdirectories.
+      fs.readdirSync(root).forEach(
+        (file) =>
+          (resultArr = resultArr.concat(
+            readFilesRecursive(path.join(root, '/', file)),
+          )),
+      );
+    // If the root path is a file, check if it matched the regex.
+    else if (reg === undefined || reg?.test(root)) resultArr.push(root);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return resultArr;
 }

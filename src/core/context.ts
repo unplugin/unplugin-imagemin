@@ -3,6 +3,7 @@ import { createFilter } from '@rollup/pluginutils';
 import { Blob, Buffer } from 'node:buffer';
 import { performance } from 'node:perf_hooks';
 import { optimize } from 'svgo';
+import type { ResolvedConfig } from 'vite';
 import {
   filterFile,
   parseId,
@@ -11,8 +12,9 @@ import {
   exists,
   generateImageID,
   transformFileName,
+  readFilesRecursive,
 } from './utils';
-import { basename, extname, join, resolve } from 'pathe';
+import path, { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
@@ -26,7 +28,6 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 import initSvg from './svgo';
-import { AnyAaaaRecord } from 'node:dns';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
@@ -52,13 +53,6 @@ export interface Options {
   compress: any;
 }
 
-export interface UserConfig {
-  base: string;
-  command: string;
-  root: string;
-  build: { assetsDir: string; outDir: string };
-  options: PluginOptions;
-}
 export default class Context {
   config: ResolvedOptions | any;
 
@@ -82,18 +76,21 @@ export default class Context {
   ]);
 
   /**
-   * @param userConfig
+   * @param ResolvedConfig
    * configResolved hook  解析用户参数以及vite参数
    * Parsing user parameters and vite parameters
    */
 
-  handleResolveOptionHook(userConfig: UserConfig) {
+  handleResolveOptionHook(
+    userConfig: ResolvedConfig & { options: PluginOptions },
+  ) {
     const {
       base,
       command,
       root,
       build: { assetsDir, outDir },
       options,
+      publicDir,
     } = userConfig;
     const cwd = process.cwd();
     const isBuild = command === 'build';
@@ -117,6 +114,7 @@ export default class Context {
       cacheDir,
       outputPath,
       isTurn,
+      publicDir,
     };
     // squoosh & sharp merge config options
     this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
@@ -217,8 +215,8 @@ export default class Context {
     this.transformCodeHook(bundle);
   }
 
-  setAssetsPath(path) {
-    this.assetPath.push(path);
+  setAssetsPath(pathStr) {
+    this.assetPath.push(pathStr);
   }
 
   filterBundleFile(bundle) {
@@ -230,6 +228,17 @@ export default class Context {
   }
 
   async transformCodeHook(bundle) {
+    // read publicDir path
+    const files = await fs.readdir(this.config.publicDir);
+
+    // Use regular expressions to filter out the file name of the picture file
+    const imageFileNames = files.filter((file) => file.match(extSvgRE));
+
+    // const imageFilePaths = imageFileNames.map((fileName) =>
+    //   path.join(this.config.publicDir, fileName),
+    // );
+
+    // console.log(imageFilePaths);
     const allBundles = Object.values(bundle);
 
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
@@ -237,11 +246,12 @@ export default class Context {
     const imageBundle = assetBundle.filter((item: any) =>
       item.fileName.match(extSvgRE),
     );
-    const imageFileBundle = imageBundle.map((item: any) => item.fileName);
+    const imageFileBundle = imageBundle
+      .map((item: any) => item.fileName)
+      .concat(files);
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
       filterExtension(item.fileName, 'css'),
     );
-
     // transform css modules
     transformCode(
       this.config.options,
@@ -386,6 +396,7 @@ export default class Context {
     const html = await fs.readFile(resolve(process.cwd(), htmlBundlePath));
     const htmlBuffer = Buffer.from(html);
     const htmlCodeString = htmlBuffer.toString();
+
     let newFile: string = '';
     this.config.options.conversion.forEach(async (item) => {
       const pattern = new RegExp(item.from, 'g');
@@ -445,7 +456,7 @@ export default class Context {
   }
 
   async closeBundleFn() {
-    const { isTurn, outputPath } = this.config;
+    const { isTurn, outputPath, publicDir } = this.config;
     const { mode, cache } = this.config.options;
     const defaultSquooshOptions = {};
     Object.keys(defaultOptions).forEach(
@@ -454,6 +465,7 @@ export default class Context {
     if (cache) {
       this.cache = new Cache({ outputPath });
     }
+    this.files.push(...readFilesRecursive(publicDir));
     const initOptions = {
       files: this.files,
       outputPath,
@@ -462,7 +474,9 @@ export default class Context {
       isTurn,
       cache,
       chunks: this.chunks,
+      publicDir,
     };
+
     this.files.forEach(async (item: string) => {
       if (extname(item) === '.svg') {
         await initSvg({ ...initOptions }, item);
