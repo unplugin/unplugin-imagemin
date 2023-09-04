@@ -1,5 +1,5 @@
 name: "\U0001F680 New feature"
-description: Suggest an idea for Farm
+description: Suggest an idea for unplugin-imagemin
 labels: [":sparkles: feature request"]
 body:
   - type: markdown
