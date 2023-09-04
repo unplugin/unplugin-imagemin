@@ -53,16 +53,21 @@ async function initSharp(config) {
         [sharpEncodeMap.get(fileExt)!](merge)
         .toBuffer();
     }
+    const relativePathRace = path.relative(publicDir, filepath);
 
+    const finalPath = path.join(outputPath, relativePathRace);
+    const deletePath = path.join(
+      outputPath,
+      path.relative(publicDir, filePath),
+    );
+    let data;
     if (filePath.startsWith(publicDir)) {
-      const relativePathRace = path.relative(publicDir, fileRootPath);
-
-      const finalPath = path.join(outputPath, relativePathRace);
       await proFs.writeFile(finalPath, resultBuffer);
+      data = await proFs.stat(finalPath);
     } else {
       await proFs.writeFile(filepath, resultBuffer);
+      data = await proFs.stat(filepath);
     }
-    const data = await proFs.stat(filepath);
     newSize = data.size;
     if (newSize < oldSize) {
       if (options.cache && !cache.get(chunks[filePath])) {
@@ -70,6 +75,9 @@ async function initSharp(config) {
       }
       if (itemConversion && !filePath.startsWith(publicDir)) {
         fs.unlinkSync(fileRootPath);
+      }
+      if (filePath.startsWith(publicDir)) {
+        fs.unlinkSync(deletePath);
       }
       compressSuccess(
         `${filepath.replace(process.cwd(), '')}`,
