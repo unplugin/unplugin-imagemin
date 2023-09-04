@@ -4,7 +4,7 @@ import * as fs from 'node:fs';
 import { compressSuccess, logger } from './log';
 import { optimize } from 'svgo';
 
-export default async function (config, filePath: string) {
+export default async function initSvgo(config, filePath: string) {
   const { outputPath, cache, chunks, options } = config;
   const fileRootPath = path.resolve(outputPath, filePath);
   if (options.cache && cache.get(chunks[filePath])) {
@@ -24,13 +24,9 @@ export default async function (config, filePath: string) {
     multipass: true,
   });
   let newSize = Buffer.byteLength(result.data);
-  const unixPath = fileRootPath.replace(/\//g, '\\');
-  compressSuccess(
-    `${unixPath.replace(process.cwd(), '').slice(1)}`,
-    newSize,
-    oldSize,
-    start,
-  );
+  const unixPath = path.normalize(fileRootPath);
+  const relativePath = path.relative(process.cwd(), unixPath);
+  compressSuccess(relativePath, newSize, oldSize, start);
 
   const svgBinaryData = Buffer.from(result.data, 'utf-8');
   fs.writeFileSync(fileRootPath, svgBinaryData);
