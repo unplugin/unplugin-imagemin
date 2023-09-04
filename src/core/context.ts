@@ -489,7 +489,7 @@ export default class Context {
         logger(
           pluginTitle('✨'),
           chalk.yellow(
-            'Since the current version of node does not support squoosh, it will automatically change you to sharp.',
+            'Since the current version of node does not support squoosh, it will automatically change mode to sharp.',
           ),
         );
       await initSharp(initOptions);
