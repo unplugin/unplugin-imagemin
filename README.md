@@ -123,6 +123,8 @@ export default defineConfig({
 
 Squoosh DefaultConfiguration and sharp DefaultConfiguration
 
-DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/compressOptions.ts)
+DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/compressOptions.ts) 
+
+Plugin property configuration see [configuration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/types/index.ts) 
 
 
