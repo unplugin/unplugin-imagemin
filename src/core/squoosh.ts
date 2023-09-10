@@ -41,11 +41,17 @@ async function initSquoosh(config) {
   const images = files.map(async (filePath: string) => {
     if (extname(filePath) === '.svg') return;
     const fileRootPath = path.resolve(outputPath, filePath);
+    try {
+      fs.accessSync(fileRootPath, fs.constants.F_OK);
+    } catch (error) {
+      return;
+    }
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
       logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
       return Promise.resolve();
     }
+
     const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
     const oldSize = fs.lstatSync(fileRootPath).size;
     let newSize = oldSize;

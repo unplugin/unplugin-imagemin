@@ -7,6 +7,11 @@ import { optimize } from 'svgo';
 export default async function initSvgo(config, filePath: string) {
   const { outputPath, cache, chunks, options, publicDir } = config;
   const fileRootPath = path.resolve(outputPath, filePath);
+  try {
+    fs.accessSync(fileRootPath, fs.constants.F_OK);
+  } catch (error) {
+    return;
+  }
   if (options.cache && cache.get(chunks[filePath])) {
     fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
     logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));

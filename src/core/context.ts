@@ -229,10 +229,14 @@ export default class Context {
 
   async transformCodeHook(bundle) {
     // read publicDir path
-    const files = await fs.readdir(this.config.publicDir);
+    const folderExists = await fs
+      .access(this.config.publicDir)
+      .then(() => fs.readdir(this.config.publicDir))
+      .catch(() => []);
+    const files = folderExists;
 
     // Use regular expressions to filter out the file name of the picture file
-    const imageFileNames = files.filter((file) => file.match(extSvgRE));
+    // const imageFileNames = files.filter((file) => file.match(extSvgRE));
 
     // const imageFilePaths = imageFileNames.map((fileName) =>
     //   path.join(this.config.publicDir, fileName),
@@ -249,6 +253,8 @@ export default class Context {
     const imageFileBundle = imageBundle
       .map((item: any) => item.fileName)
       .concat(files);
+    console.log(imageFileBundle);
+
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
       filterExtension(item.fileName, 'css'),
     );

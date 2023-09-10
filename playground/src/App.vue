@@ -4,11 +4,11 @@
   <div>
     <div class="a"></div>
     <div class="b"></div>
-    <img src="./assets/shuimo.svg" alt="" />
-    <!-- <img src="/a.png" alt="" />
-    <img src="/b.png" alt="" />
-    <img src="/c.png" alt="" />
-    <img src="/d.png" alt="" /> -->
+    <!-- <img src="./assets/shuimo.svg" alt="" /> -->
+    <img src="./assets/a.png" alt="" />
+    <!-- <img src="/b.png" alt="" /> -->
+    <!-- <img src="/c.png" alt="" /> -->
+    <!-- <img src="/d.png" alt="" /> -->
     <!-- <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
     <RouterView /> -->
@@ -24,19 +24,18 @@ div {
   flex-wrap: wrap;
 }
 
-.a {
+/* .a {
   width: 500px;
   height: 400px;
   background-image: url('/a.png');
   background-position: center center;
 }
 .b {
-  background-image: url('/a.png');
+  background-image: url('/b.png');
   width: 500px;
   height: 400px;
-  background-image: url('/a.png');
   background-position: center center;
-}
+} */
 body {
   width: 100%;
   height: 100%;

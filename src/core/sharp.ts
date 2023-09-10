@@ -13,6 +13,11 @@ async function initSharp(config) {
   const images = files.map(async (filePath: string) => {
     if (extname(filePath) === '.svg') return;
     const fileRootPath = path.resolve(outputPath, filePath);
+    try {
+      fs.accessSync(fileRootPath, fs.constants.F_OK);
+    } catch (error) {
+      return;
+    }
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
       logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
@@ -22,6 +27,7 @@ async function initSharp(config) {
     // 强制输出为原始的、未压缩的uint8像素数据。
     // 返回sharp实例
     const start = performance.now();
+
     const oldSize = fs.lstatSync(fileRootPath).size;
     let newSize = oldSize;
     const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
@@ -53,6 +59,7 @@ async function initSharp(config) {
         [sharpEncodeMap.get(fileExt)!](merge)
         .toBuffer();
     }
+
     const relativePathRace = path.relative(publicDir, filepath);
 
     const finalPath = path.join(outputPath, relativePathRace);
