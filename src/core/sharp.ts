@@ -46,17 +46,18 @@ async function initSharp(config) {
     let resultBuffer;
     const fileExt = extname(fileRootPath).slice(1);
     if (currentType !== undefined) {
-      const merge = {
+      const option = {
         ...sharpOptions[ext],
         ...options.compress[currentType.to],
       };
+
       resultBuffer = await sharp(fileRootPath)
-        [sharpEncodeMap.get(currentType.to)!](merge)
+        [sharpEncodeMap.get(currentType.to)!](option)
         .toBuffer();
     } else {
-      const merge = { ...sharpOptions[ext], ...options.compress[ext] };
+      const option = { ...sharpOptions[ext], ...options.compress[ext] };
       resultBuffer = await sharp(fileRootPath)
-        [sharpEncodeMap.get(fileExt)!](merge)
+        [sharpEncodeMap.get(fileExt)!](option)
         .toBuffer();
     }
 

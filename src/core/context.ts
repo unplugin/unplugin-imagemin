@@ -242,7 +242,6 @@ export default class Context {
     //   path.join(this.config.publicDir, fileName),
     // );
 
-    // console.log(imageFilePaths);
     const allBundles = Object.values(bundle);
 
     const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
@@ -253,7 +252,6 @@ export default class Context {
     const imageFileBundle = imageBundle
       .map((item: any) => item.fileName)
       .concat(files);
-    console.log(imageFileBundle);
 
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
       filterExtension(item.fileName, 'css'),
@@ -528,19 +526,20 @@ async function convertToSharp(inputImg, options) {
   let res;
   const ext = extname(inputImg).slice(1);
   if (currentType !== undefined) {
-    const merge = {
+    const option = {
       ...sharpOptions[ext],
       ...options.compress[currentType.to],
     };
+
     res = await sharp(inputImg)
-      [sharpEncodeMap.get(currentType.to)!](merge)
+      [sharpEncodeMap.get(currentType.to)!](option)
       .toBuffer();
   } else {
-    const merge = {
+    const option = {
       ...sharpOptions[ext],
       ...options.compress[ext],
     };
-    res = await sharp(inputImg)[sharpEncodeMap.get(ext)!](merge).toBuffer();
+    res = await sharp(inputImg)[sharpEncodeMap.get(ext)!](option).toBuffer();
   }
   return res;
 }
