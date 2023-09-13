@@ -127,7 +127,7 @@ DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unpl
 
 Plugin property configuration see [configuration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/types/index.ts) 
 
-```bash
+```ts
 export interface PluginOptions {
   /**
    * @description Picture compilation and conversion
