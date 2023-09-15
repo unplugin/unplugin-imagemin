@@ -24,8 +24,14 @@ if (SquooshUseFlag) {
     });
 }
 async function initSquoosh(config) {
+  const images = config.files.map((filePath) =>
+    processImageFile(filePath, config),
+  );
+  await Promise.all(images);
+}
+
+async function processImageFile(filePath: string, config: any) {
   const {
-    files,
     outputPath,
     cache,
     chunks,
@@ -38,78 +44,74 @@ async function initSquoosh(config) {
   if (options.mode === 'squoosh') {
     imagePool = new SquooshPool(os.cpus().length);
   }
-  const images = files.map(async (filePath: string) => {
-    if (extname(filePath) === '.svg') return;
-    const fileRootPath = path.resolve(outputPath, filePath);
-    try {
-      fs.accessSync(fileRootPath, fs.constants.F_OK);
-    } catch (error) {
-      return;
-    }
-    if (options.cache && cache.get(chunks[filePath])) {
-      fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
-      logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
-      return Promise.resolve();
-    }
+  if (extname(filePath) === '.svg') return;
 
-    const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
-    const oldSize = fs.lstatSync(fileRootPath).size;
-    let newSize = oldSize;
-    const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
-    const res = options.conversion.find((item) => `${item.from}`.includes(ext));
-    const itemConversion = isTurn && res?.from === ext;
-    const type = itemConversion
-      ? encodeMapBack.get(res?.to)
-      : encodeMapBack.get(ext);
-    const start = performance.now();
-    // Decode image
-    await image.decoded;
-    const current: any = encodeMap.get(type!);
-    await image.encode({
-      [type!]: defaultSquooshOptions[type!],
-    });
+  const fileRootPath = path.resolve(outputPath, filePath);
 
-    // TODO 有些类型不能转换 切记 文档要写
-    const encodedWith = await image.encodedWith[type!];
-    newSize = encodedWith.size;
+  try {
+    await fs.promises.access(fileRootPath, fs.constants.F_OK);
+  } catch (error) {
+    return;
+  }
 
-    if (newSize < oldSize) {
-      const filepath = `${fileRootPath.replace(
-        ext,
-        itemConversion ? current : ext,
-      )}`;
-      const relativePathRace = path.relative(publicDir, fileRootPath);
+  if (options.cache && cache.get(chunks[filePath])) {
+    await fs.promises.writeFile(fileRootPath, cache.get(chunks[filePath]));
+    logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
+    return;
+  }
 
-      const finalPath = path.join(outputPath, relativePathRace);
-      if (filePath.startsWith(publicDir)) {
-        const paths = `${finalPath.replace(
-          ext,
-          itemConversion ? current : ext,
-        )}`;
+  const oldSize = (await fs.promises.stat(fileRootPath)).size;
+  let newSize = oldSize;
+  const ext = path.extname(fileRootPath).slice(1) ?? '';
+  const res = options.conversion.find((item) => `${item.from}`.includes(ext));
+  const itemConversion = isTurn && res?.from === ext;
+  const type = itemConversion
+    ? encodeMapBack.get(res?.to)
+    : encodeMapBack.get(ext);
+  const start = performance.now();
 
-        fs.writeFileSync(paths, encodedWith.binary);
-      } else {
-        fs.writeFileSync(filepath, encodedWith.binary);
-      }
+  const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
 
-      if (options.cache && !cache.get(chunks[filePath])) {
-        cache.set(chunks[filePath], encodedWith.binary);
-      }
-      if (itemConversion && !filePath.startsWith(publicDir)) {
-        fs.unlinkSync(fileRootPath);
-      }
-      if (filePath.startsWith(publicDir)) {
-        fs.unlinkSync(finalPath);
-      }
-      compressSuccess(
-        `${filepath.replace(process.cwd(), '').slice(1)}`,
-        newSize,
-        oldSize,
-        start,
-      );
-    }
+  await image.decoded;
+
+  await image.encode({
+    [type!]: defaultSquooshOptions[type!],
   });
-  await Promise.all(images);
+
+  const encodedWith = await image.encodedWith[type!];
+  newSize = encodedWith.size;
+
+  if (newSize < oldSize) {
+    const filepath = `${fileRootPath.replace(
+      ext,
+      itemConversion ? type : ext,
+    )}`;
+    const relativePathRace = path.relative(publicDir, fileRootPath);
+
+    const finalPath = path.join(outputPath, relativePathRace);
+    if (filePath.startsWith(publicDir)) {
+      const paths = `${finalPath.replace(ext, itemConversion ? type : ext)}`;
+      await fs.promises.writeFile(paths, encodedWith.binary);
+    } else {
+      await fs.promises.writeFile(filepath, encodedWith.binary);
+    }
+
+    if (options.cache && !cache.get(chunks[filePath])) {
+      cache.set(chunks[filePath], encodedWith.binary);
+    }
+    if (itemConversion && !filePath.startsWith(publicDir)) {
+      await fs.promises.unlink(fileRootPath);
+    }
+    if (filePath.startsWith(publicDir)) {
+      await fs.promises.unlink(finalPath);
+    }
+    compressSuccess(
+      `${filepath.replace(process.cwd(), '').slice(1)}`,
+      newSize,
+      oldSize,
+      start,
+    );
+  }
   imagePool.close();
 }
 
