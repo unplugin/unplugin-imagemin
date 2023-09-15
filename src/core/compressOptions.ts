@@ -1,5 +1,5 @@
-import type { PluginOptions } from './types';
-export const defaultOptions: PluginOptions = {
+import type { ImageMinifyOptions } from './types';
+export const defaultOptions: ImageMinifyOptions = {
   jpeg: {
     extension: /.(jpg|jpeg)$/,
     quality: 75,
@@ -178,7 +178,7 @@ export const sharpOptions: any = {
     force: true,
   },
   jpg: {
-    //     quality (Number) 图片质量，整数1-100(可选，默认80)
+    // quality (Number) 图片质量，整数1-100(可选，默认80)
     // progressive (Boolean) 使用渐进式(交错)扫描(可选，默认为false)
     // chromaSubsampling (String) 设置为“4:4:4”，以防止质量<= 90时色度子采样(可选，默认为“4:2:0”)
     // trellisQuantisation (Boolean) 应用网格量化，需要mozjpeg(可选，默认为false)
@@ -253,7 +253,7 @@ export const sharpOptions: any = {
     resolutionUnit: 'inch',
   },
   // gif
-  //   options.reoptimise boolean  always generate new palettes (slow), re-use existing by default (optional, default false)
+  // options.reoptimise boolean  always generate new palettes (slow), re-use existing by default (optional, default false)
   // options.reoptimize boolean  alternative spelling of options.reoptimise (optional, default false)
   // options.colours number  maximum number of palette entries, including transparency, between 2 and 256 (optional, default 256)
   // options.colors number  alternative spelling of options.colours (optional, default 256)
