@@ -1,46 +1,47 @@
 import chalk from 'chalk';
 import path from 'pathe';
-import * as fs from 'node:fs';
+import * as fs from 'fs/promises'; // 使用 fs.promises 进行异步文件操作
 import { compressSuccess, logger } from './log';
 import { optimize } from 'svgo';
+import { performance } from 'perf_hooks'; // 引入 performance
 
-export default async function initSvgo(config, filePath: string) {
+export default async function initSvgo(config, filePath) {
   const { outputPath, cache, chunks, options, publicDir } = config;
   const fileRootPath = path.resolve(outputPath, filePath);
+
   try {
-    fs.accessSync(fileRootPath, fs.constants.F_OK);
+    await fs.access(fileRootPath, fs.constants.F_OK);
   } catch (error) {
-    return;
+    return; // 返回一个 Promise.reject() 来指示错误
   }
+
   if (options.cache && cache.get(chunks[filePath])) {
-    fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
+    await fs.writeFile(fileRootPath, cache.get(chunks[filePath]));
     logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
-    return Promise.resolve();
+    return; // 返回一个 Promise.resolve() 来指示成功
   }
 
   const start = performance.now();
+  const oldSize = (await fs.stat(fileRootPath)).size;
 
-  const oldSize = fs.lstatSync(fileRootPath).size;
-
-  const svgCode = await fs.promises.readFile(fileRootPath, 'utf8');
+  const svgCode = await fs.readFile(fileRootPath, 'utf8');
 
   const result = optimize(svgCode, {
-    // optional but recommended field
-    // path, // all config fields are also available here
     multipass: true,
   });
+
   let newSize = Buffer.byteLength(result.data);
   const unixPath = path.normalize(fileRootPath);
   const relativePath = path.relative(process.cwd(), unixPath);
   compressSuccess(relativePath, newSize, oldSize, start);
 
   const svgBinaryData = Buffer.from(result.data, 'utf-8');
+
   if (filePath.startsWith(publicDir)) {
     const relativePathRace = path.relative(publicDir, fileRootPath);
-
     const finalPath = path.join(outputPath, relativePathRace);
-    fs.writeFileSync(finalPath, svgBinaryData);
+    await fs.writeFile(finalPath, svgBinaryData);
   } else {
-    fs.writeFileSync(fileRootPath, svgBinaryData);
+    await fs.writeFile(fileRootPath, svgBinaryData);
   }
 }

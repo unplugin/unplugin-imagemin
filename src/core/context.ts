@@ -1,6 +1,6 @@
 import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
-import { Blob, Buffer } from 'node:buffer';
+import { Buffer } from 'node:buffer';
 import { performance } from 'node:perf_hooks';
 import { optimize } from 'svgo';
 import type { ResolvedConfig } from 'vite';
@@ -14,7 +14,7 @@ import {
   transformFileName,
   readFilesRecursive,
 } from './utils';
-import path, { basename, extname, join, resolve } from 'pathe';
+import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
@@ -42,9 +42,7 @@ if (SquooshUseFlag) {
       SquooshPool = module.ImagePool;
       delete globalThis.navigator;
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch(console.error); // 简化错误处理
 }
 const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
@@ -269,11 +267,11 @@ export default class Context {
 
   generateDefaultValue(imageModuleFlag, id) {
     if (imageModuleFlag) {
-      const { path } = parseId(id);
+      const parser = parseId(id);
 
-      this.imageModulePath.push(path);
-      const generateSrc = getBundleImageSrc(path, this.config.options);
-      const base = basename(path, extname(path));
+      this.imageModulePath.push(parser.path);
+      const generateSrc = getBundleImageSrc(parser.path, this.config.options);
+      const base = basename(parser.path, extname(parser.path));
 
       const generatePath = join(
         `${this.config.base}${this.config.assetsDir}`,
@@ -286,7 +284,6 @@ export default class Context {
   // squoosh
   async generateSquooshBundle(imagePool, item) {
     const start = performance.now();
-
     const size = await fs.lstat(item);
     const oldSize = size.size;
     let newSize = oldSize;
