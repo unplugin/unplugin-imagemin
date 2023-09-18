@@ -9,7 +9,7 @@
 ✔ : Process start with mode squoosh 
 ✅ : [test1.png] [12.39 MB] -> [102.54 KB]
 ✔ : Process start with mode squoosh  
-✅ : [test2.png] [16.38 MB] -> [106.79 KB]
+✅ : [test2.png] [16.38 MB] -> [76.79 KB]
 ```
 
 #### 🌈 Features
