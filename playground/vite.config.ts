@@ -36,8 +36,10 @@ export default defineConfig({
       },
       conversion: [
         { from: 'jpeg', to: 'webp' },
+        { from: 'png', to: 'webp' },
         { from: 'JPG', to: 'jpeg' },
       ],
+      cache: true,
     }),
   ],
 });

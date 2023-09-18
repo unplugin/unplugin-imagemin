@@ -44,7 +44,7 @@ if (SquooshUseFlag) {
     })
     .catch(console.error); // 简化错误处理
 }
-const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
+// const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export interface Options {
@@ -95,7 +95,7 @@ export default class Context {
     const cacheDir = join(
       root,
       'node_modules',
-      options.cacheDir!,
+      options.cacheDir! ?? '.cache',
       'unplugin-imagemin',
     );
     const isTurn = isTurnImageType(options.conversion);
@@ -298,38 +298,47 @@ export default class Context {
         ? encodeMapBack.get(userRes?.to)
         : encodeMapBack.get(ext);
     const image = imagePool.ingestImage(item);
-
+    const generateSrc = getBundleImageSrc(item, this.config.options);
+    const baseDir = basename(item, extname(item));
+    const imageName = `${baseDir}-${generateSrc}`;
+    const { cacheDir, assetsDir } = this.config;
+    const cachedFilename = join(cacheDir, imageName);
     const defaultSquooshOptions = {};
     Object.keys(defaultOptions).forEach(
       (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
     );
-    const currentType = {
-      [type!]: defaultSquooshOptions[type!],
-    };
 
-    try {
-      await image.encode(currentType);
-    } catch (error) {
-      console.log(error);
+    if (!(await this.isCache(cachedFilename))) {
+      const currentType = {
+        [type!]: defaultSquooshOptions[type!],
+      };
+
+      try {
+        await image.encode(currentType);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
-    const generateSrc = getBundleImageSrc(item, this.config.options);
-    const baseDir = basename(item, extname(item));
-    const { cacheDir, assetsDir } = this.config;
-    const imageName = `${baseDir}-${generateSrc}`;
+    let encodedWith;
+    if (!(await this.isCache(cachedFilename))) {
+      encodedWith = await image.encodedWith[type!];
+    } else {
+      encodedWith = {
+        binary: await fs.readFile(cachedFilename),
+        size: (await fs.lstat(cachedFilename)).size,
+      };
+    }
 
-    // const cachedFilename = join(cacheDir, imageName);
-    const encodedWith = await image.encodedWith[type!];
     newSize = encodedWith.size;
     // TODO add cache module
-    // if (!(await exists(cachedFilename))) {
-    // console.log(cachedFilename);
-    // await fs.writeFile(cachedFilename, encodedWith.binary);
-    // }
+
+    if (this.config.options.cache && !(await exists(cachedFilename))) {
+      await fs.writeFile(cachedFilename, encodedWith.binary);
+    }
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
-      // source: (await fs.readFile(cachedFilename)) as any,
       source: encodedWith.binary,
       isAsset: true,
       type: 'asset',
@@ -345,17 +354,30 @@ export default class Context {
   }
 
   async generateSharpBundle(item) {
+    const { cacheDir } = this.config;
     const start = performance.now();
     const size = await fs.lstat(item);
+
     const oldSize = size.size;
     let newSize = oldSize;
-    const sharpFileBuffer = await loadImage(item, this.config.options);
+    let sharpFileBuffer;
+
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const base = basename(item, extname(item));
+    const imageName = `${base}-${generateSrc}`;
+    const cachedFilename = join(cacheDir, imageName);
+    if (!(await this.isCache(cachedFilename))) {
+      sharpFileBuffer = await loadImage(item, this.config.options);
+    } else {
+      sharpFileBuffer = await fs.readFile(cachedFilename);
+    }
+    if (this.config.options.cache && !(await exists(cachedFilename))) {
+      await fs.writeFile(cachedFilename, sharpFileBuffer);
+    }
     const source = await writeImageFile(
       sharpFileBuffer,
       this.config,
-      `${base}-${generateSrc}`,
+      imageName,
     );
     newSize = sharpFileBuffer.length;
     const { outDir } = this.config;
@@ -407,6 +429,10 @@ export default class Context {
           : htmlCodeString.replace(pattern, item.to);
       await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
     });
+  }
+
+  async isCache(cacheFilePath) {
+    return this.config.options.cache && exists(cacheFilePath);
   }
 
   async spinnerHooks(fn) {
@@ -505,7 +531,7 @@ async function writeImageFile(buffer, options, imageName): Promise<any> {
   const { cacheDir, assetsDir } = options;
 
   const cachedFilename = join(cacheDir, imageName);
-  if (!(await exists(cachedFilename))) {
+  if (options.cache && (await exists(cachedFilename))) {
   }
   return {
     fileName: join(assetsDir, imageName),
