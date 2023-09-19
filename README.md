@@ -19,7 +19,7 @@
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
-- 😃 Caching Mechanism (TODO)
+- 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
 
 
@@ -129,44 +129,38 @@ DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unpl
 Plugin property configuration see [configuration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/types/index.ts) 
 
 ```typescript
-export interface Options {
-   /**
-    * Provide path which will be transformed
-    * @default process.cwd()
-    */
-   rootDir?: string
-   
-   /**
-    * RegExp or glob to match files to be transformed
-    */
-   include?: FilterPattern
-
-   /**
-    * RegExp or glob to match files to NOT be transformed
-    */
-   exclude?: FilterPattern
-   
-   /**
-    * Specify the file to be compiled, for example,
-    * if you want to compile scss, then you can pass in ['** /**.sass']
-    * @property { ['** /**.css', '** /**.less', '** /**.scss', '** /**.sass', '** /**.styl'] }
-    * @default ['** /**.css']
-    */
-   includeCompile?: Array<string>
-   
-   /**
-    * Flag whether to start with server at development time,
-    * because unplugin-vue-cssvars uses different strategies for building and server development
-    * If it is not passed in vite, unplugin-vue-cssvars will automatically 
-    * recognize the command of config to determine the server value
-    * @default true
-    */
-   server?: boolean
-
-   /**
-    * alias
-    * @default undefined
-    */
-   alias?: Record<string, string>
+export interface PluginOptions {
+  /**
+   * @description Picture compilation and conversion
+   * @default []
+   */
+  conversion?: ConversionItemType[];
+  /**
+   * @description Whether to turn on caching
+   * @default true
+   */
+  cache?: boolean;
+  /**
+   * @description Cache folder directory read
+   * @default node_modules/unplugin-imagemin/cache
+   *
+   */
+  cacheDir?: string;
+  /**
+   * @description Compilation attribute
+   * @default CompressTypeOptions
+   */
+  compress?: CompressTypeOptions;
+  /**
+   * @description mode
+   * @default squoosh
+   * @description squoosh or sharp
+   */
+  mode?: 'squoosh' | 'sharp';
+  /**
+   * @description Whether to compress before packing
+   * @default false
+   */
+  beforeBundle?: boolean;
 }
 ```
