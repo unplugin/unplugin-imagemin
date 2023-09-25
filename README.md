@@ -83,39 +83,52 @@ export default defineConfig({
 <summary>Advanced</summary><br>
 
 ```ts
-import { defineConfig } from 'vite';
+iimport { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
+import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      '~/': `${path.resolve(__dirname, 'src')}/`,
+      '@/': `${path.resolve(__dirname, 'src')}/`,
+    },
+  },
+  build: {
+    assetsInlineLimit: 4096 * 2,
+  },
   plugins: [
-    vue(),   
+    vue(),
     imagemin({
-      // Default mode squoosh. support squoosh and sharp
-      mode: 'sharp',
+      // Default mode sharp. support squoosh and sharp
+      mode: 'squoosh',
+      cache: true,
+      beforeBundle: true,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
-          quality: 70,
+          quality: 10,
         },
         jpeg: {
-          quality: 70,
+          quality: 10,
         },
         png: {
-          quality: 70,
+          quality: 10,
         },
         webp: {
-          quality: 70,
+          quality: 10,
         },
       },
-      // The type of picture converted after the build
       conversion: [
-        { from: 'png', to: 'jpeg' },
         { from: 'jpeg', to: 'webp' },
-      ]
-    })
-  ]
+        { from: 'png', to: 'webp' },
+        { from: 'JPG', to: 'jpeg' },
+      ],
+    }),
+  ],
 });
+
 ```
 
 <br></details>
