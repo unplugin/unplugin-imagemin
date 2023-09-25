@@ -209,6 +209,7 @@ export default class Context {
    * 根据构建后transform已有chunk replace 代码结构 解析 css 与 js 模块
    */
   TransformChunksHook(bundle) {
+    this.chunks = bundle;
     this.filterBundleFile(bundle);
     this.transformCodeHook(bundle);
   }
@@ -297,6 +298,7 @@ export default class Context {
       this.config.isTurn && userRes?.to
         ? encodeMapBack.get(userRes?.to)
         : encodeMapBack.get(ext);
+
     const image = imagePool.ingestImage(item);
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const baseDir = basename(item, extname(item));
@@ -312,7 +314,6 @@ export default class Context {
       const currentType = {
         [type!]: defaultSquooshOptions[type!],
       };
-
       try {
         await image.encode(currentType);
       } catch (error) {
@@ -499,7 +500,7 @@ export default class Context {
       inputPath: this.assetPath,
       options: this.config.options,
       isTurn,
-      cache,
+      cache: this.cache,
       chunks: this.chunks,
       publicDir,
     };
@@ -509,6 +510,7 @@ export default class Context {
         await initSvg({ ...initOptions }, item);
       }
     });
+
     if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
     } else if (mode === 'sharp' || !SquooshUseFlag) {

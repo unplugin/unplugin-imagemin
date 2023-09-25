@@ -23,10 +23,14 @@ if (SquooshUseFlag) {
       console.log(err);
     });
 }
+const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
+function isImageFile(path1: string) {
+  return extSvgRE.test(path1);
+}
 async function initSquoosh(config) {
-  const images = config.files.map((filePath) =>
-    processImageFile(filePath, config),
-  );
+  const images = config.files
+    .filter(isImageFile)
+    .map((filePath) => processImageFile(filePath, config));
   await Promise.all(images);
 }
 
@@ -71,7 +75,6 @@ async function processImageFile(filePath: string, config: any) {
   const start = performance.now();
 
   const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
-
   await image.decoded;
 
   await image.encode({
@@ -79,6 +82,7 @@ async function processImageFile(filePath: string, config: any) {
   });
 
   const encodedWith = await image.encodedWith[type!];
+
   newSize = encodedWith.size;
 
   if (newSize < oldSize) {
