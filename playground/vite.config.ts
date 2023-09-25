@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   build: {
-    assetsInlineLimit: 4096 * 2,
+    // assetsInlineLimit: 4096 * 2,
   },
   plugins: [
     vue(),
@@ -38,7 +38,6 @@ export default defineConfig({
       conversion: [
         { from: 'jpeg', to: 'webp' },
         { from: 'png', to: 'webp' },
-        { from: 'JPG', to: 'jpeg' },
       ],
     }),
   ],
