@@ -1,15 +1,16 @@
-import sharp from 'sharp';
-import path from 'node:path';
-import * as fs from 'node:fs';
-import { promises as proFs } from 'fs';
-import { encodeMap, sharpEncodeMap } from './encodeMap';
-import { compressSuccess, logger } from './log';
-import chalk from 'chalk';
-import { extname } from 'pathe';
-import { sharpOptions } from './compressOptions';
+import sharp from "sharp";
+import path from "node:path";
+import * as fs from "node:fs";
+import { promises as proFs } from "fs";
+import { encodeMap, sharpEncodeMap } from "./encodeMap";
+import { compressSuccess, logger } from "./log";
+import chalk from "chalk";
+import { extname } from "pathe";
+import { sharpOptions } from "./compressOptions";
+import { testImage } from "./utils";
 async function processImageFile(filePath: string, config: any) {
   const { outputPath, cache, chunks, options, isTurn, publicDir } = config;
-  if (extname(filePath) === '.svg') return;
+  if (extname(filePath) === ".svg") return;
 
   const fileRootPath = path.resolve(outputPath, filePath);
 
@@ -21,22 +22,24 @@ async function processImageFile(filePath: string, config: any) {
 
   if (options.cache && cache.get(chunks[filePath])) {
     await proFs.writeFile(fileRootPath, cache.get(chunks[filePath]));
-    logger(chalk.blue(filePath), chalk.green('✨ The file has been cached'));
+    logger(chalk.blue(filePath), chalk.green("✨ The file has been cached"));
     return;
   }
 
   const start = performance.now();
   const oldSize = (await proFs.stat(fileRootPath)).size;
   let newSize = oldSize;
-  const ext = path.extname(fileRootPath).slice(1) ?? '';
+  const ext = path.extname(fileRootPath).slice(1) ?? "";
   const res = options.conversion.find((item) => `${item.from}`.includes(ext));
   const itemConversion = isTurn && res?.from === ext;
   const type = itemConversion ? res?.to : sharpEncodeMap.get(ext);
   const current: any = encodeMap.get(type);
-  const filepath = `${fileRootPath.replace(
-    ext,
-    itemConversion ? current : ext,
-  )}`;
+  const filepath = `${
+    fileRootPath.replace(
+      ext,
+      itemConversion ? current : ext,
+    )
+  }`;
   const currentType = options.conversion.find(
     (item) => item.from === extname(fileRootPath).slice(1),
   );
@@ -84,7 +87,7 @@ async function processImageFile(filePath: string, config: any) {
       await proFs.unlink(deletePath);
     }
     compressSuccess(
-      filepath.replace(process.cwd(), ''),
+      filepath.replace(process.cwd(), ""),
       newSize,
       oldSize,
       start,
@@ -93,8 +96,8 @@ async function processImageFile(filePath: string, config: any) {
 }
 
 async function initSharp(config) {
-  const images = config.files.map((filePath: string) =>
-    processImageFile(filePath, config),
+  const images = config.files.filter(testImage).map((filePath: string) =>
+    processImageFile(filePath, config)
   );
   await Promise.all(images);
 }
