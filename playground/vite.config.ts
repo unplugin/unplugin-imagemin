@@ -18,7 +18,7 @@ export default defineConfig({
     vue(),
     imagemin({
       // Default mode sharp. support squoosh and sharp
-      mode: 'sharp',
+      mode: 'squoosh',
       // cache: true,
       beforeBundle: false,
       // Default configuration options for compressing different pictures
@@ -38,6 +38,7 @@ export default defineConfig({
       },
       conversion: [
         { from: 'jpeg', to: 'webp' },
+        { from: 'jpg', to: 'webp' },
         { from: 'png', to: 'webp' },
       ],
     }),
