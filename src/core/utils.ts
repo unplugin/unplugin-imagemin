@@ -1,7 +1,7 @@
 import { partial } from "filesize";
 import { createHash } from "node:crypto";
 import fs, { constants, promises as fsPromise } from "fs";
-import path from "pathe";
+import path, { basename, extname } from "pathe";
 
 export const size = partial({ base: 2, standard: "jedec" });
 const extRE = /(png|jpeg|jpg|webp|wb2|avif)$/i;
@@ -142,6 +142,58 @@ export function readFilesRecursive(root: string, reg?: RegExp) {
   return resultArr;
 }
 
-export function testImage(filePath: string) {
+export function filterImageModule(filePath: string) {
   return extSvgRE.test(filePath);
+}
+
+// filter public dir path with excludeDir
+export function filterDirPath(path, dir, excludeDir?) {
+  // let regex;
+
+  // if (excludeDir) {
+  //   regex = new RegExp(`${dir}/(?!${excludeDir}/)[\\w.-]+`);
+  // } else {
+  //   regex = new RegExp(`${dir}/[\\w.-]+`);
+  // }
+
+  // return regex.test(path);
+  if (path.startsWith(dir)) {
+    return true;
+  }
+  return false;
+}
+
+export function hasImageFiles(dir) {
+  const imageExtRegex = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
+  const files: any = fs.readdirSync(dir, {
+    withFileTypes: true,
+    recursive: true,
+  });
+
+  for (const file of files) {
+    if (imageExtRegex.test(extname(file.name))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const imageExtRegex = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
+
+export async function readImageFiles(dir) {
+  const files: any = await fs.promises.readdir(dir);
+
+  const images = [];
+
+  for (let file of files) {
+    const path = `${dir}/${file}`;
+
+    if ((await fs.promises.stat(path)).isDirectory()) {
+      images.push(...await readImageFiles(path));
+    } else if (imageExtRegex.test(file)) {
+      images.push(basename(file));
+    }
+  }
+
+  return images;
 }

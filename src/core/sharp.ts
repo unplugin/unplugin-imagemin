@@ -7,7 +7,7 @@ import { compressSuccess, logger } from "./log";
 import chalk from "chalk";
 import { extname } from "pathe";
 import { sharpOptions } from "./compressOptions";
-import { testImage } from "./utils";
+import { filterDirPath, filterImageModule } from "./utils";
 async function processImageFile(filePath: string, config: any) {
   const { outputPath, cache, chunks, options, isTurn, publicDir } = config;
   if (extname(filePath) === ".svg") return;
@@ -64,9 +64,9 @@ async function processImageFile(filePath: string, config: any) {
   const relativePathRace = path.relative(publicDir, filepath);
   const finalPath = path.join(outputPath, relativePathRace);
   const deletePath = path.join(outputPath, path.relative(publicDir, filePath));
+  
   let data;
-
-  if (filePath.startsWith(publicDir)) {
+  if (filterDirPath(filepath, publicDir)) {
     await proFs.writeFile(finalPath, resultBuffer);
     data = await proFs.stat(finalPath);
   } else {
@@ -80,14 +80,15 @@ async function processImageFile(filePath: string, config: any) {
     if (options.cache && !cache.get(chunks[filePath])) {
       cache.set(chunks[filePath], await proFs.readFile(filepath));
     }
-    if (itemConversion && !filePath.startsWith(publicDir)) {
+    if (itemConversion && !filterDirPath(filepath, publicDir)) {
       await proFs.unlink(fileRootPath);
     }
-    if (filePath.startsWith(publicDir)) {
+
+    if (filterDirPath(filepath, publicDir)) {
       await proFs.unlink(deletePath);
     }
     compressSuccess(
-      filepath.replace(process.cwd(), ""),
+      finalPath.replace(process.cwd(), ""),
       newSize,
       oldSize,
       start,
@@ -96,9 +97,9 @@ async function processImageFile(filePath: string, config: any) {
 }
 
 async function initSharp(config) {
-  const images = config.files.filter(testImage).map((filePath: string) =>
-    processImageFile(filePath, config)
-  );
+  const images = config.files.filter(filterImageModule).map((
+    filePath: string,
+  ) => processImageFile(filePath, config));
   await Promise.all(images);
 }
 export default initSharp;

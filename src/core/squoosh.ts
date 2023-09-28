@@ -22,7 +22,7 @@ if (SquooshUseFlag) {
     });
 }
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
-export function testImage(filePath: string) {
+export function filterImageModule(filePath: string) {
   return extSvgRE.test(filePath);
 }
 async function initSquoosh(config) {
@@ -39,7 +39,7 @@ async function initSquoosh(config) {
   if (options.mode === 'squoosh') {
     imagePool = new SquooshPool(os.cpus().length);
   }
-  const images = files.filter(testImage).map(async (filePath: string) => {
+  const images = files.filter(filterImageModule).map(async (filePath: string) => {
     const fileRootPath = path.resolve(outputPath, filePath);
     if (options.cache && cache.get(chunks[filePath])) {
       fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));

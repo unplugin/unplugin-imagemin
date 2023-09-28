@@ -2,17 +2,17 @@
 
 <template>
   <div>
-    <div class="a"></div>
+    <img style="width: 1200px" src="./assets/image/wallhaven-x61xdo.jpg" alt="" />
+    <!-- <div class="a"></div> -->
     <div class="b"></div>
     <!-- <img src="./assets/shuimo.svg" alt="" /> -->
-    <img src="./assets/a.png" alt="" />
-    <img src="./assets/b.png" alt="" />
-    <img src="./assets/c.png" alt="" />
-    <img src="./assets/d.png" alt="" />
+    <img src="/img/a.png" alt="" />
+    <img src="/img/b.png" alt="" />
+    <img src="/img/c.png" alt="" />
+    <img src="/img/d.png" alt="" />
     <!-- <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
     <RouterView /> -->
-    <!-- <img src="./assets/image/wallhaven-zyxvqy.jpeg" alt="" /> -->
     <!-- <img src="./assets/vuetify.svg" alt="" /> -->
   </div>
 </template>
