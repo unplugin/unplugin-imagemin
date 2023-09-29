@@ -18,7 +18,7 @@
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
-- 😃 Caching Mechanism
+- 😃 Caching Mechanism Tips: TODO
 - 🌈 You can convert different picture types at build time
 
 ## Squoosh && Sharp && Svgo
@@ -84,7 +84,6 @@ export default defineConfig({
     imagemin({
       // Default mode sharp. support squoosh and sharp
       mode: 'squoosh',
-      cache: true,
       beforeBundle: true,
       // Default configuration options for compressing different pictures
       compress: {
