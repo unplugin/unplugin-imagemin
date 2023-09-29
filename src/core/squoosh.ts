@@ -1,16 +1,16 @@
 // import { ImagePool } from '@squoosh/lib';
-import os from "node:os";
-import path from "node:path";
-import * as fs from "node:fs";
-import { encodeMap, encodeMapBack } from "./encodeMap";
-import { compressSuccess, logger } from "./log";
-import chalk from "chalk";
+import os from 'node:os';
+import path from 'node:path';
+import * as fs from 'node:fs';
+import { encodeMap, encodeMapBack } from './encodeMap';
+import { compressSuccess, logger } from './log';
+import chalk from 'chalk';
 const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
 const SquooshErrorVersion = 18;
 const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
 if (SquooshUseFlag) {
-  import("@squoosh/lib")
+  import('@squoosh/lib')
     .then((module) => {
       // 加载模块成功后执行的代码
       SquooshPool = module.ImagePool;
@@ -37,13 +37,14 @@ async function initSquoosh(config) {
     publicDir,
   } = config;
   let imagePool;
-  if (options.mode === "squoosh") {
+  if (options.mode === 'squoosh') {
     imagePool = new SquooshPool(os.cpus().length);
   }
-  const images = files.filter(filterImageModule).map(
-    async (filePath: string) => {
+  const images = files
+    .filter(filterImageModule)
+    .map(async (filePath: string) => {
       const fileRootPath = path.resolve(outputPath, filePath);
-      let transformPath = "";
+      let transformPath = '';
       if (fileRootPath.includes(publicDir)) {
         transformPath = path.join(
           outputPath,
@@ -56,17 +57,17 @@ async function initSquoosh(config) {
         fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
         logger(
           chalk.blue(filePath),
-          chalk.green("✨ The file has been cached"),
+          chalk.green('✨ The file has been cached'),
         );
         return Promise.resolve();
       }
       const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
       const oldSize = fs.lstatSync(fileRootPath).size;
       let newSize = oldSize;
-      const ext = path.extname(path.resolve(outputPath, filePath)).slice(1) ??
-        "";
+      const ext =
+        path.extname(path.resolve(outputPath, filePath)).slice(1) ?? '';
       const res = options.conversion.find((item) =>
-        `${item.from}`.includes(ext)
+        `${item.from}`.includes(ext),
       );
       const itemConversion = isTurn && res?.from === ext;
       const type = itemConversion
@@ -75,7 +76,7 @@ async function initSquoosh(config) {
       const start = Date.now();
       // Decode image
       await image.decoded;
-      
+
       const current: any = encodeMap.get(type!);
       await image.encode({
         [type!]: defaultSquooshOptions[type!],
@@ -87,14 +88,11 @@ async function initSquoosh(config) {
       const end = Date.now() - start;
 
       if (newSize < oldSize) {
-        const unlinkPath = transformPath
-        const filepath = `${
-          transformPath.replace(
-            ext,
-            itemConversion ? current : ext,
-          )
-        }`;
-
+        const unlinkPath = transformPath;
+        const filepath = `${transformPath.replace(
+          ext,
+          itemConversion ? current : ext,
+        )}`;
 
         fs.writeFileSync(filepath, encodedWith.binary);
 
@@ -105,14 +103,13 @@ async function initSquoosh(config) {
           fs.unlinkSync(unlinkPath);
         }
         compressSuccess(
-          `${filepath.replace(process.cwd(), "")}`,
+          `${filepath.replace(process.cwd(), '')}`,
           newSize,
           oldSize,
           end,
         );
       }
-    },
-  );
+    });
   await Promise.all(images);
   imagePool.close();
 }

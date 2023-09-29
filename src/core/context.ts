@@ -1,9 +1,9 @@
-import { encodeMap, encodeMapBack, sharpEncodeMap } from "./encodeMap";
-import { createFilter } from "@rollup/pluginutils";
-import { Buffer } from "node:buffer";
-import { performance } from "node:perf_hooks";
-import { optimize } from "svgo";
-import type { ResolvedConfig } from "vite";
+import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
+import { createFilter } from '@rollup/pluginutils';
+import { Buffer } from 'node:buffer';
+import { performance } from 'node:perf_hooks';
+import { optimize } from 'svgo';
+import type { ResolvedConfig } from 'vite';
 import {
   exists,
   filterExtension,
@@ -15,21 +15,21 @@ import {
   readFilesRecursive,
   readImageFiles,
   transformFileName,
-} from "./utils";
-import path, { basename, extname, join, resolve } from "pathe";
-import sharp from "sharp";
-import { mkdir } from "node:fs/promises";
-import { promises as fs } from "fs";
-import { defaultOptions, sharpOptions } from "./compressOptions";
-import type { PluginOptions, ResolvedOptions } from "./types";
-import devalue from "./devalue";
-import chalk from "chalk";
-import { compressSuccess, logger, pluginTitle } from "./log";
-import { loadWithRocketGradient } from "./gradient";
-import Cache from "./cache";
-import initSquoosh from "./squoosh";
-import initSharp from "./sharp";
-import initSvg from "./svgo";
+} from './utils';
+import path, { basename, extname, join, resolve } from 'pathe';
+import sharp from 'sharp';
+import { mkdir } from 'node:fs/promises';
+import { promises as fs } from 'fs';
+import { defaultOptions, sharpOptions } from './compressOptions';
+import type { PluginOptions, ResolvedOptions } from './types';
+import devalue from './devalue';
+import chalk from 'chalk';
+import { compressSuccess, logger, pluginTitle } from './log';
+import { loadWithRocketGradient } from './gradient';
+import Cache from './cache';
+import initSquoosh from './squoosh';
+import initSharp from './sharp';
+import initSvg from './svgo';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
@@ -39,7 +39,7 @@ const SquooshErrorVersion = 18;
 const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
 if (SquooshUseFlag) {
-  import("@squoosh/lib")
+  import('@squoosh/lib')
     .then((module) => {
       SquooshPool = module.ImagePool;
       delete globalThis.navigator;
@@ -93,12 +93,12 @@ export default class Context {
       publicDir,
     } = userConfig;
     const cwd = process.cwd();
-    const isBuild = command === "build";
+    const isBuild = command === 'build';
     const cacheDir = join(
       root,
-      "node_modules",
-      options.cacheDir! ?? ".cache",
-      "unplugin-imagemin",
+      'node_modules',
+      options.cacheDir! ?? '.cache',
+      'unplugin-imagemin',
     );
     const isTurn = isTurnImageType(options.conversion);
     const outputPath = resolve(root, outDir);
@@ -148,31 +148,31 @@ export default class Context {
     const { mode } = this.config.options;
     const useModeFlag = resolveNodeVersion();
 
-    if (mode === "squoosh" && !useModeFlag) {
+    if (mode === 'squoosh' && !useModeFlag) {
       console.log(
         chalk.yellow(
-          "Squoosh mode is not supported in node v18 or higher. prepare change use sharp...",
+          'Squoosh mode is not supported in node v18 or higher. prepare change use sharp...',
         ),
       );
     }
-    let changeMode = useModeFlag ? mode : "sharp";
-    if (changeMode === "squoosh" && SquooshUseFlag) {
+    let changeMode = useModeFlag ? mode : 'sharp';
+    if (changeMode === 'squoosh' && SquooshUseFlag) {
       imagePool = new SquooshPool();
     }
 
     this.startGenerateLogger();
-    let spinner = await loadWithRocketGradient("");
+    let spinner = await loadWithRocketGradient('');
 
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
-        if (extname(item) !== ".svg") {
-          if (changeMode === "squoosh" && SquooshUseFlag) {
+        if (extname(item) !== '.svg') {
+          if (changeMode === 'squoosh' && SquooshUseFlag) {
             const squooshBundle = await this.generateSquooshBundle(
               imagePool,
               item,
             );
             return squooshBundle;
-          } else if (changeMode === "sharp") {
+          } else if (changeMode === 'sharp') {
             const sharpBundle = await this.generateSharpBundle(item);
             return sharpBundle;
           }
@@ -182,24 +182,24 @@ export default class Context {
         return svgBundle;
       });
       const result = await Promise.all(generateImageBundle);
-      if (changeMode === "squoosh") {
+      if (changeMode === 'squoosh') {
         imagePool.close();
       }
 
       this.generateBundleFile(bundler, result);
-      logger(pluginTitle("✨"), chalk.yellow("Successfully"));
+      logger(pluginTitle('✨'), chalk.yellow('Successfully'));
     } else {
       console.log(
         chalk.yellow(
           'Not Found Image Module,  if you want to use style with image style, such as "background-image" you can use "beforeBundle: false" in plugin config',
         ),
       );
-      if (changeMode === "squoosh") {
+      if (changeMode === 'squoosh') {
         imagePool.close();
       }
     }
 
-    spinner.text = chalk.yellow("Image conversion completed!");
+    spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
   }
 
@@ -238,28 +238,28 @@ export default class Context {
 
     const allBundles = Object.values(bundle);
 
-    const chunkBundle = allBundles.filter((item: any) => item.type === "chunk");
+    const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
 
-    const assetBundle = allBundles.filter((item: any) => item.type === "asset");
+    const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
     const imageBundle = assetBundle.filter((item: any) =>
-      item.fileName.match(extSvgRE)
+      item.fileName.match(extSvgRE),
     );
     const imageFileBundle = imageBundle
       .map((item: any) => item.fileName)
       .concat(files);
 
     const needTransformAssetsBundle = assetBundle.filter((item: any) =>
-      filterExtension(item.fileName, "css")
+      filterExtension(item.fileName, 'css'),
     );
     // transform css modules
     await transformCode(
       this.config,
       needTransformAssetsBundle,
       imageFileBundle,
-      "source",
+      'source',
     );
     // transform js modules
-    await transformCode(this.config, chunkBundle, imageFileBundle, "code");
+    await transformCode(this.config, chunkBundle, imageFileBundle, 'code');
   }
 
   generateDefaultValue(imageModuleFlag, id) {
@@ -284,15 +284,16 @@ export default class Context {
     const size = await fs.lstat(item);
     const oldSize = size.size;
     let newSize = oldSize;
-    const ext = extname(item).slice(1) ?? "";
+    const ext = extname(item).slice(1) ?? '';
     const userRes = this.config.options.conversion.find((i) =>
-      `${i.from}`.endsWith(ext)
+      `${i.from}`.endsWith(ext),
     );
     // const itemConversion = this.config.isTurn && userRes?.from === ext;
     // TODO 图片接口转化
-    const type = this.config.isTurn && userRes?.to
-      ? encodeMapBack.get(userRes?.to)
-      : encodeMapBack.get(ext);
+    const type =
+      this.config.isTurn && userRes?.to
+        ? encodeMapBack.get(userRes?.to)
+        : encodeMapBack.get(ext);
 
     const image = imagePool.ingestImage(item);
     const generateSrc = getBundleImageSrc(item, this.config.options);
@@ -337,7 +338,7 @@ export default class Context {
       name: imageName,
       source: encodedWith.binary,
       isAsset: true,
-      type: "asset",
+      type: 'asset',
     };
     const { base, outDir } = this.config;
     compressSuccess(
@@ -394,10 +395,10 @@ export default class Context {
   }
 
   startGenerateLogger() {
-    console.log("\n");
-    const info = chalk.gray("Process start with");
+    console.log('\n');
+    const info = chalk.gray('Process start with');
     const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
-    logger(pluginTitle("📦"), info, modeLog);
+    logger(pluginTitle('📦'), info, modeLog);
   }
 
   // close bundle
@@ -416,12 +417,13 @@ export default class Context {
     const htmlBuffer = Buffer.from(html);
     const htmlCodeString = htmlBuffer.toString();
 
-    let newFile: string = "";
+    let newFile: string = '';
     this.config.options.conversion.forEach(async (item) => {
-      const pattern = new RegExp(item.from, "g");
-      newFile = newFile.length > 0
-        ? newFile.replace(pattern, item.to)
-        : htmlCodeString.replace(pattern, item.to);
+      const pattern = new RegExp(item.from, 'g');
+      newFile =
+        newFile.length > 0
+          ? newFile.replace(pattern, item.to)
+          : htmlCodeString.replace(pattern, item.to);
       await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
     });
   }
@@ -435,15 +437,15 @@ export default class Context {
       return false;
     }
     let spinner;
-    spinner = await loadWithRocketGradient("");
+    spinner = await loadWithRocketGradient('');
     await fn.call(this);
-    logger(pluginTitle("✨"), chalk.yellow("Successfully"));
-    spinner.text = chalk.yellow("Image conversion completed!");
+    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+    spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
   }
 
   async generateSvgBundle(item) {
-    const svgCode = await fs.readFile(item, "utf8");
+    const svgCode = await fs.readFile(item, 'utf8');
 
     const result = optimize(svgCode, {
       // optional but recommended field
@@ -465,7 +467,7 @@ export default class Context {
       name: imageName,
       source: result.data,
       isAsset: true,
-      type: "asset",
+      type: 'asset',
     };
 
     compressSuccess(
@@ -500,26 +502,26 @@ export default class Context {
     };
 
     this.files.forEach(async (item: string) => {
-      if (extname(item) === ".svg") {
+      if (extname(item) === '.svg') {
         await initSvg({ ...initOptions }, item);
       }
     });
 
-    if (mode === "squoosh" && SquooshUseFlag) {
+    if (mode === 'squoosh' && SquooshUseFlag) {
       await initSquoosh({ ...initOptions, defaultSquooshOptions });
-    } else if (mode === "sharp" || !SquooshUseFlag) {
-      if (mode === "squoosh") {
+    } else if (mode === 'sharp' || !SquooshUseFlag) {
+      if (mode === 'squoosh') {
         logger(
-          pluginTitle("✨"),
+          pluginTitle('✨'),
           chalk.yellow(
-            "Since the current version of node does not support squoosh, it will automatically change mode to sharp.",
+            'Since the current version of node does not support squoosh, it will automatically change mode to sharp.',
           ),
         );
       }
       await initSharp(initOptions);
     } else {
       throw new Error(
-        "[unplugin-imagemin] Only squoosh or sharp can be selected for mode option",
+        '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
       );
     }
   }
@@ -535,7 +537,7 @@ async function writeImageFile(buffer, options, imageName): Promise<any> {
     name: imageName,
     source: buffer,
     isAsset: true,
-    type: "asset",
+    type: 'asset',
   };
 }
 
@@ -564,9 +566,10 @@ async function convertToSharp(inputImg, options) {
   return res;
 }
 function getBundleImageSrc(filename: string, options: any) {
-  const currentType = options.conversion.find(
-    (item) => item.from === extname(filename).slice(1),
-  ) ?? extname(filename).slice(1);
+  const currentType =
+    options.conversion.find(
+      (item) => item.from === extname(filename).slice(1),
+    ) ?? extname(filename).slice(1);
   const id = generateImageID(
     filename,
     currentType.to ?? extname(filename).slice(1),
@@ -601,7 +604,7 @@ export function resolveOptions(
 export function transformEncodeType(options = {}) {
   const newCompressOptions: any = {};
   const transformKeys = Object.keys(options).map((item) =>
-    encodeMapBack.get(item)
+    encodeMapBack.get(item),
   );
   const transformOldKeys: any = Object.keys(options).map((item) => item);
   transformKeys.forEach((item: any, index: number) => {
@@ -638,7 +641,7 @@ export async function transformCode(
 
 export function resolveNodeVersion() {
   const currentVersion = process.versions.node;
-  const requiredMajorVersion = parseInt(currentVersion.split(".")[0], 10);
+  const requiredMajorVersion = parseInt(currentVersion.split('.')[0], 10);
   const minimumMajorVersion = 18;
 
   if (requiredMajorVersion < minimumMajorVersion) {

@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Options { }
+export interface Options {}
 
 export interface CompressTypeOptions {
   mozjpeg?: any;

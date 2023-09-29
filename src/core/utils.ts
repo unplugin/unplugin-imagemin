@@ -1,14 +1,14 @@
-import { partial } from "filesize";
-import { createHash } from "node:crypto";
-import fs, { constants, promises as fsPromise } from "fs";
-import path, { basename, extname } from "pathe";
+import { partial } from 'filesize';
+import { createHash } from 'node:crypto';
+import fs, { constants, promises as fsPromise } from 'fs';
+import path, { basename, extname } from 'pathe';
 
-export const size = partial({ base: 2, standard: "jedec" });
+export const size = partial({ base: 2, standard: 'jedec' });
 const extRE = /(png|jpeg|jpg|webp|wb2|avif)$/i;
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 
 export function camelCase(str: string): string {
-  return str.replace(/[-_](\w)/g, (_, c) => (c ? c.toUpperCase() : ""));
+  return str.replace(/[-_](\w)/g, (_, c) => (c ? c.toUpperCase() : ''));
 }
 export function pascalCase(str: string): string {
   const camel = camelCase(str);
@@ -26,7 +26,7 @@ export function toArray<T>(array?: any): Array<T> {
 }
 
 export function parseId(id: string) {
-  const index = id.indexOf("?");
+  const index = id.indexOf('?');
   if (index < 0) {
     return { path: id, query: {} };
   }
@@ -46,10 +46,10 @@ export function isEmpty(value: any): boolean {
 }
 
 export const isFunction = (arg: unknown): arg is (...args: any[]) => any =>
-  typeof arg === "function";
+  typeof arg === 'function';
 
 export const isRegExp = (arg: unknown): arg is RegExp =>
-  Object.prototype.toString.call(arg) === "[object RegExp]";
+  Object.prototype.toString.call(arg) === '[object RegExp]';
 
 export function filterFile(
   file: string,
@@ -68,7 +68,7 @@ export function filterFile(
   return false;
 }
 
-export function getUserCompressType(type = "webp") {
+export function getUserCompressType(type = 'webp') {
   return type;
 }
 
@@ -101,20 +101,18 @@ export async function exists(pathe: string) {
 }
 
 export function parseURL(rawURL: string) {
-  return new URL(rawURL.replace(/#/g, "%23"), "file://");
+  return new URL(rawURL.replace(/#/g, '%23'), 'file://');
 }
 
-export function generateImageID(filename: string, format: string = "jpeg") {
-  return `${
-    createHash("sha256")
-      .update(filename)
-      .digest("hex")
-      .slice(0, 8)
-  }.${format}`;
+export function generateImageID(filename: string, format: string = 'jpeg') {
+  return `${createHash('sha256')
+    .update(filename)
+    .digest('hex')
+    .slice(0, 8)}.${format}`;
 }
 
 export function transformFileName(file) {
-  return file.substring(0, file.lastIndexOf(".") + 1);
+  return file.substring(0, file.lastIndexOf('.') + 1);
 }
 // 判断后缀名
 export function filterExtension(name: string, ext: string): boolean {
@@ -129,9 +127,10 @@ export function readFilesRecursive(root: string, reg?: RegExp) {
     if (fs.existsSync(root) && fs.lstatSync(root).isDirectory()) {
       // Read all files in the root directory, and recursively read files in subdirectories.
       fs.readdirSync(root).forEach(
-        (file) => (resultArr = resultArr.concat(
-          readFilesRecursive(path.join(root, "/", file)),
-        )),
+        (file) =>
+          (resultArr = resultArr.concat(
+            readFilesRecursive(path.join(root, '/', file)),
+          )),
       );
     } // If the root path is a file, check if it matched the regex.
     else if (reg === undefined || reg?.test(root)) resultArr.push(root);
@@ -189,7 +188,7 @@ export async function readImageFiles(dir) {
     const path = `${dir}/${file}`;
 
     if ((await fs.promises.stat(path)).isDirectory()) {
-      images.push(...await readImageFiles(path));
+      images.push(...(await readImageFiles(path)));
     } else if (imageExtRegex.test(file)) {
       images.push(basename(file));
     }

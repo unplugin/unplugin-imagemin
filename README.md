@@ -6,14 +6,13 @@
 
 ```bash
 ✨ : unplugin-imagemin
-✔ : Process start with mode squoosh 
+✔ : Process start with mode squoosh
 ✅ : [test1.png] [12.39 MB] -> [102.54 KB]
-✔ : Process start with mode squoosh  
+✔ : Process start with mode squoosh
 ✅ : [test2.png] [16.38 MB] -> [76.79 KB]
 ```
 
 #### 🌈 Features
-
 
 - 🍰 Support png jpeg webp avif svg tiff Format
 - 🦾 High Performance based on squoosh
@@ -22,17 +21,16 @@
 - 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
 
-
 ## Squoosh && Sharp && Svgo
 
-Unplugin-imagemin supports two compression modes 
+Unplugin-imagemin supports two compression modes
 
- [Sharp](https://github.com/lovell/sharp) The typical use case for this high speed Node.js module is to convert large images in common formats to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
+[Sharp](https://github.com/lovell/sharp) The typical use case for this high speed Node.js module is to convert large images in common formats to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
 
- [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
- **Squoosh** with rust & wasm 
+[Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
+**Squoosh** with rust & wasm
 
- [Svgo](https://github.com/svg/svgo) Support compression of pictures in svg format
+[Svgo](https://github.com/svg/svgo) Support compression of pictures in svg format
 
 ## ✨Warning
 
@@ -48,8 +46,6 @@ It is recommended that mode choose `sharp`.
 
 https://github.com/unplugin/unplugin-imagemin/assets/66500121/49169b22-7f5b-4cdc-b023-302003b15522
 
-
-
 ## 📦 Installation
 
 ```bash
@@ -57,7 +53,6 @@ pnpm add unplugin-imagemin@latest -D
 ```
 
 #### support vite and rollup.
-
 
 <details>
 <summary>Basic</summary><br>
@@ -68,16 +63,11 @@ import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),   
-    imagemin()
-  ]
+  plugins: [vue(), imagemin()],
 });
 ```
 
 <br></details>
-
-
 
 <details>
 <summary>Advanced</summary><br>
@@ -128,9 +118,9 @@ export default defineConfig({
 
 Squoosh DefaultConfiguration and sharp DefaultConfiguration
 
-DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/compressOptions.ts) 
+DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/compressOptions.ts)
 
-Plugin property configuration see [configuration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/types/index.ts) 
+Plugin property configuration see [configuration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/types/index.ts)
 
 ```typescript
 export interface PluginOptions {

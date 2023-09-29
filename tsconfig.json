@@ -8,17 +8,11 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "sourceMap": false,
     "noEmitOnError": true,
     "noImplicitAny": false,
     "resolveJsonModule": true
   },
-  "exclude": [
-    "node_modules",
-    "playground",
-    "dist"
-  ]
+  "exclude": ["node_modules", "playground", "dist"]
 }

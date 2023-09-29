@@ -2,7 +2,11 @@
 
 <template>
   <div>
-    <img style="width: 1200px" src="./assets/image/wallhaven-x61xdo.jpg" alt="" />
+    <img
+      style="width: 1200px"
+      src="./assets/image/wallhaven-x61xdo.jpg"
+      alt=""
+    />
     <!-- <div class="a"></div> -->
     <div class="b"></div>
     <!-- <img src="./assets/shuimo.svg" alt="" /> -->
