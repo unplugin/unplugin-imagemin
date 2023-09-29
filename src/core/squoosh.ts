@@ -53,6 +53,7 @@ async function initSquoosh(config) {
       } else {
         transformPath = fileRootPath;
       }
+
       if (options.cache && cache.get(chunks[filePath])) {
         fs.writeFileSync(fileRootPath, cache.get(chunks[filePath]));
         logger(
@@ -61,6 +62,7 @@ async function initSquoosh(config) {
         );
         return Promise.resolve();
       }
+
       const image = imagePool.ingestImage(path.resolve(outputPath, filePath));
       const oldSize = fs.lstatSync(fileRootPath).size;
       let newSize = oldSize;

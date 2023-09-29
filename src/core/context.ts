@@ -16,7 +16,7 @@ import {
   readImageFiles,
   transformFileName,
 } from './utils';
-import path, { basename, extname, join, resolve } from 'pathe';
+import { basename, extname, join, resolve } from 'pathe';
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
@@ -30,6 +30,7 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 import initSvg from './svgo';
+import { log } from 'node:util';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 

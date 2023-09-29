@@ -163,35 +163,43 @@ export function filterDirPath(path, dir, excludeDir?) {
 }
 
 export function hasImageFiles(dir) {
-  const imageExtRegex = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
-  const files: any = fs.readdirSync(dir, {
-    withFileTypes: true,
-    recursive: true,
-  });
+  try {
+    const imageExtRegex = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
+    const files: any = fs.readdirSync(dir, {
+      withFileTypes: true,
+      recursive: true,
+    });
 
-  for (const file of files) {
-    if (imageExtRegex.test(extname(file.name))) {
-      return true;
+    for (const file of files) {
+      if (imageExtRegex.test(extname(file.name))) {
+        return true;
+      }
     }
+    return false;
+  } catch (e) {
+    return false;
   }
-  return false;
 }
 
 const imageExtRegex = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export async function readImageFiles(dir) {
-  const files: any = await fs.promises.readdir(dir);
-
   const images = [];
 
-  for (let file of files) {
-    const path = `${dir}/${file}`;
+  try {
+    const files: any = await fs.promises.readdir(dir);
 
-    if ((await fs.promises.stat(path)).isDirectory()) {
-      images.push(...(await readImageFiles(path)));
-    } else if (imageExtRegex.test(file)) {
-      images.push(basename(file));
+    for (let file of files) {
+      const path2 = `${dir}/${file}`;
+
+      if ((await fs.promises.stat(path2)).isDirectory()) {
+        images.push(...(await readImageFiles(path2)));
+      } else if (imageExtRegex.test(file)) {
+        images.push(basename(file));
+      }
     }
+  } catch {
+    // ignore
   }
 
   return images;
