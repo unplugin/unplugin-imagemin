@@ -76,8 +76,8 @@ importers:
         specifier: ^5.0.4
         version: 5.2.2
       vite:
-        specifier: 5.0.0-beta.6
-        version: 5.0.0-beta.6(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.0-beta.7
+        version: 5.0.0-beta.7(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1)
       vitest:
         specifier: ^0.34.0
         version: 0.34.3
@@ -105,7 +105,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^4.0.0
-        version: 4.3.4(vite@5.0.0-beta.6)(vue@3.3.4)
+        version: 4.3.4(vite@5.0.0-beta.7)(vue@3.3.4)
       typescript:
         specifier: ^5.0.0
         version: 5.2.2
@@ -113,8 +113,8 @@ importers:
         specifier: workspace:*
         version: link:..
       vite:
-        specifier: 5.0.0-beta.6
-        version: 5.0.0-beta.6(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.0-beta.7
+        version: 5.0.0-beta.7(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1)
       vue-tsc:
         specifier: ^1.0.9
         version: 1.8.8(typescript@5.2.2)
@@ -1149,14 +1149,14 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vitejs/plugin-vue@4.3.4(vite@5.0.0-beta.6)(vue@3.3.4):
+  /@vitejs/plugin-vue@4.3.4(vite@5.0.0-beta.7)(vue@3.3.4):
     resolution: {integrity: sha512-ciXNIHKPriERBisHFBvnTbfKa6r9SAesOYXeGDzgegcvy9Q4xdScSHAmKbNT0M3O0S9LKhIf5/G+UYG4NnnzYw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.0-beta.6(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1)
+      vite: 5.0.0-beta.7(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1)
       vue: 3.3.4
     dev: true
 
@@ -5143,6 +5143,14 @@ packages:
       fsevents: 2.3.3
     dev: true
 
+  /rollup@3.29.4:
+    resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
   /run-async@2.4.1:
     resolution: {integrity: sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==}
     engines: {node: '>=0.12.0'}
@@ -6197,8 +6205,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.0.0-beta.6(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1):
-    resolution: {integrity: sha512-UykuzmOByaGUp/EjyE25wTiqa65n3UaXVhRhGbZ/oyOkjSzQjfMqOA1ju5TVocTroxIgqhn4/rV6pOIFW+M9xg==}
+  /vite@5.0.0-beta.7(@types/node@18.17.13)(less@4.2.0)(sass@1.66.1):
+    resolution: {integrity: sha512-0SP6Nx+w8z0rlgbrHJYs06JZC3DAwEHI84Vp1aPhq+oR8bmu8JdbFs/gp4IOWz6x/oe+CJtBcTghyT0iRbqFCg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -6229,7 +6237,7 @@ packages:
       esbuild: 0.19.3
       less: 4.2.0
       postcss: 8.4.31
-      rollup: 3.29.3
+      rollup: 3.29.4
       sass: 1.66.1
     optionalDependencies:
       fsevents: 2.3.3
