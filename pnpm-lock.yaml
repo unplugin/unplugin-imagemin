@@ -76,8 +76,8 @@ importers:
         specifier: ^5.0.4
         version: 5.2.2
       vite:
-        specifier: 5.0.0-beta.18
-        version: 5.0.0-beta.18(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.0
+        version: 5.0.0(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vitest:
         specifier: ^0.34.0
         version: 0.34.3
@@ -105,7 +105,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^4.0.0
-        version: 4.3.4(vite@5.0.0-beta.18)(vue@3.3.4)
+        version: 4.3.4(vite@5.0.0)(vue@3.3.4)
       typescript:
         specifier: ^5.0.0
         version: 5.2.2
@@ -113,8 +113,8 @@ importers:
         specifier: workspace:*
         version: link:..
       vite:
-        specifier: 5.0.0-beta.18
-        version: 5.0.0-beta.18(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.0
+        version: 5.0.0(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vue-tsc:
         specifier: ^1.0.9
         version: 1.8.8(typescript@5.2.2)
@@ -1226,14 +1226,14 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vitejs/plugin-vue@4.3.4(vite@5.0.0-beta.18)(vue@3.3.4):
+  /@vitejs/plugin-vue@4.3.4(vite@5.0.0)(vue@3.3.4):
     resolution: {integrity: sha512-ciXNIHKPriERBisHFBvnTbfKa6r9SAesOYXeGDzgegcvy9Q4xdScSHAmKbNT0M3O0S9LKhIf5/G+UYG4NnnzYw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.0-beta.18(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+      vite: 5.0.0(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vue: 3.3.4
     dev: true
 
@@ -6299,8 +6299,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.0.0-beta.18(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
-    resolution: {integrity: sha512-5QAi3LFP+l5NC890ywGe8HeWlmgd7F6d7VA+ZosCSWDr1WZ30YUJjVkwdVcJR+znBCeV0joEiXO6S+Yqp2qsIA==}
+  /vite@5.0.0(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
+    resolution: {integrity: sha512-ESJVM59mdyGpsiNAeHQOR/0fqNoOyWPYesFto8FFZugfmhdHx8Fzd8sF3Q/xkVhZsyOxHfdM7ieiVAorI9RjFw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
