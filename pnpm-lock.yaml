@@ -76,8 +76,8 @@ importers:
         specifier: ^5.0.4
         version: 5.2.2
       vite:
-        specifier: 5.0.3
-        version: 5.0.3(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.4
+        version: 5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vitest:
         specifier: ^0.34.0
         version: 0.34.3
@@ -105,7 +105,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^4.0.0
-        version: 4.3.4(vite@5.0.3)(vue@3.3.4)
+        version: 4.3.4(vite@5.0.4)(vue@3.3.4)
       typescript:
         specifier: ^5.0.0
         version: 5.2.2
@@ -113,8 +113,8 @@ importers:
         specifier: workspace:*
         version: link:..
       vite:
-        specifier: 5.0.3
-        version: 5.0.3(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.4
+        version: 5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vue-tsc:
         specifier: ^1.0.9
         version: 1.8.8(typescript@5.2.2)
@@ -1226,14 +1226,14 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vitejs/plugin-vue@4.3.4(vite@5.0.3)(vue@3.3.4):
+  /@vitejs/plugin-vue@4.3.4(vite@5.0.4)(vue@3.3.4):
     resolution: {integrity: sha512-ciXNIHKPriERBisHFBvnTbfKa6r9SAesOYXeGDzgegcvy9Q4xdScSHAmKbNT0M3O0S9LKhIf5/G+UYG4NnnzYw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.3(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+      vite: 5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vue: 3.3.4
     dev: true
 
@@ -6294,8 +6294,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.0.3(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
-    resolution: {integrity: sha512-WgEq8WEKpZ8c0DL4M1+E+kBZEJyjBmGVrul6z8Ljfhv+PPbNF4aGq014DwNYxGz2FGq6NKL0N8usdiESWd2l2w==}
+  /vite@5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
+    resolution: {integrity: sha512-RzAr8LSvM8lmhB4tQ5OPcBhpjOZRZjuxv9zO5UcxeoY2bd3kP3Ticd40Qma9/BqZ8JS96Ll/jeBX9u+LJZrhVg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
