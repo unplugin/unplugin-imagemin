@@ -76,8 +76,8 @@ importers:
         specifier: ^5.0.4
         version: 5.2.2
       vite:
-        specifier: 5.0.4
-        version: 5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vitest:
         specifier: ^0.34.0
         version: 0.34.3
@@ -105,7 +105,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^4.0.0
-        version: 4.3.4(vite@5.0.4)(vue@3.3.4)
+        version: 4.3.4(vite@5.0.5)(vue@3.3.4)
       typescript:
         specifier: ^5.0.0
         version: 5.2.2
@@ -113,8 +113,8 @@ importers:
         specifier: workspace:*
         version: link:..
       vite:
-        specifier: 5.0.4
-        version: 5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vue-tsc:
         specifier: ^1.0.9
         version: 1.8.8(typescript@5.2.2)
@@ -1226,14 +1226,14 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vitejs/plugin-vue@4.3.4(vite@5.0.4)(vue@3.3.4):
+  /@vitejs/plugin-vue@4.3.4(vite@5.0.5)(vue@3.3.4):
     resolution: {integrity: sha512-ciXNIHKPriERBisHFBvnTbfKa6r9SAesOYXeGDzgegcvy9Q4xdScSHAmKbNT0M3O0S9LKhIf5/G+UYG4NnnzYw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+      vite: 5.0.5(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
       vue: 3.3.4
     dev: true
 
@@ -4111,6 +4111,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  /nanoid@3.3.7:
+    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: true
+
   /napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
     dev: false
@@ -4455,6 +4461,15 @@ packages:
       nanoid: 3.3.6
       picocolors: 1.0.0
       source-map-js: 1.0.2
+
+  /postcss@8.4.32:
+    resolution: {integrity: sha512-D/kj5JNu6oo2EIy+XL/26JEDTlIbB8hw85G8StOE6L74RQAVVP5rej6wxCNqyMbR4RkPfqvezVbPw81Ngd6Kcw==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+    dev: true
 
   /prebuild-install@7.1.1:
     resolution: {integrity: sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==}
@@ -6294,8 +6309,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.0.4(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
-    resolution: {integrity: sha512-RzAr8LSvM8lmhB4tQ5OPcBhpjOZRZjuxv9zO5UcxeoY2bd3kP3Ticd40Qma9/BqZ8JS96Ll/jeBX9u+LJZrhVg==}
+  /vite@5.0.5(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
+    resolution: {integrity: sha512-OekeWqR9Ls56f3zd4CaxzbbS11gqYkEiBtnWFFgYR2WV8oPJRRKq0mpskYy/XaoCL3L7VINDhqqOMNDiYdGvGg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -6325,7 +6340,7 @@ packages:
       '@types/node': 20.8.8
       esbuild: 0.19.3
       less: 4.2.0
-      postcss: 8.4.31
+      postcss: 8.4.32
       rollup: 4.2.0
       sass: 1.66.1
     optionalDependencies:
