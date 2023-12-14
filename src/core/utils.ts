@@ -181,6 +181,15 @@ export function hasImageFiles(dir) {
   }
 }
 
+export async function checkPath(pathe: string) {
+  try {
+    await fsPromise.access(pathe);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 const imageExtRegex = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export async function readImageFiles(dir) {

@@ -20,7 +20,7 @@ export default defineConfig({
       // Default mode sharp. support squoosh and sharp
       mode: 'squoosh',
       // cache: true,
-      beforeBundle: false,
+      beforeBundle: true,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {

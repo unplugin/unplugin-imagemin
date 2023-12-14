@@ -5,6 +5,7 @@ import { performance } from 'node:perf_hooks';
 import { optimize } from 'svgo';
 import type { ResolvedConfig } from 'vite';
 import {
+  checkPath,
   exists,
   filterExtension,
   filterFile,
@@ -414,7 +415,12 @@ export default class Context {
 
   async transformHtmlModule() {
     const htmlBundlePath = `${this.config.outDir}/index.html`;
-    const html = await fs.readFile(resolve(process.cwd(), htmlBundlePath));
+    const resolvePath = resolve(process.cwd(), htmlBundlePath);
+    const existsPath = await checkPath(resolvePath);
+    if (!existsPath) {
+      return;
+    }
+    const html = await fs.readFile(resolvePath);
     const htmlBuffer = Buffer.from(html);
     const htmlCodeString = htmlBuffer.toString();
 
