@@ -4,7 +4,7 @@ import imagemin from 'unplugin-imagemin/vite';
 import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/pathe/',
+  // base: '/pathe/',
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
@@ -20,7 +20,7 @@ export default defineConfig({
       // Default mode sharp. support squoosh and sharp
       mode: 'squoosh',
       // cache: true,
-      beforeBundle: true,
+      beforeBundle: false,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
