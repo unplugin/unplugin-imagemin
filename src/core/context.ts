@@ -31,11 +31,9 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 import initSvg from './svgo';
-import { log } from 'node:util';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
-// 切换整数字符串 尝试使用正则
 const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
 const SquooshErrorVersion = 18;
 const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
@@ -46,9 +44,9 @@ if (SquooshUseFlag) {
       SquooshPool = module.ImagePool;
       delete globalThis.navigator;
     })
-    .catch(console.error); // 简化错误处理
+    .catch(console.error);
 }
-// const extRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
+
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export interface Options {
