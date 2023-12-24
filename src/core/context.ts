@@ -31,8 +31,11 @@ import Cache from './cache';
 import initSquoosh from './squoosh';
 import initSharp from './sharp';
 import initSvg from './svgo';
+
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
+
+export const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
 const SquooshErrorVersion = 18;
@@ -46,8 +49,6 @@ if (SquooshUseFlag) {
     })
     .catch(console.error);
 }
-
-const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 export interface Options {
   compress: any;
@@ -597,7 +598,7 @@ export function resolveOptions(
       ({
         ...options[item],
         ...transformType[item],
-      }) as ResolvedOptions,
+      } as ResolvedOptions),
   );
   const obj = {};
   keys.forEach((item, index) => {
