@@ -4,7 +4,7 @@ import { createUnplugin } from 'unplugin';
 import Context from './core/context';
 // squoosh navigator error
 delete globalThis.navigator;
-export default createUnplugin((options: PluginOptions = {}): any => {
+export default createUnplugin((options: PluginOptions = {}) => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
   const assignOptions = Object.assign({}, resolveDefaultOptions, options);

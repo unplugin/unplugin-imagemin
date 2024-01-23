@@ -55,17 +55,13 @@ export interface PluginOptions {
   beforeBundle?: boolean;
 }
 
-export type ResolvedOptions = Omit<
-  Required<CompressTypeOptions>,
-  'resolvers' | 'extensions' | 'dirs'
-> & {
-  conversion: string[];
-  cache: boolean;
-  compress: any;
-  root?: string;
-  outputPath?: string;
-  isTurn?: boolean;
-};
+export type ResolvedOptions = PluginOptions &
+  Required<
+    Pick<
+      PluginOptions,
+      'mode' | 'beforeBundle' | 'compress' | 'cacheDir' | 'cache'
+    >
+  >;
 
 export interface ImageMinifyOptions {
   /**
