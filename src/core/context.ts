@@ -35,7 +35,7 @@ import initSvg from './svgo';
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
-export const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
+export const extImageRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
 const SquooshErrorVersion = 18;
@@ -71,7 +71,7 @@ export default class Context {
 
   assetPath: string[] = [];
 
-  filter = createFilter(extSvgRE, [
+  filter = createFilter(extImageRE, [
     /[\\/]node_modules[\\/]/,
     /[\\/]\.git[\\/]/,
   ]);
@@ -222,7 +222,7 @@ export default class Context {
     Object.keys(bundle).forEach((key) => {
       const { outputPath } = this.config;
       // eslint-disable-next-line no-unused-expressions
-      filterFile(resolve(outputPath!, key), extSvgRE) && this.files.push(key);
+      filterFile(resolve(outputPath!, key), extImageRE) && this.files.push(key);
     });
   }
 
@@ -231,7 +231,7 @@ export default class Context {
     const files = await readImageFiles(this.config.publicDir);
 
     // Use regular expressions to filter out the file name of the picture file
-    // const imageFileNames = files.filter((file) => file.match(extSvgRE));
+    // const imageFileNames = files.filter((file) => file.match(extImageRE));
 
     // const imageFilePaths = imageFileNames.map((fileName) =>
     //   path.join(this.config.publicDir, fileName),
@@ -243,7 +243,7 @@ export default class Context {
 
     const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
     const imageBundle = assetBundle.filter((item: any) =>
-      item.fileName.match(extSvgRE),
+      item.fileName.match(extImageRE),
     );
     const imageFileBundle = imageBundle
       .map((item: any) => item.fileName)

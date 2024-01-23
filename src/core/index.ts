@@ -1,11 +1,12 @@
 import { resolveDefaultOptions } from './compressOptions';
 import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
-import Context from './context';
+import Context, { extImageRE } from './context';
+import { createFilter } from '@rollup/pluginutils';
 // squoosh navigator error
 delete globalThis.navigator;
 
-export const plugin = createUnplugin((options: PluginOptions = {}) => {
+export const plugin = createUnplugin((options: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
   const assignOptions = Object.assign({}, resolveDefaultOptions, options);
@@ -16,6 +17,11 @@ export const plugin = createUnplugin((options: PluginOptions = {}) => {
     enforce: assignOptions.beforeBundle ? 'pre' : 'post',
     async configResolved(config) {
       ctx.handleResolveOptionHook({ ...config, options: assignOptions });
+    },
+    resolveId(id) {
+      if (extImageRE.test(id)) {
+        console.log(id);
+      }
     },
     async load(id) {
       if (assignOptions.beforeBundle) {
