@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
   "scripts": {
     "bootstrap": "npm run install && npm run build",
@@ -111,8 +111,15 @@
   },
   "pnpm": {
     "supportedArchitectures": {
-      "os": ["win32", "darwin", "current"],
-      "cpu": ["x64", "arm64"]
+      "os": [
+        "win32",
+        "darwin",
+        "current"
+      ],
+      "cpu": [
+        "x64",
+        "arm64"
+      ]
     }
   }
 }
