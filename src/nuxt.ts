@@ -2,11 +2,11 @@ import { addVitePlugin, addWebpackPlugin, defineNuxtModule } from '@nuxt/kit';
 import type { ModuleDefinition } from '@nuxt/schema';
 
 import { name, version } from '../package.json';
-import type { Options } from './core/types';
+import type { PluginOptions } from './core/types';
 import VitePlugin from './vite';
 import WebpackPlugin from './webpack';
 
-export default defineNuxtModule<Options>({
+export default defineNuxtModule<PluginOptions>({
   meta: {
     name,
     version,
@@ -20,4 +20,4 @@ export default defineNuxtModule<Options>({
     addVitePlugin(VitePlugin(options));
     addWebpackPlugin(WebpackPlugin(options));
   },
-}) as ModuleDefinition<Options>;
+}) as ModuleDefinition<PluginOptions>;
