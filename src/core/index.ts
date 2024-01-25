@@ -2,7 +2,6 @@ import { resolveDefaultOptions } from './compressOptions';
 import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
 import Context, { extImageRE } from './context';
-import { createFilter } from '@rollup/pluginutils';
 // squoosh navigator error
 delete globalThis.navigator;
 
@@ -16,7 +15,8 @@ export const plugin = createUnplugin((options: PluginOptions = {}): any => {
     apply: 'build',
     enforce: assignOptions.beforeBundle ? 'pre' : 'post',
     async configResolved(config) {
-      ctx.handleResolveOptionHook({ ...config, options: assignOptions });
+      const resolveOptions = { ...config, options: assignOptions };
+      ctx.handleResolveOptionHook(resolveOptions);
     },
     resolveId(id) {
       if (extImageRE.test(id)) {

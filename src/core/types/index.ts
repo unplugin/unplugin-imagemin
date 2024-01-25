@@ -1,18 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Options {}
+export interface Options { }
+
 
 export interface CompressTypeOptions {
-  mozjpeg?: any;
-  jpeg?: any;
-  webp?: any;
-  avif?: any;
-  jxl?: any;
-  wp2?: any;
-  oxipng?: any;
-  png?: any;
-  git?: any;
-  svg?: any;
-  tiff?: any;
+  mozjpeg?: jpgDefaultOptions;
+  jpeg?: jpgDefaultOptions;
+  jpg?: jpgDefaultOptions;
+  webp?: webpDefaultOptions;
+  avif?: avifDefaultOptions;
+  jxl?: jxlDefaultOptions;
+  wp2?: wp2DefaultOptions;
+  oxipng?: oxipngDefaultOptions;
+  png?: pngDefaultOptions;
 }
 
 interface ConversionItemType {
