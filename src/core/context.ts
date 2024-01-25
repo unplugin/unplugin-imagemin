@@ -125,7 +125,7 @@ export default class Context {
   /**
    * @param id
    * @returns
-   * load hooks  解析id 返回自定义内容 后续生成自定义bundle
+   * load hooks
    * Parsing id returns custom content and then generates custom bundle
    */
   loadBundleHook(id) {
@@ -136,7 +136,6 @@ export default class Context {
 
   /**
    * @param bundler
-   * 根据构建前获取用户自定义模块内容 动态生成chunk file
    * Dynamically generate chunk file according to the content of user-defined module obtained before building
    */
   async generateBundleHook(bundler) {
@@ -206,7 +205,7 @@ export default class Context {
 
   /**
    * @param bundle
-   * 根据构建后transform已有chunk replace 代码结构 解析 css 与 js 模块
+   * Parsing css and js modules according to the existing chunk replace code structure of transform after construction
    */
   TransformChunksHook(bundle) {
     this.chunks = bundle;
@@ -229,7 +228,6 @@ export default class Context {
   async transformCodeHook(bundle) {
     // read publicDir path
     const files = await readImageFiles(this.config.publicDir);
-
     // Use regular expressions to filter out the file name of the picture file
     // const imageFileNames = files.filter((file) => file.match(extImageRE));
 
@@ -290,7 +288,7 @@ export default class Context {
       `${i.from}`.endsWith(ext),
     );
     // const itemConversion = this.config.isTurn && userRes?.from === ext;
-    // TODO 图片接口转化
+    // TODO image interface transform
     const type =
       this.config.isTurn && userRes?.to
         ? encodeMapBack.get(userRes?.to)
@@ -560,7 +558,7 @@ async function convertToSharp(inputImg, options) {
     };
 
     res = await sharp(inputImg)
-      [sharpEncodeMap.get(currentType.to)!](option)
+    [sharpEncodeMap.get(currentType.to)!](option)
       .toBuffer();
   } else {
     const option = {
@@ -595,10 +593,10 @@ export function resolveOptions(
   const keys = Object.keys(transformType);
   const res = keys.map(
     (item) =>
-      ({
-        ...options[item],
-        ...transformType[item],
-      } as ResolvedOptions),
+    ({
+      ...options[item],
+      ...transformType[item],
+    } as ResolvedOptions),
   );
   const obj = {};
   keys.forEach((item, index) => {

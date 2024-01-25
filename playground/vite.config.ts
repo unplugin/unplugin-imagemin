@@ -14,13 +14,17 @@ export default defineConfig({
   build: {
     // assetsInlineLimit: 4096 * 2,
   },
+  server: {
+    port: 8451
+  },
+  // publicDir: 'base/public',
   plugins: [
     vue(),
     imagemin({
       // Default mode sharp. support squoosh and sharp
       mode: 'sharp',
       // cache: true,
-      beforeBundle: false,
+      beforeBundle: true,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {

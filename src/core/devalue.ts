@@ -61,7 +61,7 @@ function devalue(value) {
             proto !== Object.prototype &&
             proto !== null &&
             Object.getOwnPropertyNames(proto).sort().join('\0') !==
-              objectProtoOwnPropertyNames
+            objectProtoOwnPropertyNames
           ) {
             if (typeof thing.toJSON !== 'function') {
               log(
@@ -118,7 +118,7 @@ function devalue(value) {
           if (getType(json) === 'String') {
             try {
               json = JSON.parse(json);
-            } catch (e) {}
+            } catch (e) { }
           }
           return stringify(json);
         }

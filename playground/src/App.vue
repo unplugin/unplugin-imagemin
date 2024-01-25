@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import Img from './assets/image/wallhaven-2ykjxm.png'
+// import Img from './assets/image/wallhaven-2ykjxm.png'
 </script>
 
 <template>
   <div>
+    <img src="/img/a.png" alt="" />
+    <img src="/img/b.png" alt="" />
+    <img src="/img/c.png" alt="" />
     <!-- <img
       style="width: 1200px"
       src="./assets/image/wallhaven-x61xdo.jpg"
       alt=""
     /> -->
     <!-- <img :src="Img" alt=""> -->
-    <div class="a"></div>
-    <div class="b"></div>
+    <!-- <div class="a"></div> -->
+    <!-- <div class="b"></div> -->
     <!-- <img src="./assets/shuimo.svg" alt="" />
     <img src="/img/a.png" alt="" />
     <img src="/img/b.png" alt="" />
@@ -34,7 +37,7 @@ div {
 .a {
   width: 500px;
   height: 400px;
-  background-image: url('./assets/image/wallhaven-x61xdo.jpg');
+  // background-image: url('./assets/image/wallhaven-x61xdo.jpg');
   background-position: center center;
 }
 .b {
