@@ -38,7 +38,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
-        version: 20.8.8
+        version: 20.11.20
       bumpp:
         specifier: ^9.1.0
         version: 9.2.0
@@ -77,10 +77,10 @@ importers:
         version: 5.2.2
       vite:
         specifier: 5.1.1
-        version: 5.1.1(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        version: 5.1.1(@types/node@20.11.20)(less@4.2.0)(sass@1.66.1)
       vitest:
         specifier: ^1.0.0
-        version: 1.0.0(@types/node@20.8.8)
+        version: 1.0.0(@types/node@20.11.20)
       webpack:
         specifier: ^5.81.0
         version: 5.88.2(esbuild@0.19.3)
@@ -114,7 +114,7 @@ importers:
         version: link:..
       vite:
         specifier: 5.1.1
-        version: 5.1.1(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+        version: 5.1.1(@types/node@20.11.20)(less@4.2.0)(sass@1.66.1)
       vue-tsc:
         specifier: ^1.0.9
         version: 1.8.8(typescript@5.2.2)
@@ -1280,10 +1280,10 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/node@20.8.8:
-    resolution: {integrity: sha512-YRsdVxq6OaLfmR9Hy816IMp33xOBjfyOgUd77ehqg96CFywxAPbDbXvAsuN2KVg2HOT8Eh6uAfU+l4WffwPVrQ==}
+  /@types/node@20.11.20:
+    resolution: {integrity: sha512-7/rR21OS+fq8IyHTgtLkDK949uzsa6n8BkziAKtPVpugIkO6D+/ooXMvzXxDnZrmtXVfjb1bKQafYpb8s89LOg==}
     dependencies:
-      undici-types: 5.25.3
+      undici-types: 5.26.5
     dev: true
 
   /@types/semver@7.5.1:
@@ -1431,7 +1431,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.1.1(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+      vite: 5.1.1(@types/node@20.11.20)(less@4.2.0)(sass@1.66.1)
       vue: 3.3.4
     dev: true
 
@@ -2327,6 +2327,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.3
+    dev: true
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -3869,7 +3870,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.8.8
+      '@types/node': 20.11.20
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -3978,10 +3979,8 @@ packages:
       image-size: 0.5.5
       make-dir: 2.1.0
       mime: 1.6.0
-      needle: 3.2.0
+      needle: 3.3.1
       source-map: 0.6.1
-    transitivePeerDependencies:
-      - supports-color
 
   /levn@0.3.0:
     resolution: {integrity: sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==}
@@ -4286,6 +4285,7 @@ packages:
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     requiresBuild: true
+    dev: true
 
   /muggle-string@0.3.1:
     resolution: {integrity: sha512-ckmWDJjphvd/FvZawgygcUeQCxzvohjFO5RxTjj4eq8kw359gFF3E1brjfI+viLMxss5JrHTDRHZvu2/tuy0Qg==}
@@ -4316,17 +4316,14 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /needle@3.2.0:
-    resolution: {integrity: sha512-oUvzXnyLiVyVGoianLijF9O/RecZUf7TkBfimjGrLM4eQhXyeJwM6GeAWccwfQ9aa4gMCZKqhAOuLaMIcQxajQ==}
+  /needle@3.3.1:
+    resolution: {integrity: sha512-6k0YULvhpw+RoLNiQCRKOl09Rv1dPLr8hHnVjHqdolKwDrdNyk+Hmrthi4lIGPPz3r39dLx0hsF5s40sZ3Us4Q==}
     engines: {node: '>= 4.4.x'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      debug: 3.2.7
       iconv-lite: 0.6.3
       sax: 1.2.4
-    transitivePeerDependencies:
-      - supports-color
     optional: true
 
   /neo-async@2.6.2:
@@ -6200,8 +6197,8 @@ packages:
       unplugin: 1.5.0
     dev: false
 
-  /undici-types@5.25.3:
-    resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==}
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
     dev: true
 
   /unherit@1.1.3:
@@ -6358,7 +6355,7 @@ packages:
       vfile-message: 2.0.4
     dev: true
 
-  /vite-node@1.0.0(@types/node@20.8.8):
+  /vite-node@1.0.0(@types/node@20.11.20):
     resolution: {integrity: sha512-9pGEPYsHy+7Ok7d6FkvniCmMI58IJ4KfFSK0Xq2FHWPQoBRpJKubaNBvMcXm0+uAwS6K2Rh9qJOKijdgqrjN+Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -6367,7 +6364,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.1.1(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
+      vite: 5.1.1(@types/node@20.11.20)(less@4.2.0)(sass@1.66.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -6379,7 +6376,7 @@ packages:
       - terser
     dev: true
 
-  /vite@5.1.1(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1):
+  /vite@5.1.1(@types/node@20.11.20)(less@4.2.0)(sass@1.66.1):
     resolution: {integrity: sha512-wclpAgY3F1tR7t9LL5CcHC41YPkQIpKUGeIuT8MdNwNZr6OqOTLs7JX5vIHAtzqLWXts0T+GDrh9pN2arneKqg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -6407,7 +6404,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.8.8
+      '@types/node': 20.11.20
       esbuild: 0.19.3
       less: 4.2.0
       postcss: 8.4.35
@@ -6417,7 +6414,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@1.0.0(@types/node@20.8.8):
+  /vitest@1.0.0(@types/node@20.11.20):
     resolution: {integrity: sha512-jpablj5+ifiFHV3QGOxPews3uxBuu6rQUzTaQYtEd6ocBpdQBil6AvmmGRQ3Rn0WPgyzb+Ni+JekfMyng+qYng==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -6442,7 +6439,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/node': 20.8.8
+      '@types/node': 20.11.20
       '@vitest/expect': 1.0.0
       '@vitest/runner': 1.0.0
       '@vitest/snapshot': 1.0.0
@@ -6461,8 +6458,8 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.1.1(@types/node@20.8.8)(less@4.2.0)(sass@1.66.1)
-      vite-node: 1.0.0(@types/node@20.8.8)
+      vite: 5.1.1(@types/node@20.11.20)(less@4.2.0)(sass@1.66.1)
+      vite-node: 1.0.0(@types/node@20.11.20)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
