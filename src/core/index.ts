@@ -5,7 +5,7 @@ import Context, { extImageRE } from './context';
 // squoosh navigator error
 delete globalThis.navigator;
 
-export const plugin = createUnplugin((options: PluginOptions = {}): any => {
+export const plugin = createUnplugin((options?: PluginOptions = {}): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
   const assignOptions = Object.assign({}, resolveDefaultOptions, options);
