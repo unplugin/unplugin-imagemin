@@ -1,14 +1,14 @@
 import { resolveDefaultOptions } from './compressOptions';
 import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
-import Context, { extImageRE } from './context';
+import Context from './context';
 // squoosh navigator error
 delete globalThis.navigator;
 
-export const plugin = createUnplugin((options?: PluginOptions = {}): any => {
+export const plugin = createUnplugin((options?: PluginOptions): any => {
   const ctx = new Context();
   // eslint-disable-next-line prefer-object-spread
-  const assignOptions = Object.assign({}, resolveDefaultOptions, options);
+  const assignOptions = Object.assign({}, resolveDefaultOptions, options ?? {});
 
   return {
     name: 'unplugin-imagemin',
@@ -17,11 +17,6 @@ export const plugin = createUnplugin((options?: PluginOptions = {}): any => {
     async configResolved(config) {
       const resolveOptions = { ...config, options: assignOptions };
       ctx.handleResolveOptionHook(resolveOptions);
-    },
-    resolveId(id) {
-      if (extImageRE.test(id)) {
-        console.log(id);
-      }
     },
     async load(id) {
       if (assignOptions.beforeBundle) {

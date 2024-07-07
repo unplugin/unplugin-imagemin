@@ -4,14 +4,14 @@
 
 <template>
   <div>
-    <img src="/img/a.png" alt="" />
-    <img src="/img/b.png" alt="" />
-    <img src="/img/c.png" alt="" />
-    <!-- <img
+    <!-- <img src="/img/a.png" alt="" /> -->
+    <!-- <img src="/img/b.png" alt="" /> -->
+    <!-- <img src="/img/c.png" alt="" /> -->
+    <img
       style="width: 1200px"
       src="./assets/image/wallhaven-x61xdo.jpg"
       alt=""
-    /> -->
+    />
     <!-- <img :src="Img" alt=""> -->
     <!-- <div class="a"></div> -->
     <!-- <div class="b"></div> -->

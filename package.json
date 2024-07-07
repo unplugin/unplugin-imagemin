@@ -1,23 +1,16 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.5.18",
+  "version": "0.5.21",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and sharp",
-  "scripts": {
-    "bootstrap": "npm run install && npm run build",
-    "build": "tsup && npm run build:fix",
-    "dev": "tsup --watch src && npm run build:fix",
-    "build:fix": "esno scripts/postbuild.ts",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "play": "npm -C playground run dev",
-    "prepublishOnly": "npm run build",
-    "release": "bumpp && npm publish",
-    "start": "esno src/index.ts",
-    "test": "vitest"
-  },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "keywords": [
+    "unplugin",
+    "vite",
+    "webpack",
+    "rollup",
+    "esbuild",
+    "imagemin"
+  ],
   "exports": {
     ".": {
       "require": "./dist/index.js",
@@ -53,6 +46,9 @@
       "import": "./dist/esbuild.mjs"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "typesVersions": {
     "*": {
       "*": [
@@ -61,22 +57,40 @@
       ]
     }
   },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "bootstrap": "npm run install && npm run build",
+    "build": "tsup && npm run build:fix",
+    "dev": "tsup --watch src && npm run build:fix",
+    "build:fix": "esno scripts/postbuild.ts",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "play": "npm -C playground run dev",
+    "prepublishOnly": "npm run build",
+    "release": "bumpp && npm publish",
+    "start": "esno src/index.ts",
+    "test": "vitest"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "unplugin",
-    "vite",
-    "webpack",
-    "rollup",
-    "esbuild",
-    "imagemin"
-  ],
-  "license": "MIT",
+  "dependencies": {
+    "@nuxt/kit": "^3.7.0",
+    "@nuxt/schema": "^3.7.0",
+    "@rollup/pluginutils": "^5.0.2",
+    "@squoosh/lib": "0.4.0",
+    "chalk": "^4.1.2",
+    "ora": "6.3.0",
+    "sharp": "0.33.0",
+    "svgo": "^3.0.2",
+    "unplugin": "^1.5.0"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "bumpp": "^9.1.0",
@@ -94,20 +108,6 @@
     "vite": "5.1.1",
     "vitest": "^1.0.0",
     "webpack": "^5.81.0"
-  },
-  "dependencies": {
-    "@nuxt/kit": "^3.7.0",
-    "@nuxt/schema": "^3.7.0",
-    "@rollup/pluginutils": "^5.0.2",
-    "@squoosh/lib": "0.4.0",
-    "chalk": "^4.1.2",
-    "ora": "6.3.0",
-    "sharp": "0.33.0",
-    "svgo": "^3.0.2",
-    "unplugin": "^1.5.0"
-  },
-  "engines": {
-    "node": ">=14"
   },
   "pnpm": {
     "supportedArchitectures": {
