@@ -64,7 +64,7 @@
     "node": ">=14"
   },
   "scripts": {
-    "bootstrap": "npm run install && npm run build",
+    "bootstrap": "npm run install && npm run dev",
     "build": "tsup && npm run build:fix",
     "dev": "tsup --watch src && npm run build:fix",
     "build:fix": "esno scripts/postbuild.ts",

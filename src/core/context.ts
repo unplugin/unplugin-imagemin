@@ -411,7 +411,9 @@ export default class Context {
   }
 
   async transformHtmlModule() {
+
     const htmlBundlePath = `${this.config.outDir}/index.html`;
+    console.log(htmlBundlePath + 'htmlBundlePath');
     const resolvePath = resolve(process.cwd(), htmlBundlePath);
     const existsPath = await checkPath(resolvePath);
     if (!existsPath) {
