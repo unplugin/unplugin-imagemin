@@ -72,7 +72,7 @@
         "../../../node_modules/.pnpm/unplugin-vue-router@0.10.8_rollup@4.25.0_vue-router@4.4.5_vue@3.5.12_typescript@5.2.2___vue@3_27sjmh64tnstz5vr47yzkuptre/node_modules/unplugin-vue-router/client"
       ],
       "@nuxt/schema": [
-        "../../../node_modules/.pnpm/@nuxt+schema@3.7.0/node_modules/@nuxt/schema"
+        "../../../node_modules/.pnpm/@nuxt+schema@3.7.0_webpack-sources@3.2.3/node_modules/@nuxt/schema"
       ],
       "nuxt": [
         "../../../node_modules/.pnpm/nuxt@3.14.159_@parcel+watcher@2.5.0_@types+node@20.14.10_eslint@8.48.0_ioredis@5.4.1_less@4.2_ifr4wlohtfmdsjepffr3ywcicu/node_modules/nuxt"
@@ -122,7 +122,7 @@
   },
   "include": [
     "./types/nitro-nuxt.d.ts",
-    "../../../../unpl/runtime/server",
+    "../../../../../typescrip/runtime/server",
     "../../../node_modules/.pnpm/@nuxt+devtools@1.6.0_rollup@4.25.0_vite@5.4.10_@types+node@20.14.10_less@4.2.0_sass@1.66.1_te_3rfwqhd56iluenwgxc6434ilwy/node_modules/@nuxt/devtools/runtime/server",
     "../../../node_modules/.pnpm/@nuxt+telemetry@2.6.0_magicast@0.3.5_rollup@4.25.0_webpack-sources@3.2.3/node_modules/@nuxt/telemetry/runtime/server",
     "./types/nitro.d.ts",

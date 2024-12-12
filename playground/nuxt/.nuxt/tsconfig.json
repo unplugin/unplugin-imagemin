@@ -42,7 +42,7 @@
         "../../../node_modules/.pnpm/unplugin-vue-router@0.10.8_rollup@4.25.0_vue-router@4.4.5_vue@3.5.12_typescript@5.2.2___vue@3_27sjmh64tnstz5vr47yzkuptre/node_modules/unplugin-vue-router/client"
       ],
       "@nuxt/schema": [
-        "../../../node_modules/.pnpm/@nuxt+schema@3.7.0/node_modules/@nuxt/schema"
+        "../../../node_modules/.pnpm/@nuxt+schema@3.7.0_webpack-sources@3.2.3/node_modules/@nuxt/schema"
       ],
       "nuxt": [
         "../../../node_modules/.pnpm/nuxt@3.14.159_@parcel+watcher@2.5.0_@types+node@20.14.10_eslint@8.48.0_ioredis@5.4.1_less@4.2_ifr4wlohtfmdsjepffr3ywcicu/node_modules/nuxt"
@@ -108,7 +108,7 @@
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/9ebaf0ab-eb1e-46de-b489-000fb31f5f57.json"
+        "./manifest/meta/f3ac1c98-428f-45a0-9013-853f4982a18e.json"
       ],
       "#components": [
         "./components"

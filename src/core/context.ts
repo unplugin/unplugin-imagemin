@@ -1,4 +1,4 @@
-import { encodeMap, encodeMapBack, sharpEncodeMap } from './encodeMap';
+import { encodeMap, encodeMapBack } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
 import { Buffer } from 'node:buffer';
 import { performance } from 'node:perf_hooks';
@@ -13,42 +13,37 @@ import {
   hasImageFiles,
   isTurnImageType,
   parseId,
-  readFilesRecursive,
   readImageFiles,
   transformFileName,
 } from './utils';
 import { basename, extname, join, resolve } from 'pathe';
-import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import { promises as fs } from 'fs';
-import { defaultOptions, sharpOptions } from './compressOptions';
+import { defaultOptions } from './compressOptions';
 import type { PluginOptions, ResolvedOptions } from './types';
 import devalue from './devalue';
 import chalk from 'chalk';
 import { compressSuccess, logger, pluginTitle } from './log';
 import { loadWithRocketGradient } from './gradient';
-import Cache from './cache';
-import initSquoosh from './squoosh';
-import initSharp from './sharp';
+// import initSquoosh from './squoosh';
 import initSvg from './svgo';
+import { cpus } from 'os';
 
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
 export const extImageRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
-const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
-const SquooshErrorVersion = 18;
-const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
-if (SquooshUseFlag) {
-  import('@squoosh/lib')
-    .then((module) => {
-      SquooshPool = module.ImagePool;
-      delete globalThis.navigator;
-    })
-    .catch(console.error);
-}
+// if (SquooshUseFlag) {
+import('squoosh-next')
+  .then((module) => {
+    SquooshPool = module.ImagePool;
+
+    delete globalThis.navigator;
+  })
+  .catch(console.error);
+// }
 
 export interface Options {
   compress: any;
@@ -117,7 +112,6 @@ export default class Context {
       isTurn,
       publicDir,
     };
-    // squoosh & sharp merge config options
     this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
     this.config = chooseConfig;
   }
@@ -145,20 +139,8 @@ export default class Context {
       await mkdir(this.config.cacheDir, { recursive: true });
     }
     let imagePool;
-    const { mode } = this.config.options;
-    const useModeFlag = resolveNodeVersion();
 
-    if (mode === 'squoosh' && !useModeFlag) {
-      console.log(
-        chalk.yellow(
-          'Squoosh mode is not supported in node v18 or higher. prepare change use sharp...',
-        ),
-      );
-    }
-    let changeMode = useModeFlag ? mode : 'sharp';
-    if (changeMode === 'squoosh' && SquooshUseFlag) {
-      imagePool = new SquooshPool();
-    }
+    imagePool = new SquooshPool(cpus().length);
 
     this.startGenerateLogger();
     let spinner = await loadWithRocketGradient('');
@@ -166,25 +148,18 @@ export default class Context {
     if (this.imageModulePath.length > 0) {
       const generateImageBundle = this.imageModulePath.map(async (item) => {
         if (extname(item) !== '.svg') {
-          if (changeMode === 'squoosh' && SquooshUseFlag) {
-            const squooshBundle = await this.generateSquooshBundle(
-              imagePool,
-              item,
-            );
-            return squooshBundle;
-          } else if (changeMode === 'sharp') {
-            const sharpBundle = await this.generateSharpBundle(item);
-            return sharpBundle;
-          }
+          const squooshBundle = await this.generateSquooshBundle(
+            imagePool,
+            item,
+          );
+          return squooshBundle;
         }
         // transform svg
         const svgBundle = this.generateSvgBundle(item);
         return svgBundle;
       });
       const result = await Promise.all(generateImageBundle);
-      if (changeMode === 'squoosh') {
-        imagePool.close();
-      }
+      imagePool.close();
 
       this.generateBundleFile(bundler, result);
       logger(pluginTitle('✨'), chalk.yellow('Successfully'));
@@ -194,9 +169,7 @@ export default class Context {
           'Not Found Image Module,  if you want to use style with image style, such as "background-image" you can use "beforeBundle: false" in plugin config',
         ),
       );
-      if (changeMode === 'squoosh') {
-        imagePool.close();
-      }
+      imagePool.close();
     }
 
     spinner.text = chalk.yellow('Image conversion completed!');
@@ -312,7 +285,7 @@ export default class Context {
       try {
         await image.encode(currentType);
       } catch (error) {
-        console.log(error);
+        console.warn(error);
       }
     }
 
@@ -325,6 +298,7 @@ export default class Context {
         size: (await fs.lstat(cachedFilename)).size,
       };
     }
+    console.log(encodedWith);
 
     newSize = encodedWith.size;
     // TODO add cache module
@@ -349,44 +323,6 @@ export default class Context {
     return source;
   }
 
-  async generateSharpBundle(item) {
-    const { cacheDir } = this.config;
-    const start = performance.now();
-    const size = await fs.lstat(item);
-
-    const oldSize = size.size;
-    let newSize = oldSize;
-    let sharpFileBuffer;
-
-    const generateSrc = getBundleImageSrc(item, this.config.options);
-    const base = basename(item, extname(item));
-    const imageName = `${base}-${generateSrc}`;
-    const cachedFilename = join(cacheDir, imageName);
-    if (!(await this.isCache(cachedFilename))) {
-      sharpFileBuffer = await loadImage(item, this.config.options);
-    } else {
-      sharpFileBuffer = await fs.readFile(cachedFilename);
-    }
-    if (this.config.options.cache && !(await exists(cachedFilename))) {
-      await fs.writeFile(cachedFilename, sharpFileBuffer);
-    }
-    const source = await writeImageFile(
-      sharpFileBuffer,
-      this.config,
-      imageName,
-    );
-    newSize = sharpFileBuffer.length;
-    const { outDir } = this.config;
-
-    compressSuccess(
-      join(this.config.base, outDir, source.fileName),
-      newSize,
-      oldSize,
-      start,
-    );
-    return source;
-  }
-
   generateBundleFile(bundler, result) {
     result.forEach((asset) => {
       bundler[asset.fileName] = asset;
@@ -401,38 +337,14 @@ export default class Context {
   }
 
   // close bundle
-  async closeBundleHook() {
-    if (!this.config.options.beforeBundle) {
-      this.startGenerateLogger();
-      await this.spinnerHooks(this.closeBundleFn);
-      this.transformHtmlModule();
-    }
-    return true;
-  }
-
-  async transformHtmlModule() {
-
-    const htmlBundlePath = `${this.config.outDir}/index.html`;
-    console.log(htmlBundlePath + 'htmlBundlePath');
-    const resolvePath = resolve(process.cwd(), htmlBundlePath);
-    const existsPath = await checkPath(resolvePath);
-    if (!existsPath) {
-      return;
-    }
-    const html = await fs.readFile(resolvePath);
-    const htmlBuffer = Buffer.from(html);
-    const htmlCodeString = htmlBuffer.toString();
-
-    let newFile: string = '';
-    this.config.options.conversion.forEach(async (item) => {
-      const pattern = new RegExp(item.from, 'g');
-      newFile =
-        newFile.length > 0
-          ? newFile.replace(pattern, item.to)
-          : htmlCodeString.replace(pattern, item.to);
-      await fs.writeFile(resolve(process.cwd(), htmlBundlePath), newFile);
-    });
-  }
+  // async closeBundleHook() {
+  //   if (!this.config.options.beforeBundle) {
+  //     this.startGenerateLogger();
+  //     await this.spinnerHooks(this.closeBundleFn);
+  //     this.transformHtmlModule();
+  //   }
+  //   return true;
+  // }
 
   async isCache(cacheFilePath) {
     return this.config.options.cache && exists(cacheFilePath);
@@ -486,50 +398,6 @@ export default class Context {
   }
 
   async closeBundleFn() {
-    const { isTurn, outputPath, publicDir } = this.config;
-    const { mode, cache } = this.config.options;
-    const defaultSquooshOptions = {};
-    Object.keys(defaultOptions).forEach(
-      (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
-    );
-    if (cache) {
-      this.cache = new Cache({ outputPath });
-    }
-    this.files.push(...readFilesRecursive(publicDir));
-    const initOptions = {
-      files: this.files,
-      outputPath,
-      inputPath: this.assetPath,
-      options: this.config.options,
-      isTurn,
-      cache: this.cache,
-      chunks: this.chunks,
-      publicDir,
-    };
-
-    this.files.forEach(async (item: string) => {
-      if (extname(item) === '.svg') {
-        await initSvg({ ...initOptions }, item);
-      }
-    });
-
-    if (mode === 'squoosh' && SquooshUseFlag) {
-      await initSquoosh({ ...initOptions, defaultSquooshOptions });
-    } else if (mode === 'sharp' || !SquooshUseFlag) {
-      if (mode === 'squoosh') {
-        logger(
-          pluginTitle('✨'),
-          chalk.yellow(
-            'Since the current version of node does not support squoosh, it will automatically change mode to sharp.',
-          ),
-        );
-      }
-      await initSharp(initOptions);
-    } else {
-      throw new Error(
-        '[unplugin-imagemin] Only squoosh or sharp can be selected for mode option',
-      );
-    }
   }
 }
 async function writeImageFile(buffer, options, imageName): Promise<any> {
@@ -547,30 +415,7 @@ async function writeImageFile(buffer, options, imageName): Promise<any> {
   };
 }
 
-async function convertToSharp(inputImg, options) {
-  const currentType = options.conversion.find(
-    (item) => item.from === extname(inputImg).slice(1),
-  );
-  let res;
-  const ext = extname(inputImg).slice(1);
-  if (currentType !== undefined) {
-    const option = {
-      ...sharpOptions[ext],
-      ...options.compress[currentType.to],
-    };
 
-    res = await sharp(inputImg)
-    [sharpEncodeMap.get(currentType.to)!](option)
-      .toBuffer();
-  } else {
-    const option = {
-      ...sharpOptions[ext],
-      ...options.compress[ext],
-    };
-    res = await sharp(inputImg)[sharpEncodeMap.get(ext)!](option).toBuffer();
-  }
-  return res;
-}
 function getBundleImageSrc(filename: string, options: any) {
   const currentType =
     options.conversion.find(
@@ -582,10 +427,7 @@ function getBundleImageSrc(filename: string, options: any) {
   );
   return id;
 }
-export async function loadImage(url: string, options: any) {
-  const image = convertToSharp(url, options);
-  return image;
-}
+
 
 export function resolveOptions(
   options: any,
@@ -655,3 +497,5 @@ export function resolveNodeVersion() {
   }
   return false;
 }
+
+

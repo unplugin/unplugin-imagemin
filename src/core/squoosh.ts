@@ -14,7 +14,7 @@ if (SquooshUseFlag) {
     .then((module) => {
       // 加载模块成功后执行的代码
       SquooshPool = module.ImagePool;
-      delete globalThis.navigator;
+      // delete globalThis.navigator;
     })
     .catch((err) => {
       // 加载模块失败后执行的代码

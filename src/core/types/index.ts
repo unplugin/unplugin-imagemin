@@ -44,7 +44,7 @@ export interface PluginOptions {
   /**
    * @description mode
    * @default squoosh
-   * @description squoosh or sharp
+   * @description squoosh
    */
   mode?: 'squoosh' | 'sharp';
   /**

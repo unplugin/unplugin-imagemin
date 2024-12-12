@@ -3,7 +3,7 @@ import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
 import Context from './context';
 // squoosh navigator error
-delete globalThis.navigator;
+// delete globalThis.navigator;
 
 export const plugin = createUnplugin((options?: PluginOptions): any => {
   const ctx = new Context();
@@ -18,26 +18,30 @@ export const plugin = createUnplugin((options?: PluginOptions): any => {
       const resolveOptions = { ...config, options: assignOptions };
       ctx.handleResolveOptionHook(resolveOptions);
     },
+    loadInclude(id) {
+      console.log(id);
+      return false;
+    },
     async load(id) {
-      if (assignOptions.beforeBundle) {
-        const imageModule = ctx.loadBundleHook(id);
-        if (imageModule) {
-          return imageModule;
-        }
+      console.log(id);
+
+      const imageModule = ctx.loadBundleHook(id);
+      if (imageModule) {
+        return imageModule;
       }
     },
-    async generateBundle(_, bundler) {
-      if (assignOptions.beforeBundle) {
-        await ctx.generateBundleHook(bundler);
-      } else {
-        ctx.TransformChunksHook(bundler);
-      }
-    },
-    closeBundle: {
-      sequential: true,
-      async handler() {
-        await ctx.closeBundleHook();
-      },
-    },
+    // async generateBundle(_, bundler) {
+    // if (assignOptions.beforeBundle) {
+    // await ctx.generateBundleHook(bundler);
+    // } else {
+    // ctx.TransformChunksHook(bundler);
+    // }
+    // },
+    // closeBundle: {
+    //   sequential: true,
+    //   async handler() {
+    //     await ctx.closeBundleHook();
+    //   },
+    // },
   };
 });

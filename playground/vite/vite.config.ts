@@ -21,7 +21,6 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      // Default mode sharp. support squoosh and sharp
       mode: 'squoosh',
       // cache: true,
       beforeBundle: true,
