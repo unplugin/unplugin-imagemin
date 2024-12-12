@@ -157,10 +157,9 @@ export default class Context {
       const result = await Promise.all(generateImageBundle);
 
       this.generateBundleFile(bundler, result);
-      logger(pluginTitle('✨'), chalk.yellow('Successfully'));
+      logger(pluginTitle('✨'), chalk.yellow('Image conversion completed!'));
     }
     imagePool?.close();
-    spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
   }
 
@@ -272,8 +271,7 @@ export default class Context {
     }
     const spinner = await loadWithRocketGradient('');
     await fn.call(this);
-    logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-    spinner.text = chalk.yellow('Image conversion completed!');
+    logger(pluginTitle('✨'), chalk.yellow('Image conversion completed!'));
     spinner.succeed();
   }
 
