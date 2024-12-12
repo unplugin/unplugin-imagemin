@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import type { Ora } from 'ora';
 import ora from 'ora';
+import { pluginTitle } from './log';
 
 const gradientColors = [
   `#c7ecee`,

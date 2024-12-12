@@ -25,6 +25,7 @@ import { loadWithRocketGradient } from './gradient';
 // import initSquoosh from './squoosh';
 import initSvg from './svgo';
 import { cpus } from 'os';
+import process from 'node:process';
 
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
@@ -32,15 +33,15 @@ export const cssUrlRE =
 export const extImageRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 
 let SquooshPool;
-// if (SquooshUseFlag) {
 import('squoosh-next')
   .then((module) => {
+    console.log("这是啥玩意啊", module);
+
     SquooshPool = module.ImagePool;
 
     delete globalThis.navigator;
   })
   .catch(console.error);
-// }
 
 export interface Options {
   compress: any;
@@ -134,6 +135,7 @@ export default class Context {
       // TODO cache
       await mkdir(this.config.cacheDir, { recursive: true });
     }
+    console.log("我是啥", SquooshPool);
 
     const imagePool = new SquooshPool(cpus().length);
 
@@ -157,7 +159,7 @@ export default class Context {
       logger(pluginTitle('✨'), chalk.yellow('Image conversion completed!'));
     }
     imagePool?.close();
-    spinner.succeed();
+    spinner.stop();
   }
 
   setAssetsPath(pathStr) {
@@ -269,7 +271,7 @@ export default class Context {
     const spinner = await loadWithRocketGradient('');
     await fn.call(this);
     logger(pluginTitle('✨'), chalk.yellow('Image conversion completed!'));
-    spinner.succeed();
+    spinner.stop();
   }
 
   async generateSvgBundle(item) {
@@ -289,7 +291,7 @@ export default class Context {
     const size = await fs.lstat(item);
 
     const oldSize = size.size;
-    let newSize = Buffer.byteLength(result.data);
+    const newSize = Buffer.byteLength(result.data);
     const svgResult = {
       fileName: join(assetsDir, imageName),
       name: imageName,
@@ -378,10 +380,13 @@ export async function transformCode(
   changeBundle,
   sourceCode,
 ) {
+  // biome-ignore lint/complexity/noForEach: <explanation>
   currentChunk.forEach(async (item: any) => {
     const finallyPath = join(options.outputPath, item.fileName);
+    // biome-ignore lint/complexity/noForEach: <explanation>
     options.options.conversion.forEach(
       (type: { from: string | RegExp; to: string }) => {
+        // biome-ignore lint/complexity/noForEach: <explanation>
         changeBundle.forEach(async (file) => {
           if (file.endsWith(type.from)) {
             const name = transformFileName(file);
@@ -396,18 +401,6 @@ export async function transformCode(
     await fs.writeFile(finallyPath, item[sourceCode]);
   });
 }
-
-export function resolveNodeVersion() {
-  const currentVersion = process.versions.node;
-  const requiredMajorVersion = parseInt(currentVersion.split('.')[0], 10);
-  const minimumMajorVersion = 18;
-
-  if (requiredMajorVersion < minimumMajorVersion) {
-    return true;
-  }
-  return false;
-}
-
 
 export function isSvgFile(filename) {
   return extname(filename) === '.svg'

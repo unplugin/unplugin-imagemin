@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.5.20",
+  "version": "0.6.0",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and svgo",
   "license": "MIT",
   "keywords": [

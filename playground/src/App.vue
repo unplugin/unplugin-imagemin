@@ -11,11 +11,7 @@
     <!-- <img :src="Img" alt=""> -->
     <!-- <div class="a"></div> -->
     <!-- <div class="b"></div> -->
-    <!-- <img src="./assets/shuimo.svg" alt="" />
-    <img src="/img/a.png" alt="" />
-    <img src="/img/b.png" alt="" />
-    <img src="/img/c.png" alt="" />
-    <img src="/img/d.png" alt="" /> -->
+    <!-- <img src="./assets/shuimo.svg" alt="" /> -->
     <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
     <RouterView />
@@ -30,12 +26,12 @@ div {
   flex-wrap: wrap;
 }
 
-.a {
+/* .a {
   width: 500px;
   height: 400px;
   background-image: url('./assets/image/wallhaven-x61xdo.jpg');
   background-position: center center;
-}
+} */
 
 .b {
   // background-image: url('/img/b.png');
@@ -47,7 +43,7 @@ div {
 body {
   width: 100%;
   height: 100%;
-  // background: url('./assets/image/wallhaven-l8z9jr.jpeg');
+  background: url('./assets/image/wallhaven-l8z9jr.jpeg');
   background-size: cover;
 }
 
