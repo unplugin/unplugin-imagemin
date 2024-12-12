@@ -7,11 +7,7 @@
     <!-- <img src="/img/a.png" alt="" /> -->
     <!-- <img src="/img/b.png" alt="" /> -->
     <!-- <img src="/img/c.png" alt="" /> -->
-    <img
-      style="width: 1200px"
-      src="./assets/image/wallhaven-x61xdo.jpg"
-      alt=""
-    />
+    <img style="width: 1200px" src="./assets/image/wallhaven-x61xdo.jpg" alt="" />
     <!-- <img :src="Img" alt=""> -->
     <!-- <div class="a"></div> -->
     <!-- <div class="b"></div> -->
@@ -37,29 +33,34 @@ div {
 .a {
   width: 500px;
   height: 400px;
-  // background-image: url('./assets/image/wallhaven-x61xdo.jpg');
+  background-image: url('./assets/image/wallhaven-x61xdo.jpg');
   background-position: center center;
 }
+
 .b {
   // background-image: url('/img/b.png');
   width: 500px;
   height: 400px;
   background-position: center center;
 }
+
 body {
   width: 100%;
   height: 100%;
   // background: url('./assets/image/wallhaven-l8z9jr.jpeg');
   background-size: cover;
 }
+
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }

@@ -1,7 +1,7 @@
 import { resolveDefaultOptions } from './compressOptions';
 import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
-import Context from './context';
+import Context, { extImageRE } from './context';
 // squoosh navigator error
 // delete globalThis.navigator;
 
@@ -19,29 +19,14 @@ export const plugin = createUnplugin((options?: PluginOptions): any => {
       ctx.handleResolveOptionHook(resolveOptions);
     },
     loadInclude(id) {
-      console.log(id);
-      return false;
+      // this way only load importer image not all like css
+      return extImageRE.test(id)
     },
     async load(id) {
-      console.log(id);
-
-      const imageModule = ctx.loadBundleHook(id);
-      if (imageModule) {
-        return imageModule;
-      }
+      return ctx.loadBundleHook(id);
     },
-    // async generateBundle(_, bundler) {
-    // if (assignOptions.beforeBundle) {
-    // await ctx.generateBundleHook(bundler);
-    // } else {
-    // ctx.TransformChunksHook(bundler);
-    // }
-    // },
-    // closeBundle: {
-    //   sequential: true,
-    //   async handler() {
-    //     await ctx.closeBundleHook();
-    //   },
-    // },
+    async generateBundle(_, bundler) {
+      await ctx.generateBundleHook(bundler);
+    },
   };
 });

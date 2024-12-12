@@ -1,11 +1,14 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsup'
+import Unused from 'unplugin-unused/esbuild'
 
 export default defineConfig({
   entry: ['./src/*.ts'],
   format: ['esm', 'cjs'],
-  target: 'node14',
+  target: 'node18',
   clean: true,
-  dts: true,
+  // dts: true,
   splitting: true,
+  cjsInterop: true,
   shims: true,
-});
+  esbuildPlugins: [Unused()],
+})

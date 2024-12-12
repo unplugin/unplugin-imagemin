@@ -75,6 +75,9 @@ importers:
       typescript:
         specifier: ^5.0.4
         version: 5.7.2
+      unplugin-unused:
+        specifier: ^0.2.3
+        version: 0.2.3(rollup@4.28.1)
       vite:
         specifier: 6.0.3
         version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(less@4.2.1)(sass@1.82.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.6.1)
@@ -3628,6 +3631,10 @@ packages:
 
   unist-util-visit@1.4.1:
     resolution: {integrity: sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==}
+
+  unplugin-unused@0.2.3:
+    resolution: {integrity: sha512-qX708+nM4zi51RPMPgvOSqRs/73kUFKUO49oaBngg2t/VW5MhdbTkSQG/S1HEGsIvZcB/t32KzbISCF0n+UPSw==}
+    engines: {node: '>=18.12.0'}
 
   unplugin@1.16.0:
     resolution: {integrity: sha512-5liCNPuJW8dqh3+DM6uNM2EI3MLLpCKp/KY+9pB5M2S2SR2qvvDHhKgBOaTWEbZTAws3CXfB0rKTIolWKL05VQ==}
@@ -7807,6 +7814,16 @@ snapshots:
   unist-util-visit@1.4.1:
     dependencies:
       unist-util-visit-parents: 2.1.2
+
+  unplugin-unused@0.2.3(rollup@4.28.1):
+    dependencies:
+      '@rollup/pluginutils': 5.1.3(rollup@4.28.1)
+      js-tokens: 9.0.1
+      picocolors: 1.1.1
+      pkg-types: 1.2.1
+      unplugin: 1.16.0
+    transitivePeerDependencies:
+      - rollup
 
   unplugin@1.16.0:
     dependencies:

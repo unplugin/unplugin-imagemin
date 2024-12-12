@@ -123,8 +123,7 @@ export default class Context {
    * Parsing id returns custom content and then generates custom bundle
    */
   loadBundleHook(id) {
-    const imageModuleFlag = this.filter(id);
-    const exportValue = this.generateDefaultValue(imageModuleFlag, id);
+    const exportValue = this.generateDefaultValue(id);
     return exportValue;
   }
 
@@ -138,40 +137,29 @@ export default class Context {
       // TODO cache
       await mkdir(this.config.cacheDir, { recursive: true });
     }
-    let imagePool;
 
-    imagePool = new SquooshPool(cpus().length);
+    const imagePool = new SquooshPool(cpus().length);
 
     this.startGenerateLogger();
-    let spinner = await loadWithRocketGradient('');
+    const spinner = await loadWithRocketGradient('');
 
-    if (this.imageModulePath.length > 0) {
-      const generateImageBundle = this.imageModulePath.map(async (item) => {
-        if (extname(item) !== '.svg') {
-          const squooshBundle = await this.generateSquooshBundle(
+    if (this.imageModulePath.length) {
+      const generateImageBundle = this.imageModulePath?.map(async (item) => {
+        if (!isSvgFile(item)) {
+          return await this.generateSquooshBundle(
             imagePool,
             item,
           );
-          return squooshBundle;
         }
         // transform svg
-        const svgBundle = this.generateSvgBundle(item);
-        return svgBundle;
+        return this.generateSvgBundle(item);
       });
       const result = await Promise.all(generateImageBundle);
-      imagePool.close();
 
       this.generateBundleFile(bundler, result);
       logger(pluginTitle('✨'), chalk.yellow('Successfully'));
-    } else {
-      console.log(
-        chalk.yellow(
-          'Not Found Image Module,  if you want to use style with image style, such as "background-image" you can use "beforeBundle: false" in plugin config',
-        ),
-      );
-      imagePool.close();
     }
-
+    imagePool?.close();
     spinner.text = chalk.yellow('Image conversion completed!');
     spinner.succeed();
   }
@@ -234,20 +222,18 @@ export default class Context {
     await transformCode(this.config, chunkBundle, imageFileBundle, 'code');
   }
 
-  generateDefaultValue(imageModuleFlag, id) {
-    if (imageModuleFlag) {
-      const parser = parseId(id);
+  generateDefaultValue(id) {
+    const parser = parseId(id);
 
-      this.imageModulePath.push(parser.path);
-      const generateSrc = getBundleImageSrc(parser.path, this.config.options);
-      const base = basename(parser.path, extname(parser.path));
+    this.imageModulePath.push(parser.path);
+    const generateSrc = getBundleImageSrc(parser.path, this.config.options);
+    const base = basename(parser.path, extname(parser.path));
 
-      const generatePath = join(
-        `${this.config.base}${this.config.assetsDir}`,
-        `${base}-${generateSrc}`,
-      );
-      return `export default ${devalue(generatePath)}`;
-    }
+    const generatePath = join(
+      `${this.config.base}${this.config.assetsDir}`,
+      `${base}-${generateSrc}`,
+    );
+    return `export default ${devalue(generatePath)}`;
   }
 
   // squoosh
@@ -266,46 +252,38 @@ export default class Context {
       this.config.isTurn && userRes?.to
         ? encodeMapBack.get(userRes?.to)
         : encodeMapBack.get(ext);
+    const imageFile = await fs.readFile(item);
 
-    const image = imagePool.ingestImage(item);
+    const image = imagePool.ingestImage(imageFile);
+
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const baseDir = basename(item, extname(item));
     const imageName = `${baseDir}-${generateSrc}`;
-    const { cacheDir, assetsDir } = this.config;
-    const cachedFilename = join(cacheDir, imageName);
     const defaultSquooshOptions = {};
+    // biome-ignore lint/complexity/noForEach: <explanation>
     Object.keys(defaultOptions).forEach(
+      // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
       (key) => (defaultSquooshOptions[key] = { ...this.mergeConfig[key] }),
     );
+    const currentType = {
+      [type!]: defaultSquooshOptions[type!],
+    };
 
-    if (!(await this.isCache(cachedFilename))) {
-      const currentType = {
-        [type!]: defaultSquooshOptions[type!],
-      };
-      try {
-        await image.encode(currentType);
-      } catch (error) {
-        console.warn(error);
-      }
+    try {
+      await image.encode(currentType);
+    } catch (error) {
+      logger(pluginTitle('(!)'), chalk.yellow(error));
     }
+    const { base, assetsDir, outDir } = this.config;
 
-    let encodedWith;
-    if (!(await this.isCache(cachedFilename))) {
-      encodedWith = await image.encodedWith[type!];
-    } else {
-      encodedWith = {
-        binary: await fs.readFile(cachedFilename),
-        size: (await fs.lstat(cachedFilename)).size,
-      };
-    }
-    console.log(encodedWith);
+    const encodedWith = await image.encodedWith[type!];
 
     newSize = encodedWith.size;
     // TODO add cache module
 
-    if (this.config.options.cache && !(await exists(cachedFilename))) {
-      await fs.writeFile(cachedFilename, encodedWith.binary);
-    }
+    // if (this.config.options.cache && !(await exists(cachedFilename))) {
+    //   await fs.writeFile(cachedFilename, encodedWith.binary);
+    // }
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
@@ -313,17 +291,18 @@ export default class Context {
       isAsset: true,
       type: 'asset',
     };
-    const { base, outDir } = this.config;
     compressSuccess(
       join(base, outDir, source.fileName),
       newSize,
       oldSize,
       start,
     );
+
     return source;
   }
 
   generateBundleFile(bundler, result) {
+    // biome-ignore lint/complexity/noForEach: <explanation>
     result.forEach((asset) => {
       bundler[asset.fileName] = asset;
     });
@@ -331,20 +310,9 @@ export default class Context {
 
   startGenerateLogger() {
     console.log('\n');
-    const info = chalk.gray('Process start with');
-    const modeLog = chalk.magenta(`Mode ${this.config.options.mode}`);
-    logger(pluginTitle('📦'), info, modeLog);
+    const info = chalk.gray(`Process start with ${chalk.bold('Squoosh')}`);
+    logger(pluginTitle('📦'), info);
   }
-
-  // close bundle
-  // async closeBundleHook() {
-  //   if (!this.config.options.beforeBundle) {
-  //     this.startGenerateLogger();
-  //     await this.spinnerHooks(this.closeBundleFn);
-  //     this.transformHtmlModule();
-  //   }
-  //   return true;
-  // }
 
   async isCache(cacheFilePath) {
     return this.config.options.cache && exists(cacheFilePath);
@@ -499,3 +467,6 @@ export function resolveNodeVersion() {
 }
 
 
+export function isSvgFile(filename) {
+  return extname(filename) === '.svg'
+}
