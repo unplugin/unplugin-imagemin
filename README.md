@@ -2,6 +2,9 @@
 
 [![NPM version](https://img.shields.io/npm/v/unplugin-imagemin?color=a1b858&label=)](https://www.npmjs.com/package/unplugin-imagemin)
 
+
+
+
 > [!IMPORTANT]
 > **Tips:**
 > `1.0 goals` unplugin-imagemin is preparing to release version 1.0, which will be released after achieving the following goals
@@ -10,6 +13,9 @@
 - [ ] Supports full cache mode
 - [ ] Consider adding query parsing for images in the dev environment
 - [ ] Supports rsbuild and farm frameworks
+
+> [!WARNING]
+Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer maintains the node direction, I fock came out and revised some compatibility issues. Details [squoosh-next](https://github.com/ErKeLost/squoosh-node-latest)
 
 ### ✨✨ Continuous iterative development in testing
 
