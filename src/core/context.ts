@@ -35,8 +35,6 @@ export const extImageRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
 let SquooshPool;
 import('squoosh-next')
   .then((module) => {
-    console.log("这是啥玩意啊", module);
-
     SquooshPool = module.ImagePool;
 
     delete globalThis.navigator;
@@ -135,8 +133,6 @@ export default class Context {
       // TODO cache
       await mkdir(this.config.cacheDir, { recursive: true });
     }
-    console.log("我是啥", SquooshPool);
-
     const imagePool = new SquooshPool(cpus().length);
 
     this.startGenerateLogger();
