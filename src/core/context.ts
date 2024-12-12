@@ -5,15 +5,12 @@ import { performance } from 'node:perf_hooks';
 import { optimize } from 'svgo';
 import type { ResolvedConfig } from 'vite';
 import {
-  checkPath,
   exists,
-  filterExtension,
   filterFile,
   generateImageID,
   hasImageFiles,
   isTurnImageType,
   parseId,
-  readImageFiles,
   transformFileName,
 } from './utils';
 import { basename, extname, join, resolve } from 'pathe';
