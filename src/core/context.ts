@@ -164,16 +164,6 @@ export default class Context {
     spinner.succeed();
   }
 
-  /**
-   * @param bundle
-   * Parsing css and js modules according to the existing chunk replace code structure of transform after construction
-   */
-  TransformChunksHook(bundle) {
-    this.chunks = bundle;
-    this.filterBundleFile(bundle);
-    this.transformCodeHook(bundle);
-  }
-
   setAssetsPath(pathStr) {
     this.assetPath.push(pathStr);
   }
@@ -184,42 +174,6 @@ export default class Context {
       // eslint-disable-next-line no-unused-expressions
       filterFile(resolve(outputPath!, key), extImageRE) && this.files.push(key);
     });
-  }
-
-  async transformCodeHook(bundle) {
-    // read publicDir path
-    const files = await readImageFiles(this.config.publicDir);
-    // Use regular expressions to filter out the file name of the picture file
-    // const imageFileNames = files.filter((file) => file.match(extImageRE));
-
-    // const imageFilePaths = imageFileNames.map((fileName) =>
-    //   path.join(this.config.publicDir, fileName),
-    // );
-
-    const allBundles = Object.values(bundle);
-
-    const chunkBundle = allBundles.filter((item: any) => item.type === 'chunk');
-
-    const assetBundle = allBundles.filter((item: any) => item.type === 'asset');
-    const imageBundle = assetBundle.filter((item: any) =>
-      item.fileName.match(extImageRE),
-    );
-    const imageFileBundle = imageBundle
-      .map((item: any) => item.fileName)
-      .concat(files);
-
-    const needTransformAssetsBundle = assetBundle.filter((item: any) =>
-      filterExtension(item.fileName, 'css'),
-    );
-    // transform css modules
-    await transformCode(
-      this.config,
-      needTransformAssetsBundle,
-      imageFileBundle,
-      'source',
-    );
-    // transform js modules
-    await transformCode(this.config, chunkBundle, imageFileBundle, 'code');
   }
 
   generateDefaultValue(id) {
@@ -247,7 +201,6 @@ export default class Context {
       `${i.from}`.endsWith(ext),
     );
     // const itemConversion = this.config.isTurn && userRes?.from === ext;
-    // TODO image interface transform
     const type =
       this.config.isTurn && userRes?.to
         ? encodeMapBack.get(userRes?.to)
@@ -279,11 +232,7 @@ export default class Context {
     const encodedWith = await image.encodedWith[type!];
 
     newSize = encodedWith.size;
-    // TODO add cache module
 
-    // if (this.config.options.cache && !(await exists(cachedFilename))) {
-    //   await fs.writeFile(cachedFilename, encodedWith.binary);
-    // }
     const source = {
       fileName: join(assetsDir, imageName),
       name: imageName,
@@ -309,9 +258,8 @@ export default class Context {
   }
 
   startGenerateLogger() {
-    console.log('\n');
     const info = chalk.gray(`Process start with ${chalk.bold('Squoosh')}`);
-    logger(pluginTitle('📦'), info);
+    logger('\n', pluginTitle('📦'), info);
   }
 
   async isCache(cacheFilePath) {
@@ -322,8 +270,7 @@ export default class Context {
     if (!this.files.length && !hasImageFiles(this.config.publicDir)) {
       return false;
     }
-    let spinner;
-    spinner = await loadWithRocketGradient('');
+    const spinner = await loadWithRocketGradient('');
     await fn.call(this);
     logger(pluginTitle('✨'), chalk.yellow('Successfully'));
     spinner.text = chalk.yellow('Image conversion completed!');

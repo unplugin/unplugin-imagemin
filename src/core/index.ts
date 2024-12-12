@@ -13,7 +13,7 @@ export const plugin = createUnplugin((options?: PluginOptions): any => {
   return {
     name: 'unplugin-imagemin',
     apply: 'build',
-    enforce: assignOptions.beforeBundle ? 'pre' : 'post',
+    enforce: 'pre',
     async configResolved(config) {
       const resolveOptions = { ...config, options: assignOptions };
       ctx.handleResolveOptionHook(resolveOptions);

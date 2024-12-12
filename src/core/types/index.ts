@@ -41,24 +41,13 @@ export interface PluginOptions {
    * @default CompressTypeOptions
    */
   compress?: CompressTypeOptions;
-  /**
-   * @description mode
-   * @default squoosh
-   * @description squoosh
-   */
-  mode?: 'squoosh' | 'sharp';
-  /**
-   * @description Whether to compress before packing
-   * @default false
-   */
-  beforeBundle?: boolean;
 }
 
 export type ResolvedOptions = PluginOptions &
   Required<
     Pick<
       PluginOptions,
-      'mode' | 'beforeBundle' | 'compress' | 'cacheDir' | 'cache'
+      'compress' | 'cacheDir' | 'cache'
     >
   >;
 

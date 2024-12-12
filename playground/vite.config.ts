@@ -21,10 +21,6 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      mode: 'squoosh',
-      // cache: true,
-      beforeBundle: true,
-      // Default configuration options for compressing different pictures
       compress: {
         jpg: {
           quality: 10,

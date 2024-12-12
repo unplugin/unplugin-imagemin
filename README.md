@@ -91,9 +91,6 @@ export default defineConfig({
   plugins: [
     vue(),
     imagemin({
-      // Default mode sharp. support squoosh and sharp
-      mode: 'squoosh',
-      beforeBundle: true,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
@@ -153,16 +150,5 @@ export interface PluginOptions {
    * @default CompressTypeOptions
    */
   compress?: CompressTypeOptions;
-  /**
-   * @description mode
-   * @default squoosh
-   * @description squoosh or sharp
-   */
-  mode?: 'squoosh' | 'sharp';
-  /**
-   * @description Whether to compress before packing
-   * @default false
-   */
-  beforeBundle?: boolean;
 }
 ```
