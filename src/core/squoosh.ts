@@ -1,26 +1,20 @@
-// import { ImagePool } from '@squoosh/lib';
 import os from 'node:os';
 import path from 'node:path';
 import * as fs from 'node:fs';
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
-const CurrentNodeVersion = parseInt(process.version.slice(1), 10);
-const SquooshErrorVersion = 18;
-const SquooshUseFlag = CurrentNodeVersion < SquooshErrorVersion;
 let SquooshPool;
-if (SquooshUseFlag) {
-  import('@squoosh/lib')
-    .then((module) => {
-      // 加载模块成功后执行的代码
-      SquooshPool = module.ImagePool;
-      // delete globalThis.navigator;
-    })
-    .catch((err) => {
-      // 加载模块失败后执行的代码
-      console.log(err);
-    });
-}
+import('squoosh-next')
+  .then((module) => {
+    // 加载模块成功后执行的代码
+    SquooshPool = module.ImagePool;
+    // delete globalThis.navigator;
+  })
+  .catch((err) => {
+    // 加载模块失败后执行的代码
+    console.log(err);
+  });
 const extSvgRE = /\.(png|jpeg|jpg|webp|wb2|avif)$/i;
 export function filterImageModule(filePath: string) {
   return extSvgRE.test(filePath);
