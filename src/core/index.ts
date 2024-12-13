@@ -2,8 +2,6 @@ import { resolveDefaultOptions } from './compressOptions';
 import type { PluginOptions } from './types';
 import { createUnplugin } from 'unplugin';
 import Context, { extImageRE } from './context';
-// squoosh navigator error
-// delete globalThis.navigator;
 
 export const plugin = createUnplugin((options?: PluginOptions): any => {
   const ctx = new Context();

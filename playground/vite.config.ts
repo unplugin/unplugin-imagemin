@@ -32,7 +32,7 @@ export default defineConfig({
           quality: 10,
         },
         webp: {
-          quality: 10,
+          quality: 0,
         },
       },
       conversion: [
