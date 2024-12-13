@@ -10,12 +10,20 @@
 > `1.0 goals` unplugin-imagemin is preparing to release version 1.0, which will be released after achieving the following goals
 - [x] Support all node versions by re-modifying the wasm syntax of squoosh
 - [x] remove sharp deps
+- [ ] Type options
+- [x] support css compress image
 - [ ] Supports full cache mode
-- [ ] Consider adding query parsing for images in the dev environment
-- [ ] Supports rsbuild and farm frameworks
+- [x] Support Node 22 and more
+- [ ] Supports farm, rsbuild, webpack, and other frameworks
+
 
 > [!WARNING]
-Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer maintains the node direction, I fock came out and revised some compatibility issues. Details [squoosh-next](https://github.com/ErKeLost/squoosh-node-latest)
+New features and stability, compatibility and performance features are constantly being updated
+Recommended to use the latest version  `pnpm add unplugin-imagemin@latest -D`
+
+
+> [!WARNING]
+Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer maintains the node direction, This fock came out and revised some compatibility issues. Details [squoosh-next](https://github.com/ErKeLost/squoosh-node-latest)
 
 ### ✨✨ Continuous iterative development in testing
 
@@ -33,29 +41,17 @@ Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer ma
 - 🦾 High Performance based on squoosh
 - ✨ Multiple picture formats can be configured
 - 🪐 Compress the code at build time
-- 😃 Caching Mechanism Tips: TODO
+- 😃 Caching Mechanism
 - 🌈 You can convert different picture types at build time
 
-## Squoosh && Sharp && Svgo
+## Squoosh && Svgo
 
 Unplugin-imagemin supports two compression modes
-
-[Sharp](https://github.com/lovell/sharp) The typical use case for this high speed Node.js module is to convert large images in common formats to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
 
 [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
 **Squoosh** with rust & wasm
 
 [Svgo](https://github.com/svg/svgo) Support compression of pictures in svg format
-
-## ✨Warning
-
-Although squoosh has done a good job, there will be all kinds of problems in future node versions, so don't use squoosh mode for the time being.
-
-Due to the loading problem of `squoosh`, unplugin-imagmin currently only supports versions below node 18.
-
-Due to the rapid update of vite version and squoosh stop maintenance and other unstable factors
-
-It is recommended that mode choose `sharp`.
 
 ## 🍰 Effect display
 
@@ -127,7 +123,7 @@ export default defineConfig({
 
 ## 🌸 DefaultConfiguration
 
-Squoosh DefaultConfiguration and sharp DefaultConfiguration
+Squoosh DefaultConfiguration 
 
 DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/compressOptions.ts)
 
