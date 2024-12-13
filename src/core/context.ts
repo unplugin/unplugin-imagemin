@@ -1,8 +1,10 @@
+/* eslint-disable no-await-in-loop */
 import { encodeMap, encodeMapBack } from './encodeMap';
 import { createFilter } from '@rollup/pluginutils';
 import { Buffer } from 'node:buffer';
 import { performance } from 'node:perf_hooks';
 import { optimize } from 'svgo';
+import postcss from 'postcss/lib/postcss';
 import type { ResolvedConfig } from 'vite';
 import {
   exists,
@@ -128,23 +130,73 @@ export default class Context {
    * Dynamically generate chunk file according to the content of user-defined module obtained before building
    */
   async generateBundleHook(bundler) {
+    const fileNameMap = new Map<string, string>();
     this.chunks = bundler;
+
+    const imagePool = new SquooshPool(cpus().length);
+
     if (!(await exists(this.config.cacheDir))) {
       // TODO cache
       await mkdir(this.config.cacheDir, { recursive: true });
     }
-    const imagePool = new SquooshPool(cpus().length);
 
     this.startGenerateLogger();
     const spinner = await loadWithRocketGradient('');
+    const tasks = [];
+
+    for (const [fileName, asset] of Object.entries(bundler)) {
+      if (asset.type === 'asset' && extImageRE.test(fileName)) {
+        const path = resolve(this.config.root, asset.originalFileName);
+
+        // 4. 创建处理任务
+        const task = async () => {
+          if (!isSvgFile(path)) {
+            return {
+              originFileName: asset.fileName,
+              result: await this.generateSquooshBundle(imagePool, path),
+            };
+          }
+          return {
+            originFileName: asset.fileName,
+            result: await this.generateSvgBundle(path),
+          };
+        };
+
+        tasks.push(task());
+      }
+    }
+
+    const baseResult = await Promise.all(tasks);
+
+    baseResult.forEach(({ originFileName, result }) => {
+      if (result) {
+        fileNameMap.set(originFileName, result.fileName);
+      }
+    });
+
+    let taskIndex = 0;
+    for (const [fileName, asset] of Object.entries(bundler)) {
+      if (asset.type === 'asset' && extImageRE.test(fileName)) {
+        const result = baseResult[taskIndex++];
+        if (result) {
+          asset.fileName = result.result.fileName;
+          asset.source = result.result.source;
+        }
+      }
+    }
+
+    for (const [fileName, asset] of Object.entries(bundler)) {
+      if (asset.type === 'asset' && fileName.endsWith('.css')) {
+        const cssContent = asset.source.toString();
+        const updatedCss = updateCssReferences(cssContent, fileNameMap);
+        asset.source = updatedCss;
+      }
+    }
 
     if (this.imageModulePath.length) {
       const generateImageBundle = this.imageModulePath?.map(async (item) => {
         if (!isSvgFile(item)) {
-          return await this.generateSquooshBundle(
-            imagePool,
-            item,
-          );
+          return await this.generateSquooshBundle(imagePool, item);
         }
         // transform svg
         return this.generateSvgBundle(item);
@@ -305,8 +357,7 @@ export default class Context {
     return svgResult;
   }
 
-  async closeBundleFn() {
-  }
+  async closeBundleFn() { }
 }
 async function writeImageFile(buffer, options, imageName): Promise<any> {
   const { cacheDir, assetsDir } = options;
@@ -323,7 +374,6 @@ async function writeImageFile(buffer, options, imageName): Promise<any> {
   };
 }
 
-
 function getBundleImageSrc(filename: string, options: any) {
   const currentType =
     options.conversion.find(
@@ -335,7 +385,6 @@ function getBundleImageSrc(filename: string, options: any) {
   );
   return id;
 }
-
 
 export function resolveOptions(
   options: any,
@@ -399,5 +448,21 @@ export async function transformCode(
 }
 
 export function isSvgFile(filename) {
-  return extname(filename) === '.svg'
+  return extname(filename) === '.svg';
+}
+
+function updateCssReferences(
+  cssContent: string,
+  fileNameMap: Map<string, string>,
+): Promise<string> {
+  try {
+    let result
+    fileNameMap.forEach((newFileName, oldFileName) => {
+      result = cssContent.replace(new RegExp(oldFileName, 'g'), newFileName);
+    });
+    return result
+  } catch (error) {
+    console.error('[unplugin-imagemin] Error processing CSS:', error);
+    return cssContent;
+  }
 }
