@@ -14,6 +14,11 @@
 - [ ] Supports full cache mode
 - [ ] Supports rsbuild and farm frameworks
 
+
+> [!WARNING]
+Recommended to use the latest version
+
+
 > [!WARNING]
 Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer maintains the node direction, This fock came out and revised some compatibility issues. Details [squoosh-next](https://github.com/ErKeLost/squoosh-node-latest)
 
