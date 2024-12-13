@@ -1,11 +1,16 @@
 /* eslint-disable no-await-in-loop */
-import { encodeMap, encodeMapBack } from './encodeMap';
-import { createFilter } from '@rollup/pluginutils';
+import fs from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
+import { cpus } from 'node:os';
 import { performance } from 'node:perf_hooks';
+
+import { basename, extname, join, resolve } from 'pathe';
+import { createFilter } from '@rollup/pluginutils';
 import { optimize } from 'svgo';
-import postcss from 'postcss/lib/postcss';
-import type { ResolvedConfig } from 'vite';
+import chalk from 'chalk';
+import SquooshPool from 'squoosh-next';
+
+import { encodeMap, encodeMapBack } from './encodeMap';
 import {
   exists,
   filterFile,
@@ -15,50 +20,24 @@ import {
   parseId,
   transformFileName,
 } from './utils';
-import { basename, extname, join, resolve } from 'pathe';
-import { mkdir } from 'node:fs/promises';
-import { promises as fs } from 'fs';
 import { defaultOptions } from './compressOptions';
-import type { PluginOptions, ResolvedOptions } from './types';
 import devalue from './devalue';
-import chalk from 'chalk';
 import { compressSuccess, logger, pluginTitle } from './log';
 import { loadWithRocketGradient } from './gradient';
-// import initSquoosh from './squoosh';
-import initSvg from './svgo';
-import { cpus } from 'os';
-import process from 'node:process';
+
+import type { ResolvedConfig } from 'vite';
+import type { PluginOptions, ResolvedOptions } from './types';
 
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
 export const extImageRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
-
-let SquooshPool;
-import('squoosh-next')
-  .then((module) => {
-    SquooshPool = module.ImagePool;
-
-    delete globalThis.navigator;
-  })
-  .catch(console.error);
-
-export interface Options {
-  compress: any;
-}
-
 export default class Context {
-  config: ResolvedOptions | any;
+  config: ResolvedOptions | undefined;
 
-  mergeConfig: any;
-
-  mergeOption: any;
+  mergeConfig: ResolvedOptions | undefined;
 
   imageModulePath: string[] = [];
-
-  chunks: any;
-
-  cache: any;
 
   files: string[] = [];
 
@@ -91,7 +70,7 @@ export default class Context {
     const cacheDir = join(
       root,
       'node_modules',
-      options.cacheDir! ?? '.cache',
+      options.cacheDir ?? '.cache',
       'unplugin-imagemin',
     );
     const isTurn = isTurnImageType(options.conversion);
@@ -131,13 +110,11 @@ export default class Context {
    */
   async generateBundleHook(bundler) {
     const fileNameMap = new Map<string, string>();
-    this.chunks = bundler;
-
-    const imagePool = new SquooshPool(cpus().length);
+    const imagePool = new SquooshPool.ImagePool(cpus().length);
 
     if (!(await exists(this.config.cacheDir))) {
       // TODO cache
-      await mkdir(this.config.cacheDir, { recursive: true });
+      await fs.mkdir(this.config.cacheDir, { recursive: true });
     }
 
     this.startGenerateLogger();
@@ -166,6 +143,7 @@ export default class Context {
       }
     }
     const baseResult = await Promise.all(tasks);
+    // biome-ignore lint/complexity/noForEach: <explanation>
     baseResult.forEach(({ originFileName, result }) => {
       if (result) {
         fileNameMap.set(originFileName, result.fileName);
@@ -184,7 +162,11 @@ export default class Context {
     }
 
     for (const [fileName, asset] of Object.entries(bundler)) {
-      if (asset.type === 'asset' && fileName.endsWith('.css') && fileNameMap.size) {
+      if (
+        asset.type === 'asset' &&
+        fileName.endsWith('.css') &&
+        fileNameMap.size
+      ) {
         const cssContent = asset.source.toString();
         const updatedCss = updateCssReferences(cssContent, fileNameMap);
         asset.source = updatedCss;
@@ -213,6 +195,7 @@ export default class Context {
   }
 
   filterBundleFile(bundle) {
+    // biome-ignore lint/complexity/noForEach: <explanation>
     Object.keys(bundle).forEach((key) => {
       const { outputPath } = this.config;
       // eslint-disable-next-line no-unused-expressions
@@ -354,22 +337,6 @@ export default class Context {
     );
     return svgResult;
   }
-
-  async closeBundleFn() { }
-}
-async function writeImageFile(buffer, options, imageName): Promise<any> {
-  const { cacheDir, assetsDir } = options;
-
-  const cachedFilename = join(cacheDir, imageName);
-  if (options.cache && (await exists(cachedFilename))) {
-  }
-  return {
-    fileName: join(assetsDir, imageName),
-    name: imageName,
-    source: buffer,
-    isAsset: true,
-    type: 'asset',
-  };
 }
 
 function getBundleImageSrc(filename: string, options: any) {
@@ -392,10 +359,10 @@ export function resolveOptions(
   const keys = Object.keys(transformType);
   const res = keys.map(
     (item) =>
-    ({
-      ...options[item],
-      ...transformType[item],
-    } as ResolvedOptions),
+      ({
+        ...options[item],
+        ...transformType[item],
+      } as ResolvedOptions),
   );
   const obj = {};
   keys.forEach((item, index) => {
@@ -452,13 +419,13 @@ export function isSvgFile(filename) {
 function updateCssReferences(
   cssContent: string,
   fileNameMap: Map<string, string>,
-): Promise<string> {
+): string {
   try {
-    let result
-    fileNameMap.forEach((newFileName, oldFileName) => {
-      result = cssContent.replace(new RegExp(oldFileName, 'g'), newFileName);
-    });
-    return result
+    return Array.from(fileNameMap).reduce(
+      (updatedCssContent, [oldFileName, newFileName]) =>
+        updatedCssContent.replace(new RegExp(oldFileName, 'g'), newFileName),
+      cssContent,
+    );
   } catch (error) {
     console.error('[unplugin-imagemin] Error processing CSS:', error);
     return cssContent;

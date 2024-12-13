@@ -1,7 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Options { }
-
-
 export interface CompressTypeOptions {
   mozjpeg?: jpgDefaultOptions;
   jpeg?: jpgDefaultOptions;
@@ -44,12 +40,7 @@ export interface PluginOptions {
 }
 
 export type ResolvedOptions = PluginOptions &
-  Required<
-    Pick<
-      PluginOptions,
-      'compress' | 'cacheDir' | 'cache'
-    >
-  >;
+  Required<Pick<PluginOptions, 'compress' | 'cacheDir' | 'cache'>>;
 
 export interface ImageMinifyOptions {
   /**
