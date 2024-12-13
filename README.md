@@ -13,7 +13,7 @@
 - [ ] Type options
 - [x] support css compress image
 - [ ] Supports full cache mode
-- [ ] Support Node 22 and more
+- [x] Support Node 22 and more
 - [ ] Supports farm, rsbuild, webpack, and other frameworks
 
 
