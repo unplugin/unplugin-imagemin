@@ -12,10 +12,12 @@
 - [x] remove sharp deps
 - [x] support css compress image
 - [ ] Supports full cache mode
-- [ ] Supports rsbuild and farm frameworks
+- [ ] Type options
+- [ ] Supports farm, rsbuild, webpack, and other frameworks
 
 
 > [!WARNING]
+New features and stability, compatibility and performance features are constantly being updated
 Recommended to use the latest version  `pnpm add unplugin-imagemin@latest -D`
 
 
