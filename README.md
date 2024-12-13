@@ -10,8 +10,8 @@
 > `1.0 goals` unplugin-imagemin is preparing to release version 1.0, which will be released after achieving the following goals
 - [x] Support all node versions by re-modifying the wasm syntax of squoosh
 - [x] remove sharp deps
+- [x] support css compress image
 - [ ] Supports full cache mode
-- [ ] Consider adding query parsing for images in the dev environment
 - [ ] Supports rsbuild and farm frameworks
 
 > [!WARNING]
