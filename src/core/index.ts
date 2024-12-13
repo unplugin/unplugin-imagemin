@@ -18,10 +18,9 @@ export const plugin = createUnplugin((options?: PluginOptions): any => {
     },
     loadInclude(id) {
       // this way only load importer image not all like css
-      // TODO support css file
       // TODO support publicDir
       // TODO cache
-      return extImageRE.test(id)
+      return extImageRE.test(id);
     },
     async load(id) {
       return ctx.loadBundleHook(id);

@@ -165,9 +165,7 @@ export default class Context {
         tasks.push(task());
       }
     }
-
     const baseResult = await Promise.all(tasks);
-
     baseResult.forEach(({ originFileName, result }) => {
       if (result) {
         fileNameMap.set(originFileName, result.fileName);
@@ -186,7 +184,7 @@ export default class Context {
     }
 
     for (const [fileName, asset] of Object.entries(bundler)) {
-      if (asset.type === 'asset' && fileName.endsWith('.css')) {
+      if (asset.type === 'asset' && fileName.endsWith('.css') && fileNameMap.size) {
         const cssContent = asset.source.toString();
         const updatedCss = updateCssReferences(cssContent, fileNameMap);
         asset.source = updatedCss;
