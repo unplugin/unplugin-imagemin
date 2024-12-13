@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and svgo",
   "license": "MIT",
   "keywords": [
@@ -82,12 +82,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.7.0",
-    "@nuxt/schema": "^3.7.0",
     "@rollup/pluginutils": "^5.0.2",
     "chalk": "5.3.0",
     "ora": "8.1.1",
-    "postcss": "^8.4.49",
     "squoosh-next": "0.1.0",
     "svgo": "^3.0.2",
     "unplugin": "^2.1.0"
