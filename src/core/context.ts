@@ -362,7 +362,7 @@ export function resolveOptions(
       ({
         ...options[item],
         ...transformType[item],
-      } as ResolvedOptions),
+      }) as ResolvedOptions,
   );
   const obj = {};
   keys.forEach((item, index) => {

@@ -15,7 +15,7 @@ export default defineConfig({
     // assetsInlineLimit: 4096 * 2,
   },
   server: {
-    port: 8451
+    port: 8451,
   },
   // publicDir: 'base/public',
   plugins: [
