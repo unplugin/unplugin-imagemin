@@ -16,7 +16,7 @@
 
 
 > [!WARNING]
-Recommended to use the latest version
+Recommended to use the latest version  `pnpm add unplugin-imagemin@latest -D`
 
 
 > [!WARNING]
