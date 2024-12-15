@@ -27,6 +27,7 @@ import { loadWithRocketGradient } from './gradient';
 
 import type { ResolvedConfig } from 'vite';
 import type { PluginOptions, ResolvedOptions } from './types';
+import Cache from './cache';
 
 export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
@@ -42,6 +43,8 @@ export default class Context {
   files: string[] = [];
 
   assetPath: string[] = [];
+
+  cache: Cache | undefined;
 
   filter = createFilter(extImageRE, [
     /[\\/]node_modules[\\/]/,
@@ -72,6 +75,7 @@ export default class Context {
       'node_modules',
       options.cacheDir ?? '.cache',
       'unplugin-imagemin',
+      '.unplugin-imagemin-cache',
     );
     const isTurn = isTurnImageType(options.conversion);
     const outputPath = resolve(root, outDir);
@@ -91,6 +95,8 @@ export default class Context {
     };
     this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
     this.config = chooseConfig;
+
+    this.cache = new Cache(chooseConfig.cacheDir);
   }
 
   private async resolveImagePath(id: string): Promise<string | null> {
@@ -126,11 +132,6 @@ export default class Context {
     const fileNameMap = new Map<string, string>();
     const imagePool = new SquooshPool.ImagePool(cpus().length);
 
-    if (!(await exists(this.config.cacheDir))) {
-      // TODO cache
-      await fs.mkdir(this.config.cacheDir, { recursive: true });
-    }
-
     this.startGenerateLogger();
     const spinner = await loadWithRocketGradient('');
     const tasks = [];
@@ -138,6 +139,22 @@ export default class Context {
     for (const [fileName, asset] of Object.entries(bundler)) {
       if (asset.type === 'asset' && extImageRE.test(fileName)) {
         const path = resolve(this.config.root, asset.originalFileName);
+
+        const mtimeMs = (await fs.stat(path)).mtimeMs;
+        const ext = extname(path).slice(1) ?? '';
+        const userRes = this.config.options.conversion.find((i) =>
+          `${i.from}`.endsWith(ext),
+        );
+        if (
+          this.config?.option?.cache &&
+          this.cache!.hasCachedAsset(path, {
+            mtimeMs,
+            targetExtname: userRes.to,
+          })
+        ) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
 
         // 4. 创建处理任务
         const task = async () => {
@@ -280,6 +297,14 @@ export default class Context {
       isAsset: true,
       type: 'asset',
     };
+
+    if (this.config?.options?.cache) {
+      this.cache!.setCachedAsset(item, {
+        mtimeMs: (await fs.stat(item)).mtimeMs,
+        targetExtname: extname(imageName).slice(1),
+      });
+    }
+
     compressSuccess(
       join(base, outDir, source.fileName),
       newSize,
