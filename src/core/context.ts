@@ -1,10 +1,11 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-await-in-loop */
 import fs from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import { cpus } from 'node:os';
 import { performance } from 'node:perf_hooks';
 
-import { basename, extname, isAbsolute, join, relative, resolve } from 'pathe';
+import { basename, extname, join, resolve } from 'pathe';
 import { createFilter } from '@rollup/pluginutils';
 import { optimize } from 'svgo';
 import chalk from 'chalk';
@@ -14,11 +15,13 @@ import { encodeMap, encodeMapBack } from './encodeMap';
 import {
   exists,
   filterFile,
-  generateImageID,
+  getBundleImageSrc,
   hasImageFiles,
+  isSvgFile,
   isTurnImageType,
   parseId,
   transformFileName,
+  updateCssReferences,
 } from './utils';
 import { defaultOptions } from './compressOptions';
 import devalue from './devalue';
@@ -156,17 +159,16 @@ export default class Context {
           continue;
         }
 
-        // 4. 创建处理任务
         const task = async () => {
           if (!isSvgFile(path)) {
             return {
               originFileName: asset.fileName,
-              result: await this.generateSquooshBundle(imagePool, path),
+              result: await this.processRasterImage(imagePool, path),
             };
           }
           return {
             originFileName: asset.fileName,
-            result: await this.generateSvgBundle(path),
+            result: await this.processSvg(path),
           };
         };
 
@@ -249,7 +251,7 @@ export default class Context {
   }
 
   // squoosh
-  async generateSquooshBundle(imagePool, item) {
+  async processRasterImage(imagePool, item) {
     const start = performance.now();
     const size = await fs.lstat(item);
     const oldSize = size.size;
@@ -278,6 +280,8 @@ export default class Context {
     const currentType = {
       [type!]: defaultSquooshOptions[type!],
     };
+
+    console.log(currentType);
 
     try {
       await image.encode(currentType);
@@ -341,7 +345,8 @@ export default class Context {
     spinner.stop();
   }
 
-  async generateSvgBundle(item) {
+  async processSvg(item) {
+    const { assetsDir, outDir,base: configBase } = this.config;
     const svgCode = await fs.readFile(item, 'utf8');
 
     const result = optimize(svgCode, {
@@ -352,7 +357,6 @@ export default class Context {
 
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const base = basename(item, extname(item));
-    const { assetsDir, outDir } = this.config;
     const imageName = `${base}-${generateSrc}`;
     const start = performance.now();
     const size = await fs.lstat(item);
@@ -368,25 +372,13 @@ export default class Context {
     };
 
     compressSuccess(
-      join(this.config.base, outDir, svgResult.fileName),
+      join(configBase, outDir, svgResult.fileName),
       newSize,
       oldSize,
       start,
     );
     return svgResult;
   }
-}
-
-function getBundleImageSrc(filename: string, options: any) {
-  const currentType =
-    options.conversion.find(
-      (item) => item.from === extname(filename).slice(1),
-    ) ?? extname(filename).slice(1);
-  const id = generateImageID(
-    filename,
-    currentType.to ?? extname(filename).slice(1),
-  );
-  return id;
 }
 
 export function resolveOptions(
@@ -448,24 +440,4 @@ export async function transformCode(
     );
     await fs.writeFile(finallyPath, item[sourceCode]);
   });
-}
-
-export function isSvgFile(filename) {
-  return extname(filename) === '.svg';
-}
-
-function updateCssReferences(
-  cssContent: string,
-  fileNameMap: Map<string, string>,
-): string {
-  try {
-    return Array.from(fileNameMap).reduce(
-      (updatedCssContent, [oldFileName, newFileName]) =>
-        updatedCssContent.replace(new RegExp(oldFileName, 'g'), newFileName),
-      cssContent,
-    );
-  } catch (error) {
-    console.error('[unplugin-imagemin] Error processing CSS:', error);
-    return cssContent;
-  }
 }

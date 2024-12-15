@@ -18,28 +18,5 @@ export default defineConfig({
     port: 8451,
   },
   // publicDir: 'base/public',
-  plugins: [
-    vue(),
-    imagemin({
-      compress: {
-        jpg: {
-          quality: 10,
-        },
-        jpeg: {
-          quality: 10,
-        },
-        png: {
-          quality: 10,
-        },
-        webp: {
-          quality: 0,
-        },
-      },
-      conversion: [
-        { from: 'jpeg', to: 'webp' },
-        { from: 'jpg', to: 'webp' },
-        { from: 'png', to: 'webp' },
-      ],
-    }),
-  ],
+  plugins: [vue(), imagemin()],
 });

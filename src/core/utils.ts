@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { partial } from 'filesize';
 import { createHash } from 'node:crypto';
 import fs, { constants, promises as fsPromise } from 'fs';
@@ -83,7 +84,6 @@ export function isTurnImageType(options) {
   return Boolean(hasConversion && hasType && isReallyType);
 }
 
-// 最后一个符号后的内容
 export function lastSymbol(string: string, symbol: string) {
   const arr = string.split(symbol);
   return arr[arr.length - 1];
@@ -114,7 +114,7 @@ export function generateImageID(filename: string, format: string = 'jpeg') {
 export function transformFileName(file) {
   return file.substring(0, file.lastIndexOf('.') + 1);
 }
-// 判断后缀名
+
 export function filterExtension(name: string, ext: string): boolean {
   const reg = new RegExp(`.${ext}`);
   return Boolean(name.match(reg));
@@ -146,17 +146,9 @@ export function filterImageModule(filePath: string) {
 }
 
 // filter public dir path with excludeDir
-export function filterDirPath(path, dir, excludeDir?) {
-  // let regex;
-
-  // if (excludeDir) {
-  //   regex = new RegExp(`${dir}/(?!${excludeDir}/)[\\w.-]+`);
-  // } else {
-  //   regex = new RegExp(`${dir}/[\\w.-]+`);
-  // }
-
+export function filterDirPath(pathe: string, dir: any) {
   // return regex.test(path);
-  if (path.startsWith(dir)) {
+  if (pathe.startsWith(dir)) {
     return true;
   }
   return false;
@@ -196,7 +188,7 @@ export async function readImageFiles(dir) {
   const images = [];
 
   try {
-    const files: any = await fs.promises.readdir(dir);
+    const files: string[] = await fs.promises.readdir(dir);
 
     for (let file of files) {
       const path2 = `${dir}/${file}`;
@@ -212,4 +204,36 @@ export async function readImageFiles(dir) {
   }
 
   return images;
+}
+
+export function isSvgFile(filename) {
+  return extname(filename) === '.svg';
+}
+
+export function getBundleImageSrc(filename: string, options: any) {
+  const currentType =
+    options.conversion.find(
+      (item) => item.from === extname(filename).slice(1),
+    ) ?? extname(filename).slice(1);
+  const id = generateImageID(
+    filename,
+    currentType.to ?? extname(filename).slice(1),
+  );
+  return id;
+}
+
+export function updateCssReferences(
+  cssContent: string,
+  fileNameMap: Map<string, string>,
+): string {
+  try {
+    return Array.from(fileNameMap).reduce(
+      (updatedCssContent, [oldFileName, newFileName]) =>
+        updatedCssContent.replace(new RegExp(oldFileName, 'g'), newFileName),
+      cssContent,
+    );
+  } catch (error) {
+    console.error('[unplugin-imagemin] Error processing CSS:', error);
+    return cssContent;
+  }
 }
