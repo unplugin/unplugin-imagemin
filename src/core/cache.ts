@@ -1,90 +1,59 @@
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
-
-import pkg from '../../package.json';
-
-const env = process.env.NODE_ENV || 'development';
-
-const root = process.cwd();
-const cacheDirectory = path.join(
-  root,
-  'node_modules',
-  '.cache',
-  'unplugin-imagemin',
-);
-const cacheIdentifier = `unplugin-imagemin:${pkg.version} ${env}`;
-const manifestKey = path.join(cacheDirectory, 'manifest.json');
+import fs from 'node:fs';
+import { dirname } from 'pathe';
 
 export default class Cache {
-  manifest: any;
+  private cacheDir;
 
-  outputPath: string;
+  private cacheMap: Record<string, { mtimeMs: number; targetExtname: string }> =
+    {};
 
-  constructor({ outputPath }) {
-    this.outputPath = outputPath;
-    this.manifest = getCacheManifest();
+  constructor(cacheDir: string) {
+    this.cacheDir = cacheDir;
+    this.cacheMap = this.getCachedAsset();
   }
 
-  get(chunk) {
-    const cacheKey = getCacheKey(chunk);
-    if (!this.hasManifest(cacheKey)) {
-      return null;
-    }
-    const originStats = fs.statSync(path.join(root, chunk.name));
-    const cacheStats = this.getManifest(cacheKey);
-    if (originStats.ctimeMs === cacheStats.ctimeMs) {
-      return fs.readFileSync(cacheKey);
-    }
-    return null;
+  existCacheDir() {
+    return fs.existsSync(this.cacheDir);
   }
 
-  set(chunk, data) {
-    const cacheKey = getCacheKey(chunk);
-    if (!existsSync(cacheDirectory)) {
-      mkdirSync(cacheDirectory);
-    }
-    fs.writeFileSync(
-      cacheKey,
-      data || fs.readFileSync(path.join(this.outputPath, chunk.fileName)),
+  hasCachedAsset(
+    assetPath: string,
+    file: { mtimeMs: number; targetExtname: string },
+  ) {
+    const cachedFile = this.cacheMap[assetPath];
+    return (
+      cachedFile &&
+      cachedFile.mtimeMs === file.mtimeMs &&
+      cachedFile.targetExtname === file.targetExtname
     );
-    this.setManifest(cacheKey, fs.statSync(path.join(root, chunk.name)));
   }
 
-  getManifest(key: string) {
-    return this.manifest[key];
+  getCachedAsset() {
+    if (!this.existCacheDir()) {
+      fs.mkdirSync(dirname(this.cacheDir), {
+        recursive: true,
+      });
+      return {};
+    }
+
+    return JSON.parse(fs.readFileSync(this.cacheDir, 'utf-8'));
   }
 
-  setManifest(key: string, value: object) {
-    this.manifest[key] = value;
-    fs.writeFileSync(manifestKey, JSON.stringify(this.manifest), 'utf-8');
+  setCachedAsset(
+    assetPath: string,
+    file: { mtimeMs: number; targetExtname: string },
+  ) {
+    const cachedAsset = this.getCachedAsset();
+
+    this.cacheMap[assetPath] = file;
+
+    fs.writeFileSync(
+      this.cacheDir,
+      JSON.stringify(
+        Object.assign(cachedAsset, {
+          [assetPath]: file,
+        }),
+      ),
+    );
   }
-
-  hasManifest(key: string) {
-    return Boolean(this.manifest[key]);
-  }
-}
-
-function getCacheManifest(): object {
-  if (!existsSync(manifestKey)) {
-    return {};
-  }
-  return JSON.parse(fs.readFileSync(manifestKey, 'utf-8')) || {};
-}
-
-function getCacheKey(chunk): string {
-  const hash = digest(`${cacheIdentifier}\n${chunk.name}`);
-  return path.join(cacheDirectory, `${hash}`);
-}
-
-function existsSync(existsPath: string): boolean {
-  return fs.existsSync(existsPath);
-}
-
-function mkdirSync(mkdirPath: string): void {
-  fs.mkdirSync(mkdirPath, { recursive: true });
-}
-
-function digest(str: string): string {
-  return crypto.createHash('md5').update(str).digest('hex');
 }
