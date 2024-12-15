@@ -4,7 +4,7 @@ import { Buffer } from 'node:buffer';
 import { cpus } from 'node:os';
 import { performance } from 'node:perf_hooks';
 
-import { basename, extname, join, resolve } from 'pathe';
+import { basename, extname, isAbsolute, join, relative, resolve } from 'pathe';
 import { createFilter } from '@rollup/pluginutils';
 import { optimize } from 'svgo';
 import chalk from 'chalk';
@@ -93,14 +93,28 @@ export default class Context {
     this.config = chooseConfig;
   }
 
+  private async resolveImagePath(id: string): Promise<string | null> {
+    if (this.config?.publicDir) {
+      const fileName = id.replace(/^\//, '');
+      const publicPath = resolve(this.config.publicDir, fileName);
+      try {
+        await fs.access(publicPath);
+        return publicPath;
+      } catch {
+        return null
+      }
+    }
+    return id;
+  }
+
   /**
    * @param id
    * @returns
    * load hooks
    * Parsing id returns custom content and then generates custom bundle
    */
-  loadBundleHook(id) {
-    const exportValue = this.generateDefaultValue(id);
+  async loadBundleHook(id) {
+    const exportValue = await this.generateDefaultValue(id);
     return exportValue;
   }
 
@@ -172,7 +186,6 @@ export default class Context {
         asset.source = updatedCss;
       }
     }
-
     if (this.imageModulePath.length) {
       const generateImageBundle = this.imageModulePath?.map(async (item) => {
         if (!isSvgFile(item)) {
@@ -203,11 +216,12 @@ export default class Context {
     });
   }
 
-  generateDefaultValue(id) {
+  async generateDefaultValue(id) {
     const parser = parseId(id);
-
-    this.imageModulePath.push(parser.path);
-    const generateSrc = getBundleImageSrc(parser.path, this.config.options);
+    const absolutePath = await this.resolveImagePath(parser.path);
+    this.imageModulePath.push(absolutePath);
+    this.imageModulePath.filter(item => Boolean(item));
+    const generateSrc = getBundleImageSrc(absolutePath, this.config.options);
     const base = basename(parser.path, extname(parser.path));
 
     const generatePath = join(
@@ -235,7 +249,6 @@ export default class Context {
     const imageFile = await fs.readFile(item);
 
     const image = imagePool.ingestImage(imageFile);
-
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const baseDir = basename(item, extname(item));
     const imageName = `${baseDir}-${generateSrc}`;
