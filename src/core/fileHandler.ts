@@ -1,2 +1,1 @@
-export default class FileHandler {
-}
+export default class FileHandler {}

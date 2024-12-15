@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import type { Ora } from 'ora';
 import ora from 'ora';
-import { pluginTitle } from './log';
 
 const gradientColors = [
   `#c7ecee`,
@@ -46,9 +45,7 @@ function getGradientAnimFrames() {
     frames.push(
       referenceGradient
         .slice(start, end)
-        .map((g) => {
-          return chalk.bgHex(g)(' ');
-        })
+        .map((g) => chalk.bgHex(g)(' '))
         .join(''),
     );
   }
