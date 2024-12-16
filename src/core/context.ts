@@ -43,6 +43,8 @@ export default class Context {
 
   imageModulePath: string[] = [];
 
+  imagePool: SquooshPool.ImagePool | undefined;
+
   files: string[] = [];
 
   assetPath: string[] = [];
@@ -112,7 +114,7 @@ export default class Context {
         await fs.access(publicPath);
         return publicPath;
       } catch {
-        return null;
+        return id;
       }
     }
     return id;
@@ -135,82 +137,83 @@ export default class Context {
    */
   async generateBundleHook(bundler) {
     const fileNameMap = new Map<string, string>();
-    const imagePool = new SquooshPool.ImagePool(cpus().length);
+    this.imagePool = new SquooshPool.ImagePool(cpus().length);
 
     this.startGenerateLogger();
     const spinner = await loadWithRocketGradient('');
     const tasks = [];
 
-    for (const [fileName, asset] of Object.entries(bundler)) {
-      if (asset.type === 'asset' && extImageRE.test(fileName)) {
-        const path = resolve(this.config.root, asset.originalFileName);
+    // for (const [fileName, asset] of Object.entries(bundler)) {
+    //   if (asset.type === 'asset' && extImageRE.test(fileName)) {
+    //     const path = resolve(this.config.root, asset.originalFileName);
 
-        const mtimeMs = (await fs.stat(path)).mtimeMs;
-        const ext = extname(path).slice(1) ?? '';
-        const userRes = this.config.options.conversion.find((i) =>
-          `${i.from}`.endsWith(ext),
-        );
-        if (
-          this.config?.option?.cache &&
-          this.cache!.hasCachedAsset(path, {
-            mtimeMs,
-            targetExtname: userRes.to,
-          })
-        ) {
-          // eslint-disable-next-line no-continue
-          continue;
-        }
+    //     const mtimeMs = (await fs.stat(path)).mtimeMs;
+    //     const ext = extname(path).slice(1) ?? '';
+    //     const userRes = this.config.options.conversion.find((i) =>
+    //       `${i.from}`.endsWith(ext),
+    //     );
+    //     if (
+    //       this.config?.option?.cache &&
+    //       this.cache!.hasCachedAsset(path, {
+    //         mtimeMs,
+    //         targetExtname: userRes.to,
+    //       })
+    //     ) {
+    //       // eslint-disable-next-line no-continue
+    //       continue;
+    //     }
 
-        const task = async () => {
-          if (!isSvgFile(path)) {
-            return {
-              originFileName: asset.fileName,
-              result: await this.processRasterImage(imagePool, path),
-            };
-          }
-          return {
-            originFileName: asset.fileName,
-            result: await this.processSvg(path),
-          };
-        };
+    //     const task = async () => {
+    //       if (!isSvgFile(path)) {
+    //         return {
+    //           originFileName: asset.fileName,
+    //           result: await this.processRasterImage(path),
+    //         };
+    //       }
+    //       return {
+    //         originFileName: asset.fileName,
+    //         result: await this.processSvg(path),
+    //       };
+    //     };
 
-        tasks.push(task());
-      }
-    }
-    const baseResult = await Promise.all(tasks);
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    baseResult.forEach(({ originFileName, result }) => {
-      if (result) {
-        fileNameMap.set(originFileName, result.fileName);
-      }
-    });
+    //     tasks.push(task());
+    //   }
+    // }
+    // const baseResult = await Promise.all(tasks);
+    // // biome-ignore lint/complexity/noForEach: <explanation>
+    // baseResult.forEach(({ originFileName, result }) => {
+    //   if (result) {
+    //     fileNameMap.set(originFileName, result.fileName);
+    //   }
+    // });
 
-    let taskIndex = 0;
-    for (const [fileName, asset] of Object.entries(bundler)) {
-      if (asset.type === 'asset' && extImageRE.test(fileName)) {
-        const result = baseResult[taskIndex++];
-        if (result) {
-          asset.fileName = result.result.fileName;
-          asset.source = result.result.source;
-        }
-      }
-    }
+    // let taskIndex = 0;
+    // for (const [fileName, asset] of Object.entries(bundler)) {
+    //   if (asset.type === 'asset' && extImageRE.test(fileName)) {
+    //     const result = baseResult[taskIndex++];
+    //     if (result) {
+    //       asset.fileName = result.result.fileName;
+    //       asset.source = result.result.source;
+    //     }
+    //   }
+    // }
 
-    for (const [fileName, asset] of Object.entries(bundler)) {
-      if (
-        asset.type === 'asset' &&
-        fileName.endsWith('.css') &&
-        fileNameMap.size
-      ) {
-        const cssContent = asset.source.toString();
-        const updatedCss = updateCssReferences(cssContent, fileNameMap);
-        asset.source = updatedCss;
-      }
-    }
+    // for (const [fileName, asset] of Object.entries(bundler)) {
+    //   if (
+    //     asset.type === 'asset' &&
+    //     fileName.endsWith('.css') &&
+    //     fileNameMap.size
+    //   ) {
+    //     const cssContent = asset.source.toString();
+    //     const updatedCss = updateCssReferences(cssContent, fileNameMap);
+    //     asset.source = updatedCss;
+    //   }
+    // }
+
     if (this.imageModulePath.length) {
       const generateImageBundle = this.imageModulePath?.map(async (item) => {
         if (!isSvgFile(item)) {
-          return await this.processRasterImage(imagePool, item);
+          return await this.processRasterImage(item);
         }
         // transform svg
         return this.processSvg(item);
@@ -220,7 +223,7 @@ export default class Context {
       this.generateBundleFile(bundler, result);
       logger(pluginTitle('✨'), chalk.yellow('Image conversion completed!'));
     }
-    imagePool?.close();
+    this.imagePool?.close();
     spinner.stop();
   }
 
@@ -253,7 +256,8 @@ export default class Context {
   }
 
   // squoosh
-  async processRasterImage(imagePool, item) {
+  async processRasterImage(item) {
+    const stats = await fs.lstat(item);
     const start = performance.now();
     const size = await fs.lstat(item);
     const oldSize = size.size;
@@ -262,6 +266,24 @@ export default class Context {
     const userRes = this.config.options.conversion.find((i) =>
       `${i.from}`.endsWith(ext),
     );
+
+    if (this.config?.options?.cache) {
+      const cachedInfo = this.cache.get<any>(item);
+
+      if (
+        cachedInfo &&
+        this.cache.hasCachedAsset(item, {
+          mtimeMs: stats.mtimeMs,
+          targetExtname: extname(cachedInfo.fileName).slice(1),
+        })
+      ) {
+        logger(
+          chalk.bold(chalk.green('✨ Using cached of')),
+          chalk.bold(chalk.cyan(basename(cachedInfo.fileName))),
+        );
+        return cachedInfo;
+      }
+    }
     // const itemConversion = this.config.isTurn && userRes?.from === ext;
     const type =
       this.config.isTurn && userRes?.to
@@ -269,7 +291,7 @@ export default class Context {
         : encodeMapBack.get(ext);
     const imageFile = await fs.readFile(item);
 
-    const image = imagePool.ingestImage(imageFile);
+    const image = this.imagePool.ingestImage(imageFile);
     const generateSrc = getBundleImageSrc(item, this.config.options);
     const baseDir = basename(item, extname(item));
     const imageName = `${baseDir}-${generateSrc}`;
@@ -283,12 +305,11 @@ export default class Context {
       [type!]: defaultSquooshOptions[type!],
     };
 
-    console.log(currentType);
-
     try {
       await image.encode(currentType);
     } catch (error) {
       logger(pluginTitle('(!)'), chalk.yellow(error));
+      return;
     }
     const { base, assetsDir, outDir } = this.config;
 
@@ -305,10 +326,14 @@ export default class Context {
     };
 
     if (this.config?.options?.cache) {
-      this.cache!.setCachedAsset(item, {
-        mtimeMs: (await fs.stat(item)).mtimeMs,
-        targetExtname: extname(imageName).slice(1),
-      });
+      this.cache.setCachedAsset(
+        item,
+        {
+          mtimeMs: stats.mtimeMs,
+          targetExtname: extname(source.fileName).slice(1),
+        },
+        source,
+      );
     }
 
     compressSuccess(
@@ -398,10 +423,10 @@ export function resolveOptions(
   const keys = Object.keys(transformType);
   const res = keys.map(
     (item) =>
-      ({
-        ...options[item],
-        ...transformType[item],
-      } as ResolvedOptions),
+    ({
+      ...options[item],
+      ...transformType[item],
+    } as ResolvedOptions),
   );
   const obj = {};
   keys.forEach((item, index) => {

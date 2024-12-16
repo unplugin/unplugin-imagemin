@@ -39,9 +39,14 @@ export function compressSuccess(filePath, newSize, oldSize, start) {
 }
 
 export function pluginTitle(emoji) {
-  return chalk.blue(`[unplugin-imagemin] ${emoji}`);
+  return chalk.bold(chalk.cyan(`[unplugin-imagemin] ${emoji}`));
 }
 
 export function logger(...args) {
-  console.log(...args);
+  if (args[0] === '\n') {
+    console.log(); // 先打印空行
+    console.log(args.slice(1).join(' ')); // 打印剩余内容，不用 trim()
+  } else {
+    console.log(args.join(' '));
+  }
 }

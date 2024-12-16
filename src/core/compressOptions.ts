@@ -266,7 +266,7 @@ export const sharpOptions: any = {
 
 export const resolveDefaultOptions = {
   conversion: [],
-  cache: false,
+  cache: true,
   compress: {
     jpg: {
       quality: 70,

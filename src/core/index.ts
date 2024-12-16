@@ -18,7 +18,6 @@ export const plugin = createUnplugin<PluginOptions | undefined, false>(
         ctx.handleResolveOptionHook(resolveOptions);
       },
       loadInclude(id) {
-        // TODO cache
         return extImageRE.test(id);
       },
       async load(id) {
