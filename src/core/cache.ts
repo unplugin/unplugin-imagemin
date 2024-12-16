@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { dirname } from 'pathe';
+import { error } from './error';
 
 export default class Cache {
   private cacheDir;
@@ -36,7 +37,18 @@ export default class Cache {
       return {};
     }
 
-    return JSON.parse(fs.readFileSync(this.cacheDir, 'utf-8'));
+    const stat = fs.statSync(this.cacheDir);
+    if (stat.isDirectory()) {
+      error(`Resolved cacheDir '${this.cacheDir}' is a directory`);
+      return;
+    }
+
+    const content = fs.readFileSync(this.cacheDir, 'utf-8');
+    try {
+      return JSON.parse(content);
+    } catch (err) {
+      error(`'${this.cacheDir}' isn't a valid JSON file`);
+    }
   }
 
   setCachedAsset(

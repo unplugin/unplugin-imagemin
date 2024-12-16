@@ -73,15 +73,17 @@ export default class Context {
     } = userConfig;
     const cwd = process.cwd();
     const isBuild = command === 'build';
-    const cacheDir = join(
-      root,
-      'node_modules',
-      options.cacheDir ?? '.cache',
-      'unplugin-imagemin',
-      '.unplugin-imagemin-cache',
-    );
     const isTurn = isTurnImageType(options.conversion);
     const outputPath = resolve(root, outDir);
+    const cacheDir =
+      options.cacheDir ??
+      join(
+        root,
+        'node_modules',
+        '.cache',
+        'unplugin-imagemin',
+        '.unplugin-imagemin-cache',
+      );
     const chooseConfig = {
       base,
       command,
@@ -99,7 +101,7 @@ export default class Context {
     this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
     this.config = chooseConfig;
 
-    this.cache = new Cache(chooseConfig.cacheDir);
+    this.cache = new Cache(cacheDir);
   }
 
   private async resolveImagePath(id: string): Promise<string | null> {
@@ -208,10 +210,10 @@ export default class Context {
     if (this.imageModulePath.length) {
       const generateImageBundle = this.imageModulePath?.map(async (item) => {
         if (!isSvgFile(item)) {
-          return await this.generateSquooshBundle(imagePool, item);
+          return await this.processRasterImage(imagePool, item);
         }
         // transform svg
-        return this.generateSvgBundle(item);
+        return this.processSvg(item);
       });
       const result = await Promise.all(generateImageBundle);
 
@@ -392,7 +394,7 @@ export function resolveOptions(
       ({
         ...options[item],
         ...transformType[item],
-      }) as ResolvedOptions,
+      } as ResolvedOptions),
   );
   const obj = {};
   keys.forEach((item, index) => {
