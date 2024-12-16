@@ -75,8 +75,8 @@ export default class Context {
     const isBuild = command === 'build';
     const isTurn = isTurnImageType(options.conversion);
     const outputPath = resolve(root, outDir);
-    const cacheDir =
-      options.cacheDir ??
+    const cacheLocation =
+      options.cacheLocation ??
       join(
         root,
         'node_modules',
@@ -93,7 +93,7 @@ export default class Context {
       assetsDir,
       options,
       isBuild,
-      cacheDir,
+      cacheLocation,
       outputPath,
       isTurn,
       publicDir,
@@ -101,7 +101,7 @@ export default class Context {
     this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
     this.config = chooseConfig;
 
-    this.cache = new Cache(cacheDir);
+    this.cache = new Cache(cacheLocation);
   }
 
   private async resolveImagePath(id: string): Promise<string | null> {

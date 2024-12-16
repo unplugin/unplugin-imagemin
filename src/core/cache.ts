@@ -3,18 +3,18 @@ import { dirname } from 'pathe';
 import { error } from './error';
 
 export default class Cache {
-  private cacheDir;
+  private cacheLocation;
 
   private cacheMap: Record<string, { mtimeMs: number; targetExtname: string }> =
     {};
 
-  constructor(cacheDir: string) {
-    this.cacheDir = cacheDir;
+  constructor(cacheLocation: string) {
+    this.cacheLocation = cacheLocation;
     this.cacheMap = this.getCachedAsset();
   }
 
-  existCacheDir() {
-    return fs.existsSync(this.cacheDir);
+  existCacheLocation() {
+    return fs.existsSync(this.cacheLocation);
   }
 
   hasCachedAsset(
@@ -30,24 +30,24 @@ export default class Cache {
   }
 
   getCachedAsset() {
-    if (!this.existCacheDir()) {
-      fs.mkdirSync(dirname(this.cacheDir), {
+    if (!this.existCacheLocation()) {
+      fs.mkdirSync(dirname(this.cacheLocation), {
         recursive: true,
       });
       return {};
     }
 
-    const stat = fs.statSync(this.cacheDir);
+    const stat = fs.statSync(this.cacheLocation);
     if (stat.isDirectory()) {
-      error(`Resolved cacheDir '${this.cacheDir}' is a directory`);
+      error(`Resolved cacheLocation '${this.cacheLocation}' is a directory`);
       return;
     }
 
-    const content = fs.readFileSync(this.cacheDir, 'utf-8');
+    const content = fs.readFileSync(this.cacheLocation, 'utf-8');
     try {
       return JSON.parse(content);
     } catch (err) {
-      error(`'${this.cacheDir}' isn't a valid JSON file`);
+      error(`'${this.cacheLocation}' isn't a valid JSON file`);
     }
   }
 
@@ -60,7 +60,7 @@ export default class Cache {
     this.cacheMap[assetPath] = file;
 
     fs.writeFileSync(
-      this.cacheDir,
+      this.cacheLocation,
       JSON.stringify(
         Object.assign(cachedAsset, {
           [assetPath]: file,
