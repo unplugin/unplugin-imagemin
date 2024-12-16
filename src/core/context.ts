@@ -373,6 +373,13 @@ export default class Context {
       type: 'asset',
     };
 
+    if (this.config?.options?.cache) {
+      this.cache!.setCachedAsset(item, {
+        mtimeMs: (await fs.stat(item)).mtimeMs,
+        targetExtname: extname(imageName).slice(1),
+      });
+    }
+
     compressSuccess(
       join(configBase, outDir, svgResult.fileName),
       newSize,
