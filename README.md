@@ -11,12 +11,10 @@
 - [x] Support all node versions by re-modifying the wasm syntax of squoosh
 - [x] remove sharp deps
 - [x] support compress publicDir images
-- [ ] Type options
-- [ ] start dev action
-- [ ] add query search
 - [x] support css compress image
 - [x] Supports full cache mode
 - [x] Support Node 22 and more
+- [ ] Type options
 - [ ] Supports farm, rsbuild, webpack, and other frameworks
 
 
