@@ -15,7 +15,7 @@
 - [ ] start dev action
 - [ ] add query search
 - [x] support css compress image
-- [ ] Supports full cache mode
+- [x] Supports full cache mode
 - [x] Support Node 22 and more
 - [ ] Supports farm, rsbuild, webpack, and other frameworks
 
