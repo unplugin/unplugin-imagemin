@@ -10,7 +10,9 @@ import { isSvgFile, getBundleImageSrc } from './Utils';
 
 export default class ImageProcessor {
   private imagePool: ImagePool;
+
   private options: ResolvedOptions;
+
   private cache: Cache;
 
   constructor(options: ResolvedOptions, cache: Cache) {
@@ -24,12 +26,13 @@ export default class ImageProcessor {
   //  * @param filePath 图像文件的路径
   //  * @returns 处理后的图像信息
   //  */
-  async processImage(filePath: string): Promise<{ fileName: string; source: Buffer | string }> {
+  async processImage(
+    filePath: string,
+  ): Promise<{ fileName: string; source: Buffer | string }> {
     if (isSvgFile(filePath)) {
       return this.processSvg(filePath);
-    } else {
-      return this.processRasterImage(filePath);
     }
+    return this.processRasterImage(filePath);
   }
 
   /**
@@ -37,17 +40,22 @@ export default class ImageProcessor {
    * @param filePath 图像文件的路径
    * @returns 处理后的图像信息
    */
-  private async processRasterImage(filePath: string): Promise<{ fileName: string; source: Buffer }> {
+  private async processRasterImage(
+    filePath: string,
+  ): Promise<{ fileName: string; source: Buffer }> {
     const startTime = performance.now();
     const { ext } = this.getFileInfo(filePath);
 
     const userConversion = this.options.conversion.find(
-      (item) => item.from === ext
+      (item) => item.from === ext,
     );
 
     const targetType = userConversion?.to ?? ext;
     const imageId = getBundleImageSrc(filePath, this.options);
-    const imageName = `${basename(filePath, extname(filePath))}-${imageId}.${targetType}`;
+    const imageName = `${basename(
+      filePath,
+      extname(filePath),
+    )}-${imageId}.${targetType}`;
     const outputFilePath = join(this.options.assetsDir, imageName);
 
     // const fileStat = await fs.stat(filePath);
@@ -93,7 +101,9 @@ export default class ImageProcessor {
     };
   }
 
-  private async processSvg(filePath: string): Promise<{ fileName: string; source: string }> {
+  private async processSvg(
+    filePath: string,
+  ): Promise<{ fileName: string; source: string }> {
     const startTime = performance.now();
 
     const svgContent = await fs.readFile(filePath, 'utf8');
@@ -115,17 +125,18 @@ export default class ImageProcessor {
 
       const timeSpent = (performance.now() - startTime).toFixed(2);
       Logger.success(
-        `Optimized SVG ${filePath} [${(oldSize / 1024).toFixed(2)} KB -> ${(newSize / 1024).toFixed(2)} KB] in ${timeSpent} ms`
+        `Optimized SVG ${filePath} [${(oldSize / 1024).toFixed(2)} KB -> ${(
+          newSize / 1024
+        ).toFixed(2)} KB] in ${timeSpent} ms`,
       );
 
       return {
         fileName: outputFilePath,
         source: optimizedSvg,
       };
-    } else {
-      // log(`Error optimizing SVG ${filePath}`, result.error as Error);
-      throw new Error(`Failed to optimize SVG: ${result.error}`);
     }
+    // log(`Error optimizing SVG ${filePath}`, result.error as Error);
+    throw new Error(`Failed to optimize SVG: ${result.error}`);
   }
 
   private getFileInfo(filePath: string): { base: string; ext: string } {

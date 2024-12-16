@@ -110,7 +110,7 @@ export default class Context {
         await fs.access(publicPath);
         return publicPath;
       } catch {
-        return null
+        return null;
       }
     }
     return id;
@@ -239,7 +239,7 @@ export default class Context {
     const parser = parseId(id);
     const absolutePath = await this.resolveImagePath(parser.path);
     this.imageModulePath.push(absolutePath);
-    this.imageModulePath.filter(item => Boolean(item));
+    this.imageModulePath.filter((item) => Boolean(item));
     const generateSrc = getBundleImageSrc(absolutePath, this.config.options);
     const base = basename(parser.path, extname(parser.path));
 
@@ -346,7 +346,7 @@ export default class Context {
   }
 
   async processSvg(item) {
-    const { assetsDir, outDir,base: configBase } = this.config;
+    const { assetsDir, outDir, base: configBase } = this.config;
     const svgCode = await fs.readFile(item, 'utf8');
 
     const result = optimize(svgCode, {

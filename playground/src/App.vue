@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <img style="width: 1200px" src="/test.jpg" alt="">
+    <img style="width: 1200px" src="/test.jpg" alt="" />
     <!-- <img src="/img/a.png" alt="" /> -->
     <!-- <img src="/img/b.png" alt="" /> -->
     <!-- <img src="/img/c.png" alt="" /> -->

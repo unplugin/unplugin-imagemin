@@ -203,9 +203,8 @@ function devalue(value) {
     return `(function(${params.join(',')}){${statements.join(
       ';',
     )}}(${values.join(',')}))`;
-  } else {
-    return str;
   }
+  return str;
 }
 function getName(num) {
   let name = '';
