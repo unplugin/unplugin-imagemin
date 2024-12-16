@@ -145,11 +145,10 @@ export interface PluginOptions {
    */
   cache?: boolean;
   /**
-   * @description Cache folder directory read
-   * @default node_modules/unplugin-imagemin/cache
-   *
+   * @description Path to the cache file location
+   * @default ./node_modules/.cache/unplugin-imagemin/.unplugin-imagemin-cache
    */
-  cacheDir?: string;
+  cacheLocation?: string;
   /**
    * @description Compilation attribute
    * @default CompressTypeOptions

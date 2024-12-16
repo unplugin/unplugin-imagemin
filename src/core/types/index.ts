@@ -31,7 +31,7 @@ export interface PluginOptions {
    * @default node_modules/unplugin-imagemin/cache
    *
    */
-  cacheDir?: string;
+  cacheLocation?: string;
   /**
    * @description Compilation attribute
    * @default CompressTypeOptions
@@ -40,7 +40,7 @@ export interface PluginOptions {
 }
 
 export type ResolvedOptions = PluginOptions &
-  Required<Pick<PluginOptions, 'compress' | 'cacheDir' | 'cache'>>;
+  Required<Pick<PluginOptions, 'compress' | 'cacheLocation' | 'cache'>>;
 
 export interface ImageMinifyOptions {
   /**
