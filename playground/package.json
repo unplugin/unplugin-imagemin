@@ -19,7 +19,7 @@
     "@vitejs/plugin-vue": "^5.0.0",
     "typescript": "^5.0.0",
     "unplugin-imagemin": "workspace:*",
-    "vite": "6.0.3",
+    "vite": "6.0.4",
     "vue-tsc": "2.1.10"
   }
 }
