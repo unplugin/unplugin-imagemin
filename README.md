@@ -56,7 +56,7 @@ Unplugin-imagemin supports two compression modes
 
 ## 🍰 Effect display
 
-https://github.com/unplugin/unplugin-imagemin/assets/66500121/49169b22-7f5b-4cdc-b023-302003b15522
+![](./example.mp4)
 
 ## 📦 Installation
 

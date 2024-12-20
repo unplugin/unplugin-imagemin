@@ -1,22 +1,15 @@
 <script setup lang="ts">
-// import Img from './assets/image/wallhaven-2ykjxm.png'
+import Img from './assets/image/wallhaven-2ykjxm.png'
 </script>
 
 <template>
   <div>
-    <!-- <img style="width: 1200px" src="/test.jpg" alt="" /> -->
-    <!-- <img src="/img/a.png" alt="" /> -->
-    <!-- <img src="/img/b.png" alt="" /> -->
-    <!-- <img src="/img/c.png" alt="" /> -->
+    <img style="width: 1200px" src="./assets/image/wallhaven-kxy326.png" alt="" />
     <img style="width: 1200px" src="./assets/image/wallhaven-x61xdo.jpg" alt="" />
-    <!-- <img :src="Img" alt=""> -->
-    <!-- <div class="a"></div> -->
-    <!-- <div class="b"></div> -->
-    <!-- <img src="./assets/shuimo.svg" alt="" /> -->
+    <img :src="Img" alt="">
     <router-link to="/home">Go to Home</router-link>
     <router-link to="/about">Go to About</router-link>
     <RouterView />
-    <!-- <img src="./assets/vuetify.svg" alt="" /> -->
   </div>
 </template>
 

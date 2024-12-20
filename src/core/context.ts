@@ -209,7 +209,6 @@ export default class Context {
     //     asset.source = updatedCss;
     //   }
     // }
-
     if (this.imageModulePath.length) {
       const generateImageBundle = this.imageModulePath?.map(async (item) => {
         if (!isSvgFile(item)) {
@@ -473,5 +472,12 @@ export async function transformCode(
       },
     );
     await fs.writeFile(finallyPath, item[sourceCode]);
+  });
+}
+
+
+async function sleep(time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
   });
 }
