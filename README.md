@@ -54,10 +54,6 @@ Unplugin-imagemin supports two compression modes
 
 [Svgo](https://github.com/svg/svgo) Support compression of pictures in svg format
 
-## 🍰 Effect display
-
-![](./example.mp4)
-
 ## 📦 Installation
 
 ```bash
