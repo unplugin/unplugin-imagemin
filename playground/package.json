@@ -20,6 +20,6 @@
     "typescript": "^5.0.0",
     "unplugin-imagemin": "workspace:*",
     "vite": "6.0.6",
-    "vue-tsc": "2.1.10"
+    "vue-tsc": "2.2.0"
   }
 }
