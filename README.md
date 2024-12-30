@@ -47,7 +47,7 @@ Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer ma
 
 ## Squoosh && Svgo
 
-Unplugin-imagemin supports two compression modes
+Unplugin-imagemin supports two compression tools
 
 [Squoosh](https://github.com/GoogleChromeLabs/squoosh) is an image compression web app that reduces image sizes through numerous formats.
 **Squoosh** with rust & wasm
