@@ -2,12 +2,10 @@
 
 [![NPM version](https://img.shields.io/npm/v/unplugin-imagemin?color=a1b858&label=)](https://www.npmjs.com/package/unplugin-imagemin)
 
-
-
-
 > [!IMPORTANT]
 > **Tips:**
 > `1.0 goals` unplugin-imagemin is preparing to release version 1.0, which will be released after achieving the following goals
+
 - [x] Support all node versions by re-modifying the wasm syntax of squoosh
 - [x] remove sharp deps
 - [x] support compress publicDir images
@@ -17,11 +15,9 @@
 - [ ] Type options
 - [ ] Supports farm, rsbuild, webpack, and other frameworks
 
-
 > [!WARNING]
 New features and stability, compatibility and performance features are constantly being updated
 Recommended to use the latest version  `pnpm add unplugin-imagemin@latest -D`
-
 
 > [!WARNING]
 Since Google [squoosh](https://github.com/GoogleChromeLabs/squoosh) no longer maintains the node direction, This fock came out and revised some compatibility issues. Details [squoosh-next](https://github.com/ErKeLost/squoosh-node-latest)
@@ -60,7 +56,7 @@ Unplugin-imagemin supports two compression tools
 pnpm add unplugin-imagemin@latest -D
 ```
 
-#### support vite and rollup.
+#### support vite and rollup
 
 <details>
 <summary>Basic</summary><br>
@@ -120,7 +116,7 @@ export default defineConfig({
 
 ## 🌸 DefaultConfiguration
 
-Squoosh DefaultConfiguration 
+Squoosh DefaultConfiguration
 
 DefaultConfiguration see [DefaultConfiguration](https://github.com/ErKeLost/unplugin-imagemin/blob/main/src/core/compressOptions.ts)
 
