@@ -80,12 +80,13 @@ export default defineConfig({
 iimport { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
-import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     imagemin({
+      // default true
+      cache: false,
       // Default configuration options for compressing different pictures
       compress: {
         jpg: {
