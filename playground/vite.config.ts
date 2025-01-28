@@ -1,8 +1,7 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import imagemin from 'unplugin-imagemin/vite';
-import path from 'path';
-// https://vitejs.dev/config/
+import path from 'node:path';
 export default defineConfig({
   // base: '/pathe/',
   resolve: {
@@ -18,5 +17,7 @@ export default defineConfig({
     port: 8451,
   },
   // publicDir: 'base/public',
-  plugins: [vue(), imagemin()],
+  plugins: [vue(), imagemin({
+    cache: false,
+  })],
 });

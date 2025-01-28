@@ -1,87 +1,22 @@
 import fs from 'node:fs';
 import { dirname } from 'pathe';
-import { error } from './error';
+import type { CacheMetadata, CachedAsset } from './types';
 
-// export default class Cache {
-//   private cacheLocation;
-
-//   private cacheMap: Record<string, { mtimeMs: number; targetExtname: string }> =
-//     {};
-
-//   constructor(cacheLocation: string) {
-//     this.cacheLocation = cacheLocation;
-//     this.cacheMap = this.getCachedAsset();
-//   }
-
-//   existCacheLocation() {
-//     return fs.existsSync(this.cacheLocation);
-//   }
-
-//   hasCachedAsset(
-//     assetPath: string,
-//     file: { mtimeMs: number; targetExtname: string },
-//   ) {
-//     const cachedFile = this.cacheMap[assetPath];
-//     return (
-//       cachedFile &&
-//       cachedFile.mtimeMs === file.mtimeMs &&
-//       cachedFile.targetExtname === file.targetExtname
-//     );
-//   }
-
-//   getCachedAsset() {
-//     if (!this.existCacheLocation()) {
-//       fs.mkdirSync(dirname(this.cacheLocation), {
-//         recursive: true,
-//       });
-//       return {};
-//     }
-
-//     const stat = fs.statSync(this.cacheLocation);
-//     if (stat.isDirectory()) {
-//       error(`Resolved cacheLocation '${this.cacheLocation}' is a directory`);
-//       return;
-//     }
-
-//     const content = fs.readFileSync(this.cacheLocation, 'utf-8');
-
-//     try {
-//       return JSON.parse(content);
-//     } catch (err) {
-//       error(`'${this.cacheLocation}' isn't a valid JSON file`);
-//     }
-//   }
-
-//   setCachedAsset(
-//     assetPath: string,
-//     file: { mtimeMs: number; targetExtname: string },
-//   ) {
-//     const cachedAsset = this.getCachedAsset();
-
-//     this.cacheMap[assetPath] = file;
-
-//     fs.writeFileSync(
-//       this.cacheLocation,
-//       JSON.stringify(
-//         Object.assign(cachedAsset, {
-//           [assetPath]: file,
-//         }),
-//       ),
-//     );
-//   }
-// }
-
-interface CacheEntry {
+interface CacheEntry<T> {
   mtimeMs: number;
   targetExtname: string;
-  data: any;
+  data: T;
+}
+
+interface JsonValue {
+  _type?: 'Uint8Array';
+  data?: number[];
+  [key: string]: unknown;
 }
 
 export default class Cache {
   private cacheLocation: string;
-
-  private cacheMap: Map<string, CacheEntry>;
-
+  private cacheMap: Map<string, CacheEntry<CachedAsset>>;
   private isDirty = false;
 
   constructor(cacheLocation: string) {
@@ -107,32 +42,29 @@ export default class Cache {
     }
   }
 
-  private reviver(key: string, value: any): any {
+  private reviver(_key: string, value: JsonValue): unknown {
     if (value && value._type === 'Uint8Array' && Array.isArray(value.data)) {
       return new Uint8Array(value.data);
     }
     return value;
   }
 
-  private replacer(key: string, value: any): any {
+  private replacer(_key: string, value: unknown): JsonValue {
     if (value instanceof Uint8Array || Buffer.isBuffer(value)) {
       return {
         _type: 'Uint8Array',
         data: Array.from(value),
       };
     }
-    return value;
+    return value as JsonValue;
   }
 
-  public get<T>(key: string): T | null {
+  public get<T extends CachedAsset>(key: string): T | null {
     const entry = this.cacheMap.get(key);
     return entry ? (entry.data as T) : null;
   }
 
-  public hasCachedAsset(
-    key: string,
-    file: { mtimeMs: number; targetExtname: string },
-  ): boolean {
+  public hasCachedAsset(key: string, file: CacheMetadata): boolean {
     const entry = this.cacheMap.get(key);
     if (!entry) return false;
 
@@ -142,12 +74,12 @@ export default class Cache {
     );
   }
 
-  public setCachedAsset<T>(
+  public setCachedAsset(
     key: string,
-    file: { mtimeMs: number; targetExtname: string },
-    data: T,
+    file: CacheMetadata,
+    data: CachedAsset,
   ): void {
-    const entry: CacheEntry = {
+    const entry: CacheEntry<CachedAsset> = {
       mtimeMs: file.mtimeMs,
       targetExtname: file.targetExtname,
       data,
@@ -165,7 +97,7 @@ export default class Cache {
       const data = Object.fromEntries(this.cacheMap);
       fs.writeFileSync(
         this.cacheLocation,
-        JSON.stringify(data, this.replacer, 2),
+        JSON.stringify(data, this.replacer as unknown as (key: string, value: unknown) => unknown, 2),
       );
       this.isDirty = false;
     } catch (err) {

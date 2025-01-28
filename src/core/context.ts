@@ -1,5 +1,3 @@
-/* eslint-disable no-return-await */
-/* eslint-disable no-await-in-loop */
 import fs from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import { cpus } from 'node:os';
@@ -36,10 +34,19 @@ export const cssUrlRE =
   /(?<=^|[^\w\-\u0080-\uffff])url\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
 
 export const extImageRE = /\.(png|jpeg|jpg|webp|wb2|avif|svg)$/i;
-export default class Context {
-  config: ResolvedOptions | undefined;
 
-  mergeConfig: ResolvedOptions | undefined;
+interface ProcessedResult {
+  fileName: string;
+  name: string;
+  source: Buffer | string;
+  isAsset: boolean;
+  type: 'asset';
+}
+
+export default class Context {
+  config!: ResolvedOptions;
+
+  mergeConfig!: ResolvedOptions;
 
   imageModulePath: string[] = [];
 
@@ -58,7 +65,7 @@ export default class Context {
 
   /**
    * @param ResolvedConfig
-   * configResolved hook  解析用户参数以及vite参数
+   * configResolved hook  
    * Parsing user parameters and vite parameters
    */
 
@@ -93,13 +100,17 @@ export default class Context {
       cwd,
       outDir,
       assetsDir,
-      options,
+      options: {
+        ...options,
+        compress: options.compress || {},
+        cache: options.cache ?? true,
+      },
       isBuild,
       cacheLocation,
       outputPath,
       isTurn,
       publicDir,
-    };
+    } as unknown as ResolvedOptions;
     this.mergeConfig = resolveOptions(defaultOptions, chooseConfig);
     this.config = chooseConfig;
 
@@ -143,72 +154,80 @@ export default class Context {
     const spinner = await loadWithRocketGradient('');
     const tasks = [];
 
-    // for (const [fileName, asset] of Object.entries(bundler)) {
-    //   if (asset.type === 'asset' && extImageRE.test(fileName)) {
-    //     const path = resolve(this.config.root, asset.originalFileName);
+    for (const [fileName, asset] of Object.entries(bundler)) {
+      if (asset.type === 'asset' && extImageRE.test(fileName)) {
+        const path = resolve(this.config.root, asset.originalFileName);
 
-    //     const mtimeMs = (await fs.stat(path)).mtimeMs;
-    //     const ext = extname(path).slice(1) ?? '';
-    //     const userRes = this.config.options.conversion.find((i) =>
-    //       `${i.from}`.endsWith(ext),
-    //     );
-    //     if (
-    //       this.config?.option?.cache &&
-    //       this.cache!.hasCachedAsset(path, {
-    //         mtimeMs,
-    //         targetExtname: userRes.to,
-    //       })
-    //     ) {
-    //       // eslint-disable-next-line no-continue
-    //       continue;
-    //     }
+        const mtimeMs = (await fs.stat(path)).mtimeMs;
+        const ext = extname(path).slice(1) ?? '';
+        const userRes = this.config.options.conversion.find((i) =>
+          `${i.from}`.endsWith(ext),
+        );
 
-    //     const task = async () => {
-    //       if (!isSvgFile(path)) {
-    //         return {
-    //           originFileName: asset.fileName,
-    //           result: await this.processRasterImage(path),
-    //         };
-    //       }
-    //       return {
-    //         originFileName: asset.fileName,
-    //         result: await this.processSvg(path),
-    //       };
-    //     };
+        if (
+          this.config.options.cache &&
+          this.cache?.hasCachedAsset(path, {
+            mtimeMs,
+            targetExtname: userRes?.to || ext,
+          })
+        ) {
+          const cachedAsset = this.cache.get(path);
+          if (cachedAsset) {
+            logger(
+              chalk.bold(chalk.green('✨ Using cached of')),
+              chalk.bold(chalk.cyan(basename(cachedAsset.fileName))),
+            );
+            fileNameMap.set(asset.fileName, cachedAsset.fileName);
+            continue;
+          }
+        }
 
-    //     tasks.push(task());
-    //   }
-    // }
-    // const baseResult = await Promise.all(tasks);
-    // // biome-ignore lint/complexity/noForEach: <explanation>
-    // baseResult.forEach(({ originFileName, result }) => {
-    //   if (result) {
-    //     fileNameMap.set(originFileName, result.fileName);
-    //   }
-    // });
+        const task = async () => {
+          if (!isSvgFile(path)) {
+            return {
+              originFileName: asset.fileName,
+              result: await this.processRasterImage(path),
+            };
+          }
+          return {
+            originFileName: asset.fileName,
+            result: await this.processSvg(path),
+          };
+        };
 
-    // let taskIndex = 0;
-    // for (const [fileName, asset] of Object.entries(bundler)) {
-    //   if (asset.type === 'asset' && extImageRE.test(fileName)) {
-    //     const result = baseResult[taskIndex++];
-    //     if (result) {
-    //       asset.fileName = result.result.fileName;
-    //       asset.source = result.result.source;
-    //     }
-    //   }
-    // }
+        tasks.push(task());
+      }
+    }
+    const baseResult = await Promise.all(tasks);
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    baseResult.forEach(({ originFileName, result }) => {
+      if (result) {
+        fileNameMap.set(originFileName, result.result.fileName);
+      }
+    });
 
-    // for (const [fileName, asset] of Object.entries(bundler)) {
-    //   if (
-    //     asset.type === 'asset' &&
-    //     fileName.endsWith('.css') &&
-    //     fileNameMap.size
-    //   ) {
-    //     const cssContent = asset.source.toString();
-    //     const updatedCss = updateCssReferences(cssContent, fileNameMap);
-    //     asset.source = updatedCss;
-    //   }
-    // }
+    let taskIndex = 0;
+    for (const [fileName, asset] of Object.entries(bundler)) {
+      if (asset.type === 'asset' && extImageRE.test(fileName)) {
+        const result = baseResult[taskIndex++];
+        if (result) {
+          asset.fileName = result.result.fileName;
+          asset.source = result.result.source;
+        }
+      }
+    }
+
+    for (const [fileName, asset] of Object.entries(bundler)) {
+      if (
+        asset.type === 'asset' &&
+        fileName.endsWith('.css') &&
+        fileNameMap.size
+      ) {
+        const cssContent = asset.source.toString();
+        const updatedCss = updateCssReferences(cssContent, fileNameMap);
+        asset.source = updatedCss;
+      }
+    }
     if (this.imageModulePath.length) {
       const generateImageBundle = this.imageModulePath?.map(async (item) => {
         if (!isSvgFile(item)) {
@@ -231,11 +250,9 @@ export default class Context {
   }
 
   filterBundleFile(bundle) {
-    // biome-ignore lint/complexity/noForEach: <explanation>
     Object.keys(bundle).forEach((key) => {
       const { outputPath } = this.config;
-      // eslint-disable-next-line no-unused-expressions
-      filterFile(resolve(outputPath!, key), extImageRE) && this.files.push(key);
+      filterFile(resolve(outputPath, key), extImageRE) && this.files.push(key);
     });
   }
 
@@ -255,25 +272,23 @@ export default class Context {
   }
 
   // squoosh
-  async processRasterImage(item) {
+  async processRasterImage(item: string): Promise<ProcessedResult | undefined> {
     const stats = await fs.lstat(item);
     const start = performance.now();
-    const size = await fs.lstat(item);
-    const oldSize = size.size;
+    const oldSize = stats.size;
     let newSize = oldSize;
     const ext = extname(item).slice(1) ?? '';
     const userRes = this.config.options.conversion.find((i) =>
       `${i.from}`.endsWith(ext),
     );
 
-    if (this.config?.options?.cache) {
-      const cachedInfo = this.cache.get<any>(item);
-
+    if (this.config.options.cache && this.cache) {
+      const cachedInfo = this.cache.get<ProcessedResult>(item);
       if (
         cachedInfo &&
         this.cache.hasCachedAsset(item, {
           mtimeMs: stats.mtimeMs,
-          targetExtname: extname(cachedInfo.fileName).slice(1),
+          targetExtname: userRes?.to || ext,
         })
       ) {
         logger(
@@ -316,7 +331,7 @@ export default class Context {
 
     newSize = encodedWith.size;
 
-    const source = {
+    const source: ProcessedResult = {
       fileName: join(assetsDir, imageName),
       name: imageName,
       source: encodedWith.binary,
@@ -324,7 +339,7 @@ export default class Context {
       type: 'asset',
     };
 
-    if (this.config?.options?.cache) {
+    if (this.config.options.cache && this.cache) {
       this.cache.setCachedAsset(
         item,
         {
@@ -371,7 +386,7 @@ export default class Context {
     spinner.stop();
   }
 
-  async processSvg(item) {
+  async processSvg(item: string): Promise<ProcessedResult> {
     const { assetsDir, outDir, base: configBase } = this.config;
     const svgCode = await fs.readFile(item, 'utf8');
 
@@ -389,7 +404,7 @@ export default class Context {
 
     const oldSize = size.size;
     const newSize = Buffer.byteLength(result.data);
-    const svgResult = {
+    const svgResult: ProcessedResult = {
       fileName: join(assetsDir, imageName),
       name: imageName,
       source: result.data,
@@ -397,11 +412,15 @@ export default class Context {
       type: 'asset',
     };
 
-    if (this.config?.options?.cache) {
-      this.cache!.setCachedAsset(item, {
-        mtimeMs: (await fs.stat(item)).mtimeMs,
-        targetExtname: extname(imageName).slice(1),
-      });
+    if (this.config.options.cache && this.cache) {
+      this.cache.setCachedAsset(
+        item,
+        {
+          mtimeMs: (await fs.stat(item)).mtimeMs,
+          targetExtname: extname(imageName).slice(1),
+        },
+        svgResult,
+      );
     }
 
     compressSuccess(
@@ -415,33 +434,38 @@ export default class Context {
 }
 
 export function resolveOptions(
-  options: any,
-  configOption: any,
+  defaultOpts: Partial<ResolvedOptions>,
+  configOpts: Partial<ResolvedOptions>,
 ): ResolvedOptions {
-  const transformType = transformEncodeType(configOption.options?.compress);
+  const transformType = transformEncodeType(configOpts.options?.compress);
   const keys = Object.keys(transformType);
-  const res = keys.map(
-    (item) =>
-    ({
-      ...options[item],
-      ...transformType[item],
-    } as ResolvedOptions),
-  );
-  const obj = {};
+  const res = keys.map((item) => ({
+    ...defaultOpts[item],
+    ...transformType[item],
+  }));
+
+  const obj = {} as Record<string, unknown>;
   keys.forEach((item, index) => {
     obj[item] = res[index];
   });
-  return { ...options, ...obj } as ResolvedOptions;
+
+  return {
+    ...defaultOpts,
+    ...configOpts,
+    ...obj,
+  } as ResolvedOptions;
 }
 
-export function transformEncodeType(options = {}) {
-  const newCompressOptions: any = {};
+export function transformEncodeType(options: Record<string, unknown> = {}) {
+  const newCompressOptions: Record<string, unknown> = {};
   const transformKeys = Object.keys(options).map((item) =>
     encodeMapBack.get(item),
   );
-  const transformOldKeys: any = Object.keys(options).map((item) => item);
-  transformKeys.forEach((item: any, index: number) => {
-    newCompressOptions[item] = options[transformOldKeys[index]];
+  const transformOldKeys = Object.keys(options);
+  transformKeys.forEach((item, index) => {
+    if (item) {
+      newCompressOptions[item] = options[transformOldKeys[index]];
+    }
   });
   return newCompressOptions;
 }
@@ -474,7 +498,6 @@ export async function transformCode(
     await fs.writeFile(finallyPath, item[sourceCode]);
   });
 }
-
 
 async function sleep(time) {
   return new Promise((resolve) => {

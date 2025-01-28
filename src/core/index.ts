@@ -2,7 +2,7 @@ import { resolveDefaultOptions } from './compressOptions';
 import { createUnplugin } from 'unplugin';
 import Context, { extImageRE } from './context';
 
-import type { PluginOptions } from './types';
+import type { PluginOptions } from './types/index';
 
 export const plugin = createUnplugin<PluginOptions | undefined, false>(
   (options = {}) => {
