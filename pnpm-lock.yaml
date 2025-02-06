@@ -67,8 +67,8 @@ importers:
         specifier: ^5.0.4
         version: 5.7.3
       unplugin-unused:
-        specifier: ^0.3.0
-        version: 0.3.0(rollup@4.32.0)
+        specifier: ^0.4.0
+        version: 0.4.0
       vite:
         specifier: 6.0.11
         version: 6.0.11(@types/node@22.12.0)(jiti@2.4.1)(less@4.2.1)(sass@1.83.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.6.1)
@@ -2427,6 +2427,9 @@ packages:
   mlly@1.7.3:
     resolution: {integrity: sha512-xUsx5n/mN0uQf4V548PKQ+YShA4/IW0KI1dZhrNrPCLG+xizETbHTkOa1f8/xut9JRPp8kQuMnz0oqwkTiLo/A==}
 
+  mlly@1.7.4:
+    resolution: {integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==}
+
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -2648,11 +2651,11 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
 
-  pkg-types@1.2.1:
-    resolution: {integrity: sha512-sQoqa8alT3nHjGuTjuKgOnvjo4cljkufdtLMnO2LBP/wRwuDlo1tkaEdMxCRhyGRPacv/ztlZgDPm2b7FAmEvw==}
-
   pkg-types@1.3.0:
     resolution: {integrity: sha512-kS7yWjVFCkIw9hqdJBoMxDdzEngmkr5FXeWZZfQ6GoYacjVnsW6l2CcYW/0ThD0vF4LPJgVYnrg4d0uuhwYQbg==}
+
+  pkg-types@1.3.1:
+    resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
 
   plur@3.1.1:
     resolution: {integrity: sha512-t1Ax8KUvV3FFII8ltczPn2tJdjqbd1sIzu6t4JL7nQ3EyeL/lTrj5PWKb06ic5/6XYDr65rQ4uzQEGN70/6X5w==}
@@ -3456,8 +3459,12 @@ packages:
   unist-util-visit@1.4.1:
     resolution: {integrity: sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==}
 
-  unplugin-unused@0.3.0:
-    resolution: {integrity: sha512-Rvh1xqD5yMWBwBiJ5Iv0J1gRZzBEvojnWxQw+3riawJFWrbSznmuv1qom2quWSksPMGN/v4c9q1xtW7KjYFUhA==}
+  unplugin-unused@0.4.0:
+    resolution: {integrity: sha512-xjP9js8L51/oFN4X3xVWhdfCKPRWE0jWl4Y887U1eJ9PRZOdgX5PphuNqz/zIgSGa5akNoxJ2LpjlpzKDMGXFA==}
+    engines: {node: '>=18.12.0'}
+
+  unplugin-utils@0.2.3:
+    resolution: {integrity: sha512-unB2e2ogZwEoMw/X0Gq1vj2jaRKLmTh9wcSEJggESPllcrZI68uO7B8ykixbXqsSwG8r9T7qaHZudXIC/3qvhw==}
     engines: {node: '>=18.12.0'}
 
   unplugin@2.1.2:
@@ -6049,7 +6056,14 @@ snapshots:
     dependencies:
       acorn: 8.14.0
       pathe: 1.1.2
-      pkg-types: 1.2.1
+      pkg-types: 1.3.0
+      ufo: 1.5.4
+
+  mlly@1.7.4:
+    dependencies:
+      acorn: 8.14.0
+      pathe: 2.0.2
+      pkg-types: 1.3.1
       ufo: 1.5.4
 
   ms@2.1.3: {}
@@ -6268,17 +6282,17 @@ snapshots:
 
   pirates@4.0.6: {}
 
-  pkg-types@1.2.1:
-    dependencies:
-      confbox: 0.1.8
-      mlly: 1.7.3
-      pathe: 1.1.2
-
   pkg-types@1.3.0:
     dependencies:
       confbox: 0.1.8
       mlly: 1.7.3
       pathe: 1.1.2
+
+  pkg-types@1.3.1:
+    dependencies:
+      confbox: 0.1.8
+      mlly: 1.7.4
+      pathe: 2.0.2
 
   plur@3.1.1:
     dependencies:
@@ -7390,15 +7404,18 @@ snapshots:
     dependencies:
       unist-util-visit-parents: 2.1.2
 
-  unplugin-unused@0.3.0(rollup@4.32.0):
+  unplugin-unused@0.4.0:
     dependencies:
-      '@rollup/pluginutils': 5.1.4(rollup@4.32.0)
       js-tokens: 9.0.1
       picocolors: 1.1.1
-      pkg-types: 1.3.0
+      pkg-types: 1.3.1
       unplugin: 2.1.2
-    transitivePeerDependencies:
-      - rollup
+      unplugin-utils: 0.2.3
+
+  unplugin-utils@0.2.3:
+    dependencies:
+      pathe: 2.0.2
+      picomatch: 4.0.2
 
   unplugin@2.1.2:
     dependencies:
