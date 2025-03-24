@@ -89,7 +89,7 @@
     "unplugin": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "22.12.0",
+    "@types/node": "22.13.13",
     "bumpp": "^10.0.0",
     "eslint": "^8.39.0",
     "eslint-config-relaxed-ts": "^2.0.20",
