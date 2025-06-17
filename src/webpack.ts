@@ -1,4 +1,24 @@
-import unplugin from '.';
-import type { } from 'webpack';
+/**
+ * This entry file is for webpack plugin.
+ *
+ * @module
+ */
 
-export default unplugin.webpack;
+import unplugin from './index'
+
+/**
+ * Webpack plugin
+ *
+ * @example
+ * ```js
+ * // webpack.config.js
+ * import Vue from 'unplugin-vue/webpack'
+ *
+ * default export {
+ *  plugins: [imagemin()],
+ * }
+ * ```
+ */
+const webpack = unplugin.webpack as typeof unplugin.webpack
+export default webpack
+export { webpack as 'module.exports' }

@@ -18,8 +18,8 @@ importers:
         specifier: 8.1.1
         version: 8.1.1
       squoosh-next:
-        specifier: 0.1.2
-        version: 0.1.2
+        specifier: ^0.1.3
+        version: 0.1.3
       svgo:
         specifier: ^3.0.2
         version: 3.3.2
@@ -3966,6 +3966,9 @@ packages:
   squoosh-next@0.1.2:
     resolution: {integrity: sha512-4BByP5BQWr850IxPezDTI8nIrIC41VZwLAj6JRUavbA0Ss5C2B2Jshp/WlZ764dUEzT7mUFGrYpWuBWmLvWDsw==}
     engines: {node: ' ^12.5.0 || ^14.0.0 || ^16.0.0 '}
+
+  squoosh-next@0.1.3:
+    resolution: {integrity: sha512-W9BP+ifTCCudRXeKvDv3kOzCxOGF1s2OF/7ixDIhpdRg4TJ1HIbRvCBf3YXqZMc3RAJEEyYdr0E/2oGOm8NVcw==}
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
@@ -8919,6 +8922,11 @@ snapshots:
   sprintf-js@1.0.3: {}
 
   squoosh-next@0.1.2:
+    dependencies:
+      wasm-feature-detect: 1.8.0
+      web-streams-polyfill: 3.3.3
+
+  squoosh-next@0.1.3:
     dependencies:
       wasm-feature-detect: 1.8.0
       web-streams-polyfill: 3.3.3
