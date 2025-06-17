@@ -1,6 +1,6 @@
 {
   "name": "unplugin-imagemin",
-  "version": "0.6.7",
+  "version": "0.6.9",
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and svgo",
   "license": "MIT",
   "keywords": [
@@ -84,7 +84,7 @@
     "@rollup/pluginutils": "^5.0.2",
     "chalk": "5.3.0",
     "ora": "8.1.1",
-    "squoosh-next": "0.1.2",
+    "squoosh-next": "^0.1.3",
     "svgo": "^3.0.2",
     "unplugin": "^2.1.0"
   },
