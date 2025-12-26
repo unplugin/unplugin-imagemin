@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import Img from './assets/image/wallhaven-2ykjxm.png'
+const demo = new URL('./assets/image/wallhaven-2ykjxm.png', import.meta.url).href
 </script>
 
 <template>
   <div>
     <img style="width: 1200px" src="./assets/image/wallhaven-kxy326.png" alt="" />
     <img style="width: 1200px" src="./assets/image/wallhaven-x61xdo.jpg" alt="" />
-    <img :src="Img" alt="">
-    <router-link to="/home">Go to Home</router-link>
-    <router-link to="/about">Go to About</router-link>
-    <RouterView />
+    <img :src="demo" alt="">
+      <img :src="Img" alt="">
+        <!-- <router-link to="/home">Go to Home</router-link>
+        <router-link to="/about">Go to About</router-link>
+        <RouterView /> -->
   </div>
 </template>
 

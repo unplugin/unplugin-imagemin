@@ -152,7 +152,12 @@ export default class Context {
 
     this.startGenerateLogger();
     const spinner = await loadWithRocketGradient('');
-    const tasks = [];
+    const tasks: Array<
+      Promise<{
+        originFileName: string;
+        result?: { result: ProcessedResult };
+      }>
+    > = [];
 
     for (const [fileName, asset] of Object.entries(bundler)) {
       if (asset.type === 'asset' && extImageRE.test(fileName)) {
@@ -202,17 +207,21 @@ export default class Context {
     // biome-ignore lint/complexity/noForEach: <explanation>
     baseResult.forEach(({ originFileName, result }) => {
       if (result) {
-        fileNameMap.set(originFileName, result.result.fileName);
+        fileNameMap.set(originFileName, result.fileName);
       }
     });
 
-    let taskIndex = 0;
+    const resultMap = new Map(
+      baseResult
+        .filter((item) => item?.result)
+        .map((item) => [item.originFileName, item.result] as const),
+    );
     for (const [fileName, asset] of Object.entries(bundler)) {
       if (asset.type === 'asset' && extImageRE.test(fileName)) {
-        const result = baseResult[taskIndex++];
+        const result = resultMap.get(asset.fileName);
         if (result) {
-          asset.fileName = result.result.fileName;
-          asset.source = result.result.source;
+          asset.fileName = result.fileName;
+          asset.source = result.source;
         }
       }
     }
