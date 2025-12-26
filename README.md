@@ -1,3 +1,34 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="right">
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=en">English</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=zh-CN">简体中文</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=zh-TW">繁體中文</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=ja">日本語</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=ko">한국어</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=hi">हिन्दी</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=th">ไทย</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=fr">Français</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=de">Deutsch</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=es">Español</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=it">Itapano</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=ru">Русский</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=pt">Português</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=nl">Nederlands</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=pl">Polski</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=ar">العربية</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=fa">فارسی</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=tr">Türkçe</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=vi">Tiếng Việt</a></p>
+        <p><a href="https://openaitx.github.io/view.html?user=unplugin&project=unplugin-imagemin&lang=id">Bahasa Indonesia</a></p>
+      </div>
+    </div>
+  </details>
+</div>
+
 # 📦📦 unplugin Imagemin Picture compression
 
 [![NPM version](https://img.shields.io/npm/v/unplugin-imagemin?color=a1b858&label=)](https://www.npmjs.com/package/unplugin-imagemin)
