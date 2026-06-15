@@ -1,6 +1,9 @@
 {
   "name": "unplugin-imagemin",
   "version": "0.7.0",
+  "bugs": {
+    "url": "https://github.com/unplugin/unplugin-imagemin/issues"
+  },
   "description": "📦 📦 unplugin compression Image Compression plugin based on squoosh and svgo",
   "license": "MIT",
   "keywords": [
