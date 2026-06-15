@@ -24,17 +24,9 @@
       "require": "./dist/nuxt.js",
       "import": "./dist/nuxt.mjs"
     },
-    "./resolvers": {
-      "require": "./dist/resolvers.js",
-      "import": "./dist/resolvers.mjs"
-    },
     "./rollup": {
       "require": "./dist/rollup.js",
       "import": "./dist/rollup.mjs"
-    },
-    "./types": {
-      "require": "./dist/types.js",
-      "import": "./dist/types.mjs"
     },
     "./vite": {
       "require": "./dist/vite.js",
